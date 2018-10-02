@@ -14,12 +14,18 @@ public class Client {
 
     private static Socket socket; //Socket initalisieren
     private static String IP;      //IP initalisieren
-    private final static int Port=5000; //Serverport initalisieren
+    private static int Port=5000; //Serverport initalisieren
     private volatile static String message;
     private Thread thread;
 
 
     Client(String IP){ //Konstrukter
+        Client.IP =IP;
+        thread=new Thread(new Receive());//Receive Thread initalisieren
+        thread.start();
+    }
+    Client(String IP,int Port){ //Konstrukter
+        this.Port=Port;
         Client.IP =IP;
         thread=new Thread(new Receive());//Receive Thread initalisieren
         thread.start();

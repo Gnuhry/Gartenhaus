@@ -21,13 +21,13 @@ namespace Server2
 
     public class StateObject
     {
-        // Client  socket.  
+        // Client  socket.
         public Socket workSocket = null;
         // Buffergröße initalisieren
         public const int BufferSize = 1024;
         // Buffer initalisieren
         public byte[] buffer = new byte[BufferSize];
-        // Empfangede Daten String initalisieren 
+        // Empfangede Daten String initalisieren
         public StringBuilder sb = new StringBuilder();
     }
 
@@ -56,7 +56,7 @@ namespace Server2
         }
 
         //------------Datenbank Pflanzen -----------------------------------
-        
+
         //    Tabellenname: "Verzeichnis"
         //         -Name
         //         -ArduinoIDs
@@ -163,7 +163,7 @@ namespace Server2
                         temp += reader["ID"].ToString() + "_";
                     }
                     catch (Exception) { return "Fehler"; }
-                    
+
                 }
                 reader.Close();
                 return temp;
@@ -175,6 +175,7 @@ namespace Server2
         //      -ArduinoIP
         //      -IDPflanze
         //      -DataSend
+        //      -Tabelle
 
         public static string GetIDsArduino()
         {
@@ -290,6 +291,10 @@ namespace Server2
                     }
                     catch (Exception) { return "Fehler"; }
                     reader.Close();
+                    cmd.CommandText = "CREATE TABLE Data" + temp + " (Temperatur int, Feuchtigkeit int, Humid int, UV int)"; //Befehl neue Tabelle initalisieren
+                    Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
+                    cmd.CommandText = "UPDATE Arduino SET Tabelle = Data"+temp+" WHERE Id=" + temp; //Befehl TabellenID speichern initalisieren
+                    Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     return temp;
                     // con.Close();
                 }
@@ -358,15 +363,114 @@ namespace Server2
                 }
             }
         }
+        public static string SetData(double Temp,double Feucht, double Humid, double UV,string time, int ID)
+        {
+            string temp;
+            using (con)
+            {
+                OpenConnection(); //Kommunikation öffnen
+                cmd.CommandText = "SELECT * FROM Arduino WHERE Id = " + ID; //Auswahl Befehl initalisieren
+                SqlDataReader reader;
+                try
+                {
+                    reader = cmd.ExecuteReader(); //Befehl ausführen
+                }
+                catch (Exception) { return "Fehler"; }
+                reader.Read();
+                try
+                {
+                    temp = reader["Tabelle"].ToString(); //Daten auslesen
+                }
+                catch (Exception) { return "Fehler"; }
+                //  con.Close();
+                reader.Close();
+
+                OpenConnection();//Kommunikation öffnen
+                cmd.CommandText = "INSERT INTO "+ temp+ " (Temperatur,Feuchtigkeit,Humid,UV,temp) VALUES ("+Temp+","+Feucht+","+Humid+","+UV+","+time+")"; //Eingabe Befehl initalisieren
+                try
+                {
+                    Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
+                    return "Geändert";
+                }
+                catch (Exception) { return "Fehler"; }
+            }
+        }
+        public static string GetLength(int ID)
+        {
+            string temp = "";
+            using (con)
+            {
+                OpenConnection(); //Kommunikation öffnen
+                cmd.CommandText = "SELECT * FROM Arduino WHERE Id = " + ID; //Auswahl Befehl initalisieren
+                SqlDataReader reader;
+                try
+                {
+                    reader = cmd.ExecuteReader(); //Befehl ausführen
+                }
+                catch (Exception) { return "Fehler"; }
+                reader.Read();
+                try
+                {
+                    temp = reader["Tabelle"].ToString(); //Daten auslesen
+                }
+                catch (Exception) { return "Fehler"; }
+                //  con.Close();
+                reader.Close();
+                OpenConnection();//Kommunikatio öffnen
+                cmd.CommandText = "SELECT COUNT (*) FROM "+temp;
+                return (string)cmd.ExecuteScalar();
+            }
+        }
+
+        public static string GetData(int ID, int dataID)
+        {
+            string temp;
+            using (con)
+            {
+                OpenConnection(); //Kommunikation öffnen
+                cmd.CommandText = "SELECT * FROM Arduino WHERE Id = " + ID; //Auswahl Befehl initalisieren
+                SqlDataReader reader;
+                try
+                {
+                    reader = cmd.ExecuteReader(); //Befehl ausführen
+                }
+                catch (Exception) { return "Fehler"; }
+                reader.Read();
+                try
+                {
+                    temp = reader["Tabelle"].ToString(); //Daten auslesen
+                }
+                catch (Exception) { return "Fehler"; }
+                //  con.Close();
+                reader.Close();
+                string erg = "";
+                    OpenConnection(); //Kommunikation öffnen
+                    cmd.CommandText = "SELECT * FROM " + temp + " WHERE Id = " + dataID; //Auswahl Befehl initalisieren
+                    try
+                    {
+                        reader = cmd.ExecuteReader(); //Befehl ausführen
+                    }
+                    catch (Exception) { return null; }
+                    reader.Read();
+                    try
+                    {
+                        erg+=reader["temp"]+"#"+ reader["Temperatur"].ToString() + "-" + reader["Feuchtigkeit"].ToString() + "-" + reader["Humid"] + "-" + reader["UV"]+"|";
+                    }
+                    catch (Exception) { return null; }
+                //  con.Close();
+                reader.Close();
+                return erg;
+            }
+        }
     }
 
 
     //---------------------------------- TCP - IP Kommunikation ------------------------------------
 
     public class Server{
-        // Thread Signal 
+        // Thread Signal
         private static ManualResetEvent allDone = new ManualResetEvent(false);
-      
+
         public static string GetLocalIPAddress() //Locale Addresse bekommen
         {
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName()); //Host aus DNS-Liste initalisieren
@@ -385,11 +489,11 @@ namespace Server2
             IPAddress ipAddress = IPAddress.Parse(GetLocalIPAddress());
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Program.port);
 
-            // TCP/IP socket initalisiern 
+            // TCP/IP socket initalisiern
             Socket listener = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
 
-            //Socket zum lokalen Endpunkt binden und für neue Verbindungen warten  
+            //Socket zum lokalen Endpunkt binden und für neue Verbindungen warten
             try
             {
                 listener.Bind(localEndPoint);
@@ -397,16 +501,16 @@ namespace Server2
 
                 while (true)
                 {
-                    // Event zu kein Signal Status setzen  
+                    // Event zu kein Signal Status setzen
                     allDone.Reset();
 
-                    // Asynchronen Socket für kommende Kommunikationen initalisieren  
+                    // Asynchronen Socket für kommende Kommunikationen initalisieren
                     Console.WriteLine("Waiting for a connection...");
                     listener.BeginAccept(
                         new AsyncCallback(AcceptCallback),
                         listener);
 
-                    //Auf Kommunikation warten und dann weitermachen  
+                    //Auf Kommunikation warten und dann weitermachen
                     allDone.WaitOne();
                 }
 
@@ -426,11 +530,11 @@ namespace Server2
             //Dem Haupt Thread signalisieren fortzusetzen
             allDone.Set();
 
-            //Socket mit dem Client bekommen  
+            //Socket mit dem Client bekommen
             Socket listener = (Socket)ar.AsyncState;
             Socket handler = listener.EndAccept(ar);
 
-            //StateObject initalisieren  
+            //StateObject initalisieren
             StateObject state = new StateObject();
             state.workSocket = handler;
             handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
@@ -441,11 +545,11 @@ namespace Server2
         {
             String content = String.Empty;
 
-            //StatObject und Socket bekommen  
+            //StatObject und Socket bekommen
             StateObject state = (StateObject)ar.AsyncState;
             Socket handler = state.workSocket;
 
-            // Daten vom Socket lesen 
+            // Daten vom Socket lesen
             int bytesRead = handler.EndReceive(ar);
 
             if (bytesRead > 0)
@@ -490,18 +594,22 @@ namespace Server2
                         case "set minuv": reponse = SQLCommunication.Eingabe("MinUV", help[2], Convert.ToInt32(help[1])); break; //set minuv [ID:int] [MinUV:int]
                         case "set maxfeucht": reponse = SQLCommunication.Eingabe("MaxFeucht", help[2], Convert.ToInt32(help[1])); break; //set maxfeucht [ID:int] [MaxFeucht:int]
                         case "set minfeucht": reponse = SQLCommunication.Eingabe("MinFeucht", help[2], Convert.ToInt32(help[1])); break; //set minfeucht [ID:int] [MinFeucht:int]
+                        case "set data": reponse = SQLCommunication.SetData(Convert.ToDouble(help[2]), Convert.ToDouble(help[3]), Convert.ToDouble(help[4]), Convert.ToDouble(help[5]), DateTime.Now.ToShortTimeString()+"_"+DateTime.Now.ToShortDateString(), Convert.ToInt32(help[1])); break; //set data [ID:int] [Temperatur:double] [Feuchtigkeit:double] [Humid:double] [UV:double]
 
                         case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToInt32(help[2])); break; //new [Name:string] [MaxTemp:int] [...]
                         case "delete": reponse = SQLCommunication.Delete(Convert.ToInt32(help[1])); break; //delete [ID:int]
                         case "new arduino": reponse = SQLCommunication.NewArduino(help, state); break; //new arduino [ArduinoID:int_null]
-                        case "delete arduino": reponse = SQLCommunication.DeleteArduino(help[1]); break;
-                        case "get arduinoip": reponse = SQLCommunication.GetArduino("ArduinoIP", Convert.ToInt32(help[1])); break;
-                        case "get arduinodata": reponse = SQLCommunication.GetArduino("DataSend", Convert.ToInt32(help[1])); break;
-                        case "get arduinoidpflanze": reponse = SQLCommunication.GetArduino("IDPflanze", Convert.ToInt32(help[1])); break;
-                        case "get arduinoids": reponse = SQLCommunication.GetIDsArduino(); break;
+                        case "delete arduino": reponse = SQLCommunication.DeleteArduino(help[1]); break; //delete arduino [ArduinoID:int]
+                        case "get arduinoip": reponse = SQLCommunication.GetArduino("ArduinoIP", Convert.ToInt32(help[1])); break; //get arduinoip [ArduinoID:int]
+                        case "get arduinodata": reponse = SQLCommunication.GetArduino("DataSend", Convert.ToInt32(help[1])); break; //get arduinodata [ArduinoID:int]
+                        case "get arduinoidpflanze": reponse = SQLCommunication.GetArduino("IDPflanze", Convert.ToInt32(help[1])); break; //get arduinoidpflanze [ArduinoID:int]
+                        case "get arduinoids": reponse = SQLCommunication.GetIDsArduino(); break; //get arduinoids
+                        case "get data": reponse = SQLCommunication.GetData(Convert.ToInt32(help[1]), Convert.ToInt32(help[2])); break; //get data [ID:int] [DataID:int]
+                        case "get length": reponse = SQLCommunication.GetLength(Convert.ToInt32(help[1])); break;//get length [ID:int]
+                        case "set arduinoip": reponse= SQLCommunication.SetArduino("IDPflanze",Convert.ToInt32(help[1]),help[2]); break;
                         default: reponse = "Invalid Request"; break;
                     }
-                    //Antwort senden  
+                    //Antwort senden
                     Send(handler, reponse);
                 }
                 else
@@ -516,10 +624,10 @@ namespace Server2
 
         private static void Send(Socket handler, String data)
         {
-            //String mit ASCII verschlüßeln  
+            //String mit ASCII verschlüßeln
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
-            //Start des Sendevorgang  
+            //Start des Sendevorgang
             handler.BeginSend(byteData, 0, byteData.Length, 0,
                 new AsyncCallback(SendCallback), handler);
         }
@@ -562,7 +670,7 @@ namespace Server2
 
         public static void Arduino_Send(string Zeile, int ID, object Wert)//Methode zum Senden an Arduino
         {
-            int temp; 
+            int temp;
             switch (Zeile)
             {
                 case "Name": temp = 1; break;
@@ -591,19 +699,19 @@ namespace Server2
             {
                 //End Addresse festlegen
                 IPAddress ipAddress = IPAddress.Parse(GetArduinoIPAddress(ArduinoID));
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, Program.port); 
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, Program.port);
 
-                // TCP/IP socket erstellen 
+                // TCP/IP socket erstellen
                 Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 try
                 {
-                    // Verbinden  
+                    // Verbinden
                     client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
                     connectDone.WaitOne();
-              
 
-                // Daten senden  
+
+                // Daten senden
                 Send(client, message+"|");
                 sendDone.WaitOne();
 
@@ -623,7 +731,7 @@ namespace Server2
                 }
                 Console.WriteLine("Response received : {0}", response);
 
-                //Socket schließen 
+                //Socket schließen
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
 
@@ -636,7 +744,7 @@ namespace Server2
 
 
 
-        private static void ConnectCallback(IAsyncResult ar) 
+        private static void ConnectCallback(IAsyncResult ar)
         {
             try
             {
@@ -649,12 +757,12 @@ namespace Server2
                 Console.WriteLine("Socket connected to {0}",
                     client.RemoteEndPoint.ToString());
 
-                // Programm Signal geben, dass Verbindung besteht  
+                // Programm Signal geben, dass Verbindung besteht
                 connectDone.Set();
             }
             catch (Exception e)
             {
-                
+
                 Console.WriteLine(e.ToString());
             }
         }
@@ -663,11 +771,11 @@ namespace Server2
         {
             try
             {
-                // State object initalisieren  
+                // State object initalisieren
                 StateObject state = new StateObject();
                 state.workSocket = client;
 
-                // Daten empfangen 
+                // Daten empfangen
                 client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);
             }
@@ -685,7 +793,7 @@ namespace Server2
                 StateObject state = (StateObject)ar.AsyncState;
                 Socket client = state.workSocket;
 
-                // Daten auslesen  
+                // Daten auslesen
                 int bytesRead = client.EndReceive(ar);
 
                 if (bytesRead > 0)
@@ -693,18 +801,18 @@ namespace Server2
                     // Zwischenspeichern, falls mehr Daten kommen
                     state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
 
-                    // Restliche Daten auslesen 
+                    // Restliche Daten auslesen
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                         new AsyncCallback(ReceiveCallback), state);
                 }
                 else
                 {
-                    // Daten fertig ausgelesen 
+                    // Daten fertig ausgelesen
                     if (state.sb.Length > 1)
                     {
                         response = state.sb.ToString();
                     }
-                    //Programm Signaldas alle Daten angekommen sind 
+                    //Programm Signaldas alle Daten angekommen sind
                     receiveDone.Set();
                 }
             }
@@ -719,7 +827,7 @@ namespace Server2
             // In ASCII übersetzen
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
-            // Senden starten  
+            // Senden starten
             client.BeginSend(byteData, 0, byteData.Length, 0,
                 new AsyncCallback(SendCallback), client);
         }
@@ -747,5 +855,4 @@ namespace Server2
 
 
     }
-
 }

@@ -6,22 +6,23 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnlive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="150dp"
-        android:onClick="btnClick"
-        android:text="@string/btn_live" />
-
-    <Button
         android:id="@+id/btnedit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="204dp"
         android:onClick="btnClick2"
         android:text="@string/btn_edit_plant" />
+    <Button
+        android:id="@+id/btnarduino"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="274dp"
+        android:onClick="btnClick3"
+        android:text="@string/btn_edit_arduino" />
 
     <EditText
         android:hint="@string/ip_adresse"

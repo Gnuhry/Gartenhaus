@@ -32,14 +32,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/table_Plant_Name"
-                        android:layout_marginRight="100dp"
-                        android:layout_marginEnd="100dp"
+                        android:layout_marginRight="80dp"
+                        android:layout_marginEnd="80dp"
                         style="@style/table_Plant_Header_Style"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="24dp"
-                        android:layout_marginEnd="24dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
                         android:text="@string/table_Plant_Location"
                         style="@style/table_Plant_Header_Style"/>
                     <TextView

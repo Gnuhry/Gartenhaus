@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,19 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor; //SpeicherEditor initalisieren
     public static String IP="192.168.178.78"; //IP des Server initalisieren
     public static Client client; //client initalisieren
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu); //Menü initalisieren
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        startActivity(new Intent(getApplicationContext(),MainActivity.class)); //Menü Click Listener
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void btnClick(View view) {//Live
-
-        Toast.makeText(getApplicationContext(),new Client(IP).Send("get data_1"),Toast.LENGTH_LONG).show();
-//        Toast.makeText(getApplicationContext(),"Noch in Arbeit!",Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent(this,Main2Activity.class);
-//        startActivity(intent);
-    }
-
 
     public void btnClick2(View view) {
         Intent intent = new Intent(this,Main2Activity.class); //Activity Main2Actovity starten
@@ -74,5 +81,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void btnClick3(View view) {
+        Intent intent = new Intent(this,Graphen.class); //Activity Main2Actovity starten
+        startActivity(intent);
+    }
 }
 

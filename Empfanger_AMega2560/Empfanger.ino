@@ -28,7 +28,7 @@
 DHT dht(TempHumidSensor, DHTTYPE); //initalisieren des Temp-Humid-Sensor
 bool pumpon=false,heizungon=false,
 klimaanlageon=false,luftbefeuchteron=false,
-uvlichton=false,rolladenon=false; //initalisieren der bool Werte für die Relays
+uvlichton=false,rolladenon=false,IDSenden=true; //initalisieren der bool Werte für die Relays
  int EEPROMAddress=0; //int-Wert für EEProm Addresse
 
 
@@ -53,7 +53,7 @@ void loop() {
 }
 
 //------------Überprüfung der Sensoren und Reaktion--------
-void TEMPUeberprufung(){
+float GetTemp(){
   float temp[10]; //initalisieren des temporärem ErgebnisArray
   for(int f=0;f<sizeof(temp);f++)
   {
@@ -64,6 +64,11 @@ void TEMPUeberprufung(){
   //Berechnung der Durschnittstemperatur
   float temperatur=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
  Serial.println("Temperatur: "+String(temperatur));
+ return temperatur;
+}
+
+void TEMPUeberprufung(){
+  float temperatur=GetTemp();
 //Berechnung des Mittelwerts (min+max)/2
 float mittelwert=(GetEEProm(2).toFloat()+GetEEProm(3).toFloat())/2;
 //Wenn Heizung an und Mittelwert erreicht, Heizung aus
@@ -88,9 +93,8 @@ float mittelwert=(GetEEProm(2).toFloat()+GetEEProm(3).toFloat())/2;
     }
   }
 
-
-void FEUCHTUeberprufung(){
-   float temp[10];//initalisieren des temporärem ErgebnisArray
+float GetFeucht(){
+    float temp[10];//initalisieren des temporärem ErgebnisArray
 
   for(int f=0;f<sizeof(temp);f++)
   {
@@ -100,6 +104,11 @@ void FEUCHTUeberprufung(){
   }
   //Berecnung der Duschnittfeuchtigkeit
   float feuchtigkeit=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
+  return feuchtigkeit;
+}
+
+void FEUCHTUeberprufung(){
+  float feuchtigkeit=GetFeucht(); 
   //Berechnung des Mittelwerts
   float mittelwert=(GetEEProm(4).toFloat()+GetEEProm(5).toFloat())/2;
   //Wenn Pumpe an und Mittelwert erreicht, Pumpe aus
@@ -114,8 +123,7 @@ void FEUCHTUeberprufung(){
     }
   }
 
-
-void HUMIDUeberprufung(){
+float GetHumid(){
    float temp[10];//initalisieren des temporärem ErgebnisArray
 
   for(int f=0;f<sizeof(temp);f++)
@@ -127,6 +135,11 @@ void HUMIDUeberprufung(){
   //Berecnung der Duschnittsluftfeuchtigkeit
   float humid=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
     Serial.println("Humid: "+String(humid));
+    return humid;
+}
+
+void HUMIDUeberprufung(){
+  float humid=GetHumid();
    //Berechnung des Mittelwerts
     float mittelwert=(GetEEProm(6).toFloat()+GetEEProm(7).toFloat())/2;
     //Wenn Luftbefeuchter an und Mittelwert erreicht, Luftbefeuchter aus
@@ -141,9 +154,8 @@ void HUMIDUeberprufung(){
     }
   }
 
-
-void UVUeberprufung(){
-   float temp[10];//initalisieren des temporärem ErgebnisArray
+float GetUv(){
+  float temp[10];//initalisieren des temporärem ErgebnisArray
 
   for(int f=0;f<sizeof(temp);f++)
   {
@@ -154,6 +166,11 @@ void UVUeberprufung(){
   //Berecnung der Duschnittfeuchtigkeit
   float UV=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
   Serial.println("UV: "+String(UV));
+  return UV;
+}
+
+void UVUeberprufung(){
+   float UV=GetUv();
   //Berechnung des Mittelwerts
   float mittelwert=(GetEEProm(8).toFloat()+GetEEProm(9).toFloat())/2;
   //Wenn UV-Licht an und IS-UV-Wert über Min-Soll-Wert, UVLicht aus
@@ -193,17 +210,29 @@ void receiveEvent(int howMany) {
  SaveEEProm(temp.toInt(),help);//Data an Index speichern
 }
 
-
-// Funktion, die ausgeführt wird, wenn Master eine ID erwartet
-void requestEvent() {
-  String help=GetEEProm(0); //ID aus Speicher holen
-  char buf[5]; //buffer initalisieren
-  if(sizeof(help)>5)return; //Wenn ID länger als 5 Ziffer, ID ist falsch
+String GetID(){
+   String help=GetEEProm(0); //ID aus Speicher holen
+  if(sizeof(help)>5)return "Fehler"; //Wenn ID länger als 5 Ziffer, ID ist falsch
   while(sizeof(help)!=5){
     help="0"+help; //0 auffüllen, um die Länge 5 zu erhalten
     }
-    help.toCharArray(buf,5);
- Wire.write(buf);  //buffer senden
+    return help;
+}
+
+// Funktion, die ausgeführt wird, wenn Master eine Nachricht erwartet
+void requestEvent() {
+  char buf[5]; //buffer initalisieren
+  String help;
+  if(IDSenden){
+    IDSenden=false;
+      help=GetID();
+      if(help=="Fehler") return;
+ }
+ else{
+help=GetID()+"_"+GetTemp()+"_"+GetFeucht()+"_"+GetHumid()+"_"+GetUv();
+  }
+        help.toCharArray(buf,sizeof(help));
+   Wire.write(buf);  //buffer senden
 }
 
 

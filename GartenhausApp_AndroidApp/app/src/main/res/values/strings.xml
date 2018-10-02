@@ -3,7 +3,7 @@
     <string name="new_plant">Neue Pflanze adden</string>
     <string name="table_Plant_ID">ID</string>
     <string name="table_Plant_Name">Name</string>
-    <string name="table_Plant_Location">Platz</string>
+    <string name="table_Plant_Location">Arduino</string>
     <string name="table_Plant_edit">Bearbeiten</string>
     <string name="delete_Plant">Löschen</string>
     <string name="save_Plant">Speichern</string>
@@ -19,4 +19,17 @@
     <string name="menu">Hauptmenü</string>
     <string name="ip_adresse">IP-Adresse</string>
     <string name="edit_all">Bitte alles ausfüllen!</string>
+    <string name="btn_edit_arduino">Arduino einstellen</string>
+    <string name="table_Arduino_ID">ID</string>
+    <string name="table_Arduino_NamePflanze">Pflanzenname</string>
+    <string name="table_Arduino_edit">Einstellen</string>
+    <string name="pflanze">Pflanze</string>
+    <string name="pumpe">Pumpe</string>
+    <string name="licht">Licht</string>
+    <string name="spr_her">Sprüher</string>
+    <string name="heizung">Heizung</string>
+    <string name="kuhlung">Kühlung</string>
+    <string name="rolladen">Rolladen</string>
+    <string name="vegleichen">Vergleichen mit</string>
+    <string name="gestrichelt">gestrichelt</string>
 </resources>

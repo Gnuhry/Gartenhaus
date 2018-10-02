@@ -11,6 +11,7 @@ const char* password = "1631492500942971"; //Code des Wifi
 const char* host = "192.168.178.78"; //IP-Addresse des Server
 const int serverPort=5000; //Port des C# Server
 int wifiStatus; // Status des Wifi
+int counter=0;
 WiFiClient client; //Client für erste Kommunikation mit C# Server
 WiFiServer server(5001); //Server für Kommunikation mit C# Client
 
@@ -22,14 +23,19 @@ void setup() {
   ConnectToWifi(); //Zu Wifi verbinden
   server.begin();
   String request=GetIDFromArduino(); //Request an Slave AMega2560
-  SendToArduino("new arduino_"+request); //An Server melden, dass Arduino erreichbar
+  SendToServer("new arduino_"+request); //An Server melden, dass Arduino erreichbar
 }
 
 //-----------------------Loop------------------------------
 void loop() {
   //TODO auf ServerKommunikation warten
   MessageFromCSharpServer();
- delay(1000);
+  if(counter++==10){
+    counter=0;
+    String request=GetIDFromArduino(); //Request an Slave AMega2560
+    SendToServer("set data_"+request); //An Server schicken 
+  }
+  delay(1000);
 }
 
 //-----------------Master-Slave.Kommunikation mit AMega2560 -------------------
