@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void btnClick3(View view) {
-        Intent intent = new Intent(this,Graphen.class); //Activity Main2Actovity starten
+        Intent intent = new Intent(this,Main3Activity.class); //Activity Main2Actovity starten
         startActivity(intent);
     }
 }

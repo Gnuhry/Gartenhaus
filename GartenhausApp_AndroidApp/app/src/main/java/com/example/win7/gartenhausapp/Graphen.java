@@ -220,7 +220,8 @@ public class Graphen extends AppCompatActivity {
         ((Spinner)findViewById(R.id.spinnerGraph)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Laden(Integer.parseInt((String)adapterView.getItemAtPosition(i)),false);
+                try{
+                Laden(Integer.parseInt((String)adapterView.getItemAtPosition(i)),false);}catch(Exception e){return;}
 
             }
 
@@ -233,7 +234,8 @@ public class Graphen extends AppCompatActivity {
        /* ((Spinner)findViewById(R.id.spinnerGraph2)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Laden(Integer.parseInt((String)adapterView.getItemAtPosition(i)),true);
+  try{
+                Laden(Integer.parseInt((String)adapterView.getItemAtPosition(i)),true);}catch(Exception e){return;}
 
             }
 

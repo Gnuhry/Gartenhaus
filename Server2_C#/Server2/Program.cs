@@ -68,12 +68,12 @@ namespace Server2
         //         -MaxHumid
         //         -MinUV
         //         -MaxUV
-        public static int New(string Name, int MinTemp) //In Datenbank neue Pflanze ansetzen
+        public static int New(string Name, int MinTemp,int MaxTemp, int MinFeucht, int MaxFeucht, int MinHumid, int MaxHumid, int MinUV, int MaxUV) //In Datenbank neue Pflanze ansetzen
         {
             using (con)
             {
                 OpenConnection(); //Kommunikation öffnen
-                cmd.CommandText = "INSERT INTO Verzeichnis (Name,MinTemp) VALUES (" + Name + "," + MinTemp + ")"; //Befehl neue Spalte initalisieren
+                cmd.CommandText = "INSERT INTO Verzeichnis (Name,MinTemp,MaxTemp,MinFeucht,MaxFeucht,MinHumid,MaxHuimid,MinUV,MaxUV) VALUES (" + Name + "," + MinTemp + "," + MaxTemp + "," + MinFeucht + "," + MaxFeucht + "," + MinHumid + "," + MaxHumid + "," + MinUV + "," + MaxUV + ")"; //Befehl neue Spalte initalisieren
                 Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                 cmd.CommandText = "SELECT * FROM Verzeichnis WHERE Name = " + Name; //Befehl ID finden initalisieren
                 SqlDataReader reader = cmd.ExecuteReader(); //Befehl ausführen
@@ -98,9 +98,9 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Gelöscht";
+                    return "Sucess";
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 // con.Close();
             }
         }
@@ -115,14 +115,14 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader(); //Befehl ausführen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 reader.Read();
                 string temp;
                 try
                 {
                     temp = reader[Search].ToString(); //Daten auslesen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 //  con.Close();
                 reader.Close();
                 return temp;//Daten returnen
@@ -138,9 +138,9 @@ namespace Server2
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     Client.Arduino_Send(Zeile, ID, Wert);
-                    return "Geändert";
+                    return "Sucess";
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 // con.Close();
             }
         }
@@ -154,7 +154,7 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader();
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 string temp = "";
                 while (reader.Read())
                 {
@@ -162,7 +162,7 @@ namespace Server2
                     {
                         temp += reader["ID"].ToString() + "_";
                     }
-                    catch (Exception) { return "Fehler"; }
+                    catch (Exception) { return "Error"; }
 
                 }
                 reader.Close();
@@ -188,7 +188,7 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader();
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 string temp = "";
                 while (reader.Read())
                 {
@@ -196,7 +196,7 @@ namespace Server2
                     {
                         temp += reader["ID"].ToString() + "_";
                     }
-                    catch (Exception) { return "Fehler"; }
+                    catch (Exception) { return "Error"; }
 
                 }
                 reader.Close();
@@ -212,9 +212,9 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Geändert";
+                    return "Sucess";
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
             }
         }
         public static string SetArduino(string Zeile, int Id, object Wert)
@@ -226,9 +226,9 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Geändert";
+                    return "Sucess";
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
             }
         }
         public static string DeleteArduino(string Id) {
@@ -239,9 +239,9 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Gelöscht";
+                    return "Sucess";
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 // con.Close();
             }
         }
@@ -256,14 +256,14 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader(); //Befehl ausführen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 reader.Read();
                 string temp;
                 try
                 {
                     temp = reader[Zeile].ToString(); //Daten auslesen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 //  con.Close();
                 reader.Close();
                 return temp;//Daten returnen
@@ -289,7 +289,7 @@ namespace Server2
                     {
                         temp= reader["Id"].ToString();
                     }
-                    catch (Exception) { return "Fehler"; }
+                    catch (Exception) { return "Error"; }
                     reader.Close();
                     cmd.CommandText = "CREATE TABLE Data" + temp + " (Temperatur int, Feuchtigkeit int, Humid int, UV int)"; //Befehl neue Tabelle initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
@@ -375,13 +375,13 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader(); //Befehl ausführen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 reader.Read();
                 try
                 {
                     temp = reader["Tabelle"].ToString(); //Daten auslesen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 //  con.Close();
                 reader.Close();
 
@@ -390,7 +390,7 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Geändert";
+                    return "Sucess";
                 }
                 catch (Exception) { return "Fehler"; }
             }
@@ -407,13 +407,13 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader(); //Befehl ausführen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 reader.Read();
                 try
                 {
                     temp = reader["Tabelle"].ToString(); //Daten auslesen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 //  con.Close();
                 reader.Close();
                 OpenConnection();//Kommunikatio öffnen
@@ -434,13 +434,13 @@ namespace Server2
                 {
                     reader = cmd.ExecuteReader(); //Befehl ausführen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 reader.Read();
                 try
                 {
                     temp = reader["Tabelle"].ToString(); //Daten auslesen
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
                 //  con.Close();
                 reader.Close();
                 string erg = "";
@@ -596,7 +596,7 @@ namespace Server2
                         case "set minfeucht": reponse = SQLCommunication.Eingabe("MinFeucht", help[2], Convert.ToInt32(help[1])); break; //set minfeucht [ID:int] [MinFeucht:int]
                         case "set data": reponse = SQLCommunication.SetData(Convert.ToDouble(help[2]), Convert.ToDouble(help[3]), Convert.ToDouble(help[4]), Convert.ToDouble(help[5]), DateTime.Now.ToShortTimeString()+"_"+DateTime.Now.ToShortDateString(), Convert.ToInt32(help[1])); break; //set data [ID:int] [Temperatur:double] [Feuchtigkeit:double] [Humid:double] [UV:double]
 
-                        case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToInt32(help[2])); break; //new [Name:string] [MaxTemp:int] [...]
+                        case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToInt32(help[2]), Convert.ToInt32(help[3]), Convert.ToInt32(help[4]), Convert.ToInt32(help[5]), Convert.ToInt32(help[6]), Convert.ToInt32(help[7]), Convert.ToInt32(help[8]), Convert.ToInt32(help[9])); break; //new [Name:string] [MaxTemp:int] [...]
                         case "delete": reponse = SQLCommunication.Delete(Convert.ToInt32(help[1])); break; //delete [ID:int]
                         case "new arduino": reponse = SQLCommunication.NewArduino(help, state); break; //new arduino [ArduinoID:int_null]
                         case "delete arduino": reponse = SQLCommunication.DeleteArduino(help[1]); break; //delete arduino [ArduinoID:int]
@@ -607,9 +607,10 @@ namespace Server2
                         case "get data": reponse = SQLCommunication.GetData(Convert.ToInt32(help[1]), Convert.ToInt32(help[2])); break; //get data [ID:int] [DataID:int]
                         case "get length": reponse = SQLCommunication.GetLength(Convert.ToInt32(help[1])); break;//get length [ID:int]
                         case "set arduinoip": reponse= SQLCommunication.SetArduino("IDPflanze",Convert.ToInt32(help[1]),help[2]); break;
-                        default: reponse = "Invalid Request"; break;
+                        default: reponse = "Error"; break;
                     }
                     //Antwort senden
+                    if (reponse == "") reponse = "Error";
                     Send(handler, reponse);
                 }
                 else

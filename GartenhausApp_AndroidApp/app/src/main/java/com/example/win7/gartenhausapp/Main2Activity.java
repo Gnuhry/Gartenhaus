@@ -49,7 +49,9 @@ public class Main2Activity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")//Ausblenden der Fehlermeldung: "Kein festen Text in TextViews ausgeben"
     private void TabelleFullen() { //Tabelle füllen
-        String[] ID=client.Send("get IDS").split("_"); //IDS bekommen vom Client(Server)
+        String help=client.Send("get IDS");
+        if(help=="Error")return;
+        String[] ID=help.split("_"); //IDS bekommen vom Client(Server)
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
