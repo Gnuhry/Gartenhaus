@@ -68,7 +68,7 @@ namespace Server2
         //         -MaxHumid
         //         -MinUV
         //         -MaxUV
-        public static int New(string Name, int MinTemp,int MaxTemp, int MinFeucht, int MaxFeucht, int MinHumid, int MaxHumid, int MinUV, int MaxUV) //In Datenbank neue Pflanze ansetzen
+        public static int New(string Name, float MinTemp,float MaxTemp, float MinFeucht, float MaxFeucht, float MinHumid, float MaxHumid, float MinUV, float MaxUV) //In Datenbank neue Pflanze ansetzen
         {
             using (con)
             {
@@ -291,7 +291,7 @@ namespace Server2
                     }
                     catch (Exception) { return "Error"; }
                     reader.Close();
-                    cmd.CommandText = "CREATE TABLE Data" + temp + " (Temperatur int, Feuchtigkeit int, Humid int, UV int)"; //Befehl neue Tabelle initalisieren
+                    cmd.CommandText = "CREATE TABLE Data" + temp + " (Temperatur float, Feuchtigkeit float, Humid float, UV float)"; //Befehl neue Tabelle initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     cmd.CommandText = "UPDATE Arduino SET Tabelle = Data"+temp+" WHERE Id=" + temp; //Befehl TabellenID speichern initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
@@ -357,13 +357,12 @@ namespace Server2
                             }
                         }
 
-                        return senden;
                     }
-                    else return "";
+                    return "Sucess";
                 }
             }
         }
-        public static string SetData(double Temp,double Feucht, double Humid, double UV,string time, int ID)
+        public static string SetData(float Temp,float Feucht, float Humid, float UV,string time, int ID)
         {
             string temp;
             using (con)
@@ -392,7 +391,7 @@ namespace Server2
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     return "Sucess";
                 }
-                catch (Exception) { return "Fehler"; }
+                catch (Exception) { return "Error"; }
             }
         }
         public static string GetLength(int ID)
@@ -450,13 +449,13 @@ namespace Server2
                     {
                         reader = cmd.ExecuteReader(); //Befehl ausführen
                     }
-                    catch (Exception) { return null; }
+                    catch (Exception) { return "Error"; }
                     reader.Read();
                     try
                     {
                         erg+=reader["temp"]+"#"+ reader["Temperatur"].ToString() + "-" + reader["Feuchtigkeit"].ToString() + "-" + reader["Humid"] + "-" + reader["UV"]+"|";
                     }
-                    catch (Exception) { return null; }
+                    catch (Exception) { return "Error"; }
                 //  con.Close();
                 reader.Close();
                 return erg;
@@ -584,19 +583,19 @@ namespace Server2
                         case "get ids": reponse = SQLCommunication.GetIDs(); break; //get ids
 
 
-                        case "set arduino": reponse = SQLCommunication.SetArduino("ArduinoID", Convert.ToInt32(help[2]) , Convert.ToInt32(help[1])); break; //set arduino [ID:int] [ArduinoID:string]
+                        case "set arduino": reponse = SQLCommunication.SetArduino("ArduinoID", Convert.ToInt32(help[2]) , Convert.ToInt32(help[1])); break; //set arduino [ID:int] [ArduinoID:int]
                         case "set name": reponse = SQLCommunication.Eingabe("Name", "'" + help[2] + "'", Convert.ToInt32(help[1])); break; //set Name [ID:int] [Name:string]
-                        case "set maxhumid": reponse = SQLCommunication.Eingabe("MaxHumid", help[2], Convert.ToInt32(help[1])); break; //set maxhumid [ID:int] [MaxHumid:int]
-                        case "set minhumid": reponse = SQLCommunication.Eingabe("MinHumid", help[2], Convert.ToInt32(help[1])); break; //set minhumid [ID:int] [MinHumid:int]
-                        case "set maxtemp": reponse = SQLCommunication.Eingabe("MaxTemp", help[2], Convert.ToInt32(help[1])); break; //set maxtemp [ID:int] [MaxTemp:int]
-                        case "set mintemp": reponse = SQLCommunication.Eingabe("MinTemp", help[2], Convert.ToInt32(help[1])); break; //set mintemp [ID:int] [MinTemp:int]
-                        case "set maxuv": reponse = SQLCommunication.Eingabe("MaxUV", help[2], Convert.ToInt32(help[1])); break; //set maxuv [ID:int] [MaxUV:int]
-                        case "set minuv": reponse = SQLCommunication.Eingabe("MinUV", help[2], Convert.ToInt32(help[1])); break; //set minuv [ID:int] [MinUV:int]
-                        case "set maxfeucht": reponse = SQLCommunication.Eingabe("MaxFeucht", help[2], Convert.ToInt32(help[1])); break; //set maxfeucht [ID:int] [MaxFeucht:int]
-                        case "set minfeucht": reponse = SQLCommunication.Eingabe("MinFeucht", help[2], Convert.ToInt32(help[1])); break; //set minfeucht [ID:int] [MinFeucht:int]
-                        case "set data": reponse = SQLCommunication.SetData(Convert.ToDouble(help[2]), Convert.ToDouble(help[3]), Convert.ToDouble(help[4]), Convert.ToDouble(help[5]), DateTime.Now.ToShortTimeString()+"_"+DateTime.Now.ToShortDateString(), Convert.ToInt32(help[1])); break; //set data [ID:int] [Temperatur:double] [Feuchtigkeit:double] [Humid:double] [UV:double]
+                        case "set maxhumid": reponse = SQLCommunication.Eingabe("MaxHumid", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set maxhumid [ID:int] [MaxHumid:float]
+                        case "set minhumid": reponse = SQLCommunication.Eingabe("MinHumid", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set minhumid [ID:int] [MinHumid:float]
+                        case "set maxtemp": reponse = SQLCommunication.Eingabe("MaxTemp", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set maxtemp [ID:int] [MaxTemp:float]
+                        case "set mintemp": reponse = SQLCommunication.Eingabe("MinTemp", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set mintemp [ID:int] [MinTemp:float]
+                        case "set maxuv": reponse = SQLCommunication.Eingabe("MaxUV", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set maxuv [ID:int] [MaxUV:float]
+                        case "set minuv": reponse = SQLCommunication.Eingabe("MinUV", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set minuv [ID:int] [MinUV:float]
+                        case "set maxfeucht": reponse = SQLCommunication.Eingabe("MaxFeucht", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set maxfeucht [ID:int] [MaxFeucht:float]
+                        case "set minfeucht": reponse = SQLCommunication.Eingabe("MinFeucht", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set minfeucht [ID:int] [MinFeucht:float]
+                        case "set data": reponse = SQLCommunication.SetData(Convert.ToSingle(help[2]), Convert.ToSingle(help[3]), Convert.ToSingle(help[4]), Convert.ToSingle(help[5]), DateTime.Now.ToShortTimeString()+"_"+DateTime.Now.ToShortDateString(), Convert.ToInt32(help[1])); break; //set data [ID:int] [Temperatur:float] [Feuchtigkeit:float] [Humid:float] [UV:float]
 
-                        case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToInt32(help[2]), Convert.ToInt32(help[3]), Convert.ToInt32(help[4]), Convert.ToInt32(help[5]), Convert.ToInt32(help[6]), Convert.ToInt32(help[7]), Convert.ToInt32(help[8]), Convert.ToInt32(help[9])); break; //new [Name:string] [MaxTemp:int] [...]
+                        case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToInt32(help[2]), Convert.ToInt32(help[3]), Convert.ToInt32(help[4]), Convert.ToInt32(help[5]), Convert.ToInt32(help[6]), Convert.ToInt32(help[7]), Convert.ToInt32(help[8]), Convert.ToInt32(help[9])); break; //new [Name:string] [MaxTemp:float] [...]
                         case "delete": reponse = SQLCommunication.Delete(Convert.ToInt32(help[1])); break; //delete [ID:int]
                         case "new arduino": reponse = SQLCommunication.NewArduino(help, state); break; //new arduino [ArduinoID:int_null]
                         case "delete arduino": reponse = SQLCommunication.DeleteArduino(help[1]); break; //delete arduino [ArduinoID:int]
@@ -607,7 +606,6 @@ namespace Server2
                         case "get data": reponse = SQLCommunication.GetData(Convert.ToInt32(help[1]), Convert.ToInt32(help[2])); break; //get data [ID:int] [DataID:int]
                         case "get length": reponse = SQLCommunication.GetLength(Convert.ToInt32(help[1])); break;//get length [ID:int]
                         case "set arduinoip": reponse= SQLCommunication.SetArduino("IDPflanze",Convert.ToInt32(help[1]),help[2]); break;
-                        default: reponse = "Error"; break;
                     }
                     //Antwort senden
                     if (reponse == "") reponse = "Error";
