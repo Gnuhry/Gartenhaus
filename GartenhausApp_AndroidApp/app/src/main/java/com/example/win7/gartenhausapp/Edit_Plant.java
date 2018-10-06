@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Edit_Plant extends AppCompatActivity {
@@ -39,7 +40,6 @@ public class Edit_Plant extends AppCompatActivity {
         if(help.length<2)return;
         //Text setzen in die zugehörigen TextViews
         ((EditText)findViewById(R.id.edTName)).setText(help[0]);
-        ((EditText)findViewById(R.id.edTPlatz)).setText(help[1]);
         ((EditText)findViewById(R.id.edTminTemp)).setText(help[1]);
         ((EditText)findViewById(R.id.edTmaxTemp)).setText(help[2]);
         ((EditText)findViewById(R.id.edTminFeucht)).setText(help[3]);
@@ -48,6 +48,7 @@ public class Edit_Plant extends AppCompatActivity {
         ((EditText)findViewById(R.id.edTmaxHumid)).setText(help[6]);
         ((EditText)findViewById(R.id.edTminUV)).setText(help[7]);
         ((EditText)findViewById(R.id.edTmaxUV)).setText(help[8]);
+        ((TextView)findViewById(R.id.txVPlatz)).setText(help[9]);
 
     }
     @Override
@@ -66,7 +67,6 @@ public class Edit_Plant extends AppCompatActivity {
             @Override
             public void onClick(View view) { //Auslesen der TextViews
                 String name=((EditText)findViewById(R.id.edTName)).getText().toString();
-                String platz=((EditText)findViewById(R.id.edTPlatz)).getText().toString();
                 String MinTemp=((EditText)findViewById(R.id.edTminTemp)).getText().toString();
                 String MaxTemp=((EditText)findViewById(R.id.edTmaxTemp)).getText().toString();
                 String MinFeucht=((EditText)findViewById(R.id.edTminFeucht)).getText().toString();
@@ -77,7 +77,7 @@ public class Edit_Plant extends AppCompatActivity {
                 String MinUV=((EditText)findViewById(R.id.edTminUV)).getText().toString();
 
                 //Wenn etwas nicht ausgefüllt, FEhlermeldung an Benutzer
-                if(name.trim().equals("") || platz.trim().equals("")||MinTemp.equals("")||MaxTemp.equals("")||MinFeucht.equals("")||
+                if(name.trim().equals("") ||MinTemp.equals("")||MaxTemp.equals("")||MinFeucht.equals("")||
                         MaxFeucht.equals("")||MinHumid.equals("")||MaxHumid.equals("")||MaxUV.equals("")||MinUV.equals("")){
                    Toast.makeText(getApplicationContext(),getString(R.string.edit_all),Toast.LENGTH_LONG).show();
                     return;
@@ -85,12 +85,6 @@ public class Edit_Plant extends AppCompatActivity {
                 if(ID!=-1) //wenn bearbeiten dann einzeln setzen
                 {
                     Log.e("Change",client.Send("set name_"+ID+"_"+name));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set platz_"+ID+"_"+platz));
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {

@@ -600,7 +600,8 @@ namespace Server2
                                            SQLCommunication.Auslesen("MinHumid", Convert.ToInt32(help[1])) + "_" +
                                            SQLCommunication.Auslesen("MaxHumid", Convert.ToInt32(help[1])) + "_" +
                                            SQLCommunication.Auslesen("MinUV", Convert.ToInt32(help[1])) + "_" +
-                                           SQLCommunication.Auslesen("MaxUV", Convert.ToInt32(help[1])); break; //get all [ID:int] 
+                                           SQLCommunication.Auslesen("MaxUV", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("ArduinoIDs", Convert.ToInt32(help[1])); break; //get all [ID:int] 
 
 
                         case "set arduino": reponse = SQLCommunication.SetArduino("ArduinoID", Convert.ToInt32(help[2]) , Convert.ToInt32(help[1])); break; //set arduino [ID:int] [ArduinoID:int]
