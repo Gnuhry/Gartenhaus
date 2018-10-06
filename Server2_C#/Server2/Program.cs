@@ -68,14 +68,23 @@ namespace Server2
         //         -MaxHumid
         //         -MinUV
         //         -MaxUV
-        public static int New(string Name, float MinTemp,float MaxTemp, float MinFeucht, float MaxFeucht, float MinHumid, float MaxHumid, float MinUV, float MaxUV) //In Datenbank neue Pflanze ansetzen
+        public static int New(string Name, float MinTemp_, float MaxTemp_, float MinFeucht_, float MaxFeucht_, float MinHumid_, float MaxHumid_, float MinUV_, float MaxUV_) //In Datenbank neue Pflanze ansetzen
         {
+            string MinTemp = (MinTemp_ + "").Replace(',', '.');
+            string MaxTemp = (MaxTemp_ + "").Replace(',', '.');
+            string MinFeucht = (MinFeucht_ + "").Replace(',', '.');
+            string MaxFeucht = (MaxFeucht_ + "").Replace(',', '.');
+            string MinHumid = (MinHumid_ + "").Replace(',', '.');
+            string MaxHumid = (MaxHumid_ + "").Replace(',', '.');
+            string MinUV = (MinUV_ + "").Replace(',', '.');
+            string MaxUV = (MaxUV_ + "").Replace(',', '.');
+
             using (con)
             {
                 OpenConnection(); //Kommunikation öffnen
-                cmd.CommandText = "INSERT INTO Verzeichnis (Name,MinTemp,MaxTemp,MinFeucht,MaxFeucht,MinHumid,MaxHuimid,MinUV,MaxUV) VALUES (" + Name + "," + MinTemp + "," + MaxTemp + "," + MinFeucht + "," + MaxFeucht + "," + MinHumid + "," + MaxHumid + "," + MinUV + "," + MaxUV + ")"; //Befehl neue Spalte initalisieren
+                cmd.CommandText = "INSERT INTO Verzeichnis (Name,MinTemp,MaxTemp,MinFeucht,MaxFeucht,MinHumid,MaxHumid,MinUV,MaxUV) VALUES ('" + Name + "'," + MinTemp + "," + MaxTemp + "," + MinFeucht + "," + MaxFeucht + "," + MinHumid + "," + MaxHumid + "," + MinUV + "," + MaxUV + ")"; //Befehl neue Spalte initalisieren
                 Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                cmd.CommandText = "SELECT * FROM Verzeichnis WHERE Name = " + Name; //Befehl ID finden initalisieren
+                cmd.CommandText = "SELECT * FROM Verzeichnis WHERE Name = '" + Name + "'"; //Befehl ID finden initalisieren
                 SqlDataReader reader = cmd.ExecuteReader(); //Befehl ausführen
                 reader.Read();
                 string temp = "0";
@@ -581,6 +590,17 @@ namespace Server2
                         case "get maxfeucht": reponse = SQLCommunication.Auslesen("MaxFeucht", Convert.ToInt32(help[1])); break; //get maxfeucht [ID:int]
                         case "get minfeucht": reponse = SQLCommunication.Auslesen("MinFeucht", Convert.ToInt32(help[1])); break; //get minfeucht [ID:int]
                         case "get ids": reponse = SQLCommunication.GetIDs(); break; //get ids
+                        case "get all":
+                            reponse =
+                                           SQLCommunication.Auslesen("Name", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MinTemp", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MaxTemp", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MinFeucht", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MaxFeucht", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MinHumid", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MaxHumid", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MinUV", Convert.ToInt32(help[1])) + "_" +
+                                           SQLCommunication.Auslesen("MaxUV", Convert.ToInt32(help[1])); break; //get all [ID:int] 
 
 
                         case "set arduino": reponse = SQLCommunication.SetArduino("ArduinoID", Convert.ToInt32(help[2]) , Convert.ToInt32(help[1])); break; //set arduino [ID:int] [ArduinoID:int]
@@ -595,7 +615,7 @@ namespace Server2
                         case "set minfeucht": reponse = SQLCommunication.Eingabe("MinFeucht", Convert.ToSingle(help[2]), Convert.ToInt32(help[1])); break; //set minfeucht [ID:int] [MinFeucht:float]
                         case "set data": reponse = SQLCommunication.SetData(Convert.ToSingle(help[2]), Convert.ToSingle(help[3]), Convert.ToSingle(help[4]), Convert.ToSingle(help[5]), DateTime.Now.ToShortTimeString()+"_"+DateTime.Now.ToShortDateString(), Convert.ToInt32(help[1])); break; //set data [ID:int] [Temperatur:float] [Feuchtigkeit:float] [Humid:float] [UV:float]
 
-                        case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToInt32(help[2]), Convert.ToInt32(help[3]), Convert.ToInt32(help[4]), Convert.ToInt32(help[5]), Convert.ToInt32(help[6]), Convert.ToInt32(help[7]), Convert.ToInt32(help[8]), Convert.ToInt32(help[9])); break; //new [Name:string] [MaxTemp:float] [...]
+                        case "new": reponse = "ID: " + SQLCommunication.New(help[1], Convert.ToSingle(help[2]), Convert.ToSingle(help[3]), Convert.ToSingle(help[4]), Convert.ToSingle(help[5]), Convert.ToSingle(help[6]), Convert.ToSingle(help[7]), Convert.ToSingle(help[8]), Convert.ToSingle(help[9])); break; //new [Name:string] [MaxTemp:float] [...]
                         case "delete": reponse = SQLCommunication.Delete(Convert.ToInt32(help[1])); break; //delete [ID:int]
                         case "new arduino": reponse = SQLCommunication.NewArduino(help, state); break; //new arduino [ArduinoID:int_null]
                         case "delete arduino": reponse = SQLCommunication.DeleteArduino(help[1]); break; //delete arduino [ArduinoID:int]

@@ -12,3 +12,6 @@ C:\Users\Win7\Gartenhaus\Server2_C#\Server2\obj\Debug\Server2.csprojResolveAssem
 C:\Users\Win7\Gartenhaus\Server2_C#\Server2\obj\Debug\Server2.csproj.CoreCompileInputs.cache
 C:\Users\Win7\Gartenhaus\Server2_C#\Server2\obj\Debug\Server2.exe
 C:\Users\Win7\Gartenhaus\Server2_C#\Server2\obj\Debug\Server2.pdb
+C:\Users\TxHun_000\Source\Repos\Gartenhaus\Server2_C#\Server2\bin\Debug\Server2.exe.config
+C:\Users\TxHun_000\Source\Repos\Gartenhaus\Server2_C#\Server2\obj\Debug\Server2.exe
+C:\Users\TxHun_000\Source\Repos\Gartenhaus\Server2_C#\Server2\obj\Debug\Server2.pdb
