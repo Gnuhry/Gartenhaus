@@ -30,7 +30,7 @@ public class Edit_Plant extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        String[] help=client.Send("get data_"+ID).split("_"); //Daten bekommen
+        String[] help=client.Send("get all_"+ID).split("_"); //Daten bekommen
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -46,8 +46,8 @@ public class Edit_Plant extends AppCompatActivity {
         ((EditText)findViewById(R.id.edTmaxFeucht)).setText(help[4]);
         ((EditText)findViewById(R.id.edTminHumid)).setText(help[5]);
         ((EditText)findViewById(R.id.edTmaxHumid)).setText(help[6]);
-        ((EditText)findViewById(R.id.edTmaxUV)).setText(help[7]);
-        ((EditText)findViewById(R.id.edTminUV)).setText(help[8]);
+        ((EditText)findViewById(R.id.edTminUV)).setText(help[7]);
+        ((EditText)findViewById(R.id.edTmaxUV)).setText(help[8]);
 
     }
     @Override

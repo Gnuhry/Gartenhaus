@@ -50,7 +50,7 @@ public class Main2Activity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")//Ausblenden der Fehlermeldung: "Kein festen Text in TextViews ausgeben"
     private void TabelleFullen() { //Tabelle füllen
         String help=client.Send("get IDS");
-        if(help=="Error")return;
+        if(help.equals("Error"))return;
         String[] ID=help.split("_"); //IDS bekommen vom Client(Server)
         try {
             Thread.sleep(500); //warten auf Antwort
@@ -58,7 +58,7 @@ public class Main2Activity extends AppCompatActivity {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
         Log.e("Länge",""+ID.length);
-        if(ID.length<=1){
+        if(ID.length<1){
             Toast.makeText(getApplicationContext(),"IDS",Toast.LENGTH_SHORT).show();
             return;}
 
