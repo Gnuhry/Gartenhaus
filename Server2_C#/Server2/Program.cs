@@ -620,7 +620,7 @@ namespace Server2
                         case "new arduino": reponse = SQLCommunication.NewArduino(help, state); break; //new arduino [ArduinoID:int_null]
                         case "delete arduino": reponse = SQLCommunication.DeleteArduino(help[1]); break; //delete arduino [ArduinoID:int]
                         case "get arduinoip": reponse = SQLCommunication.GetArduino("ArduinoIP", Convert.ToInt32(help[1])); break; //get arduinoip [ArduinoID:int]
-                        case "get arduinodata": reponse = SQLCommunication.GetArduino("DataSend", Convert.ToInt32(help[1])); break; //get arduinodata [ArduinoID:int]
+                        case "get arduino data": reponse = SQLCommunication.GetArduino("DataSend", Convert.ToInt32(help[1])); if (reponse == null) reponse = "Nothing"; break; //get arduinodata [ArduinoID:int]
                         case "get arduinoidpflanze": reponse = SQLCommunication.GetArduino("IDPflanze", Convert.ToInt32(help[1])); break; //get arduinoidpflanze [ArduinoID:int]
                         case "get arduinoids": reponse = SQLCommunication.GetIDsArduino(); break; //get arduinoids
                         case "get data": reponse = SQLCommunication.GetData(Convert.ToInt32(help[1]), Convert.ToInt32(help[2])); break; //get data [ID:int] [DataID:int]
