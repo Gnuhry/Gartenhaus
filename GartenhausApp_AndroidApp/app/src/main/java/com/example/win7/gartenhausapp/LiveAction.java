@@ -45,6 +45,7 @@ public class LiveAction extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
+        //TODO Fehler: Sendet an Server anstatt an Arduino!!
         clientArduino = new Client(ip, 5001);
       //  Starten();
         String on[] = clientArduino.Send("an").split("_");
