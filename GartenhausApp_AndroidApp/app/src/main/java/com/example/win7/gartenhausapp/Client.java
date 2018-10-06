@@ -71,8 +71,8 @@ public class Client {
     } //Client schließen
     public String Send(String command){ //An Server senden
         try{
-        if(!socket.isConnected()) return "No Connection";} //Abfangen von Fehlern
-        catch(Exception ex){return "No Inet";}
+        if(!socket.isConnected()) return "Error";} //Abfangen von Fehlern
+        catch(Exception ex){return "Error";}
         new ClientTask(command+"_<EOF>").execute(); //Befehl senden
 
         while(message==null) //Auf Antwort warten

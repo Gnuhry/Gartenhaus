@@ -39,26 +39,38 @@ public class Edit_Arduino extends AppCompatActivity {
         ID=getIntent().getIntExtra("ID",-1); //mitgesendete ID auslesen
         SpinnerInitalisieren();
          if(ID==-1) return; //Wenn neu dann return
-        findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        ((TextView)findViewById(R.id.txVID)).setText(ID);
+       // findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
+        ((TextView)findViewById(R.id.txVID)).setText(ID+"");
         ((EditText)findViewById(R.id.edTIP)).setText(client.Send("get arduinoip_"+ID));
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        StringBuilder help= new StringBuilder(client.Send("get arduino data"));
+        StringBuilder help= new StringBuilder(client.Send("get arduino data_"+ID));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
         String erg[]= help.toString().split("|");
         help = new StringBuilder();
         for(String x : erg)
             help.append(x).append("\n");
         ((TextView)findViewById(R.id.txVdataSend)).setText(help.toString());
-        ((Spinner)findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(client.Send("get arduinoidpflanze_"+ID)));
+        String h=client.Send("get arduinoidpflanze_"+ID);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
+        String name=client.Send("get name_"+h);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
+        ((Spinner)findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(name));
     }
 
     private void SpinnerInitalisieren() {
