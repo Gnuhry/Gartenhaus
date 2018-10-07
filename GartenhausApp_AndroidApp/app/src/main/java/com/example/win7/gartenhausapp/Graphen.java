@@ -210,7 +210,7 @@ public class Graphen extends AppCompatActivity {
 
     private void Init() {
         String [] ID =MainActivity.client.Send("get arduinoids").split("_");
-        if(ID[0]!="No Inet"){
+        if(!ID[0].equals("No Inet")){
         List<String> IDS= new ArrayList<>(Arrays.asList(ID));
         ArrayAdapter<String> arrayAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, IDS);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -221,7 +221,7 @@ public class Graphen extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 try{
-                Laden(Integer.parseInt((String)adapterView.getItemAtPosition(i)),false);}catch(Exception e){return;}
+                Laden(Integer.parseInt((String)adapterView.getItemAtPosition(i)),false);}catch(Exception ignored){}
 
             }
 
@@ -248,8 +248,8 @@ public class Graphen extends AppCompatActivity {
     }}
 
     private void Laden(int indexarduino,boolean Gestrichelt) {
-        return;
-       /* SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm:ss_dd.MM.yyyy", Locale.GERMAN);
+        //TODO Ausprobieren
+        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm:ss dd.MM.yyyy", Locale.GERMAN);
         Client client=MainActivity.client;
         int lenght=Integer.parseInt(client.Send("get length_"+indexarduino));
         try {
@@ -286,7 +286,7 @@ public class Graphen extends AppCompatActivity {
                 seriesHumid2.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[2])), false, 1000);
                 seriesUV2.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[3])), false, 1000);
             }
-        }*/
+        }
     }
 
     public void btnClick_RTemp(View view) {

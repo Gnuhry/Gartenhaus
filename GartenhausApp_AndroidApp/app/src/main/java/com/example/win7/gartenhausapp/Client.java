@@ -14,7 +14,7 @@ public class Client {
 
     private static Socket socket; //Socket initalisieren
     private static String IP;      //IP initalisieren
-    private static int Port=5000; //Serverport initalisieren
+    private int Port=5000; //Serverport initalisieren
     private volatile static String message;
     private Thread thread;
 
@@ -35,7 +35,7 @@ public class Client {
         @Override
         public void run() {
 
-            while(true){//endlos nach Kommunikation scuhen und auslesen
+            while(true){//endlos nach Kommunikation suchen und auslesen
                 try {
                     b=false;
                     socket=new Socket(IP,Port);
@@ -76,9 +76,7 @@ public class Client {
         new ClientTask(command+"_<EOF>").execute(); //Befehl senden
 
         while(message==null) //Auf Antwort warten
-        {
-
-        }
+        { }
         try {
             socket.close();//Socket Kommunikation schließen
         } catch (IOException e) {

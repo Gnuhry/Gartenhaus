@@ -32,4 +32,7 @@
     <string name="rolladen">Rolladen</string>
     <string name="vegleichen">Vergleichen mit</string>
     <string name="gestrichelt">gestrichelt</string>
+    <string name="graphen">Graphen</string>
+    <string name="live">Live</string>
+    <string name="minus">-</string>
 </resources>

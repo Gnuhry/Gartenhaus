@@ -51,7 +51,7 @@ public class Main3Activity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"IDS",Toast.LENGTH_SHORT).show();
             return;}
         TableLayout tableLayout=findViewById(R.id.tableArduino);
-        for(String ID_:ID){
+        for(String ID_:ID){ //Tabelle füllen
             TableRow row = new TableRow(this);
             TextView txV = new TextView(this);
             txV.setText(ID_ + "");

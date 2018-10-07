@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class Edit_Plant extends AppCompatActivity {
@@ -37,6 +36,7 @@ public class Edit_Plant extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
+        Log.e("help",help.length+"");
         if(help.length<2)return;
         //Text setzen in die zugehörigen TextViews
         ((EditText)findViewById(R.id.edTName)).setText(help[0]);
@@ -48,8 +48,6 @@ public class Edit_Plant extends AppCompatActivity {
         ((EditText)findViewById(R.id.edTmaxHumid)).setText(help[6]);
         ((EditText)findViewById(R.id.edTminUV)).setText(help[7]);
         ((EditText)findViewById(R.id.edTmaxUV)).setText(help[8]);
-        ((TextView)findViewById(R.id.txVPlatz)).setText(help[9]);
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -166,7 +164,9 @@ public class Edit_Plant extends AppCompatActivity {
     public void btnClick_Tastatur(View view) { //Tastatur schließen, wenn auf Display gedrückt
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         try{
-        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
         }catch(NullPointerException e){e.printStackTrace();}
 
     }

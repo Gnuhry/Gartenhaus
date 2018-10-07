@@ -3,7 +3,6 @@ package com.example.win7.gartenhausapp;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Main2Activity extends AppCompatActivity {
-
     Client client;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +75,12 @@ public class Main2Activity extends AppCompatActivity {
                 Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
             }
             row.addView(txV);
-            txV = new TextView(this);
-            txV.setText(ID_ + "");
-            row.addView(txV);
             ImageView imageButton = new ImageView(this);
             imageButton.setImageResource(R.drawable.outline_edit_black_18dp);
             imageButton.setTag(Integer.parseInt(ID_));
             imageButton.setOnClickListener(new Edit());
             row.addView(imageButton);
+            row.setTop(10); //TODO Ausprobieren?
             tableLayout.addView(row);
         }
 

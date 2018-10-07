@@ -40,7 +40,7 @@ public class Edit_Arduino extends AppCompatActivity {
         SpinnerInitalisieren();
          if(ID==-1) return; //Wenn neu dann return
        // findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
-        ((TextView)findViewById(R.id.txVID)).setText(ID+"");
+        ((TextView)findViewById(R.id.txVID)).setText(ID);
         ((EditText)findViewById(R.id.edTIP)).setText(client.Send("get arduinoip_"+ID));
         try {
             Thread.sleep(500);
@@ -103,6 +103,18 @@ public class Edit_Arduino extends AppCompatActivity {
     public void btnClick_SaveArduino(View view) {
         String ip=((EditText)findViewById(R.id.edTIP)).getText().toString();
         client.Send("set arduinoip_"+ID+"_"+ip);
+        try {
+            Thread.sleep(500); //warten auf Antwort
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
+        String[] ID=client.Send("get IDS").split("_"); //IDS bekommen vom Client(Server)
+        try {
+            Thread.sleep(500); //warten auf Antwort
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
+        client.Send("set arduinoidpflanze_"+this.ID+"_"+ID[((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition()]);
         Close();
     }
 
@@ -111,7 +123,7 @@ public class Edit_Arduino extends AppCompatActivity {
     }
     private void Close() {//Schließen
         client.Stop();//stoppen vom client
-        Intent intent = new Intent(this,Main2Activity.class); //Main2Activity starten
+        Intent intent = new Intent(this,Main3Activity.class); //Main2Activity starten
         startActivity(intent);
     }
 

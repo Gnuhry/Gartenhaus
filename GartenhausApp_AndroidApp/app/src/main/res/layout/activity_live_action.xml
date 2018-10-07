@@ -113,6 +113,8 @@
         app:srcCompat="@drawable/baseline_close_black_24dp"
         android:layout_alignParentRight="true"
         android:clickable="true"
-        android:onClick="btnClick_Close"/>
+        android:onClick="btnClick_Close"
+        android:focusable="true"
+        android:contentDescription="@string/close_Edit" />
 
 </RelativeLayout>

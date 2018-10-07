@@ -600,8 +600,7 @@ namespace Server2
                                            SQLCommunication.Auslesen("MinHumid", Convert.ToInt32(help[1])) + "_" +
                                            SQLCommunication.Auslesen("MaxHumid", Convert.ToInt32(help[1])) + "_" +
                                            SQLCommunication.Auslesen("MinUV", Convert.ToInt32(help[1])) + "_" +
-                                           SQLCommunication.Auslesen("MaxUV", Convert.ToInt32(help[1])) + "_" +
-                                           SQLCommunication.Auslesen("ArduinoIDs", Convert.ToInt32(help[1])); break; //get all [ID:int] 
+                                           SQLCommunication.Auslesen("MaxUV", Convert.ToInt32(help[1])); break; //get all [ID:int]
 
 
                         case "set arduino": reponse = SQLCommunication.SetArduino("ArduinoID", Convert.ToInt32(help[2]) , Convert.ToInt32(help[1])); break; //set arduino [ID:int] [ArduinoID:int]
@@ -626,8 +625,9 @@ namespace Server2
                         case "get arduinoids": reponse = SQLCommunication.GetIDsArduino(); break; //get arduinoids
                         case "get data": reponse = SQLCommunication.GetData(Convert.ToInt32(help[1]), Convert.ToInt32(help[2])); break; //get data [ID:int] [DataID:int]
                         case "get length": reponse = SQLCommunication.GetLength(Convert.ToInt32(help[1])); break;//get length [ID:int]
-                        case "set arduinoip": reponse= SQLCommunication.SetArduino("IDPflanze",Convert.ToInt32(help[1]),help[2]); break;
-                    }
+                        case "set arduinoip": reponse= SQLCommunication.SetArduino("IDPflanze",Convert.ToInt32(help[1]),help[2]); break;//set arduinoip [ArduinoID:int] [ipAddress:string]
+                        case "set arduinoidpflanze": reponse = SQLCommunication.SetArduino("IDPflanze", Convert.ToInt32(help[1]),help[2]); break; //set arduinoidpflanze [ArduinoID:int] [IDPflanze:int]
+  }
                     //Antwort senden
                     if (reponse == "") reponse = "Error";
                     Send(handler, reponse);
