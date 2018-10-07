@@ -82,7 +82,6 @@ public class Main2Activity extends AppCompatActivity {
             row.addView(imageButton);
             tableLayout.addView(row);
         }
-
     }
 
     public class Edit implements View.OnClickListener{

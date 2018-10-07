@@ -39,7 +39,6 @@ public class Edit_Arduino extends AppCompatActivity {
         ID=getIntent().getIntExtra("ID",-1); //mitgesendete ID auslesen
         SpinnerInitalisieren();
          if(ID==-1) return; //Wenn neu dann return
-       // findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
         ((TextView)findViewById(R.id.txVID)).setText(ID+"");
         ((EditText)findViewById(R.id.edTIP)).setText(client.Send("get arduinoip_"+ID));
         try {

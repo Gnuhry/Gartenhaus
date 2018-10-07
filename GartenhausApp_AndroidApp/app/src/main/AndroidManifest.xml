@@ -26,10 +26,13 @@
         <activity
             android:name=".Edit_Plant"
             android:screenOrientation="portrait" />
-        <activity android:name=".Main3Activity" />
-        <activity android:name=".Edit_Arduino" />
+        <activity android:name=".Main3Activity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Edit_Arduino"
+            android:screenOrientation="portrait" />
         <activity android:name=".Graphen" />
-        <activity android:name=".LiveAction"></activity>
+        <activity android:name=".LiveAction"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
