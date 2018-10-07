@@ -40,7 +40,7 @@ public class Edit_Arduino extends AppCompatActivity {
         SpinnerInitalisieren();
          if(ID==-1) return; //Wenn neu dann return
        // findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
-        ((TextView)findViewById(R.id.txVID)).setText(ID);
+        ((TextView)findViewById(R.id.txVID)).setText(ID+"");
         ((EditText)findViewById(R.id.edTIP)).setText(client.Send("get arduinoip_"+ID));
         try {
             Thread.sleep(500);

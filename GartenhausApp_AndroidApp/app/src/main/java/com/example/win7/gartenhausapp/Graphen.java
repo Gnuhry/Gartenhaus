@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -193,6 +194,7 @@ public class Graphen extends AppCompatActivity {
 //        seriesTemp2.appendData(new DataPoint(new Date(1,3,2,3,3,0),3),false,10);
 //        seriesTemp.appendData(new DataPoint(new Date(1,1,1,3,2,0),100),false,10);
 //        seriesTemp.appendData(new DataPoint(new Date(1,3,2,3,3,0),1),false,10);
+        Laden(1,false);
         graphView.addSeries(seriesTemp);
         graphView.addSeries(seriesFeucht);
         graphView.addSeries(seriesHumid);
@@ -201,6 +203,9 @@ public class Graphen extends AppCompatActivity {
         graphView.addSeries(seriesFeucht2);
         graphView.addSeries(seriesHumid2);
         graphView.addSeries(seriesUV2);
+
+
+
         Init();
 //        seriesTemp2.appendData(new DataPoint(new Date(2,2,2),2),false,1000);
 //        seriesTemp2.appendData(new DataPoint(new Date(2,2,3),3),false,1000);
@@ -249,7 +254,7 @@ public class Graphen extends AppCompatActivity {
 
     private void Laden(int indexarduino,boolean Gestrichelt) {
         //TODO Ausprobieren
-        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm:ss dd.MM.yyyy", Locale.GERMAN);
+        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm dd.MM.yyyy", Locale.GERMAN);
         Client client=MainActivity.client;
         int lenght=Integer.parseInt(client.Send("get length_"+indexarduino));
         try {
@@ -259,7 +264,7 @@ public class Graphen extends AppCompatActivity {
         }
         String data[]=new String[lenght];
         Date date=new Date();
-        for(int f=0;f<lenght;f++){
+        for(int f=0;f<lenght-1;f++){
             data[f]=client.Send("get data_"+indexarduino+"_"+(f+1));
             try {
                 Thread.sleep(500); //warten auf Antwort
@@ -275,6 +280,7 @@ public class Graphen extends AppCompatActivity {
                 e.printStackTrace();
             }
             if(!Gestrichelt) {
+                Log.e("Malen","Malen------------");
                 seriesTemp.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[0])), false, 1000);
                 seriesFeucht.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[1])), false, 1000);
                 seriesHumid.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[2])), false, 1000);
@@ -291,21 +297,21 @@ public class Graphen extends AppCompatActivity {
 
     public void btnClick_RTemp(View view) {
         if(((CheckBox)view).isChecked()) graphView.addSeries(seriesTemp);
-        else  graphView.removeSeries(seriesTemp);
+       // else  graphView.removeSeries(seriesTemp);
     }
 
     public void btnClick_RFeucht(View view) {
         if(((CheckBox)view).isChecked()) graphView.addSeries(seriesFeucht);
-        else  graphView.removeSeries(seriesFeucht);
+       // else  graphView.removeSeries(seriesFeucht);
     }
 
     public void btnClick_RHumid(View view) {
         if(((CheckBox)view).isChecked()) graphView.addSeries(seriesHumid);
-        else  graphView.removeSeries(seriesHumid);
+      //  else  graphView.removeSeries(seriesHumid);
     }
 
     public void btnClick_RUV(View view) {
         if(((CheckBox)view).isChecked()) graphView.addSeries(seriesUV);
-        else  graphView.removeSeries(seriesUV);
+      //  else  graphView.removeSeries(seriesUV);
     }
 }

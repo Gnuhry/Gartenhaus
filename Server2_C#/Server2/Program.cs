@@ -50,8 +50,11 @@ namespace Server2
             }
             catch (Exception)
             {
+              try{
                 con.ConnectionString = connectionstring;
                 con.Open();
+              }
+              catch(Exception){}
             }
         }
 
@@ -107,7 +110,7 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Sucess";
+                    return "Success";
                 }
                 catch (Exception) { return "Error"; }
                 // con.Close();
@@ -147,7 +150,7 @@ namespace Server2
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     Client.Arduino_Send(Zeile, ID, Wert);
-                    return "Sucess";
+                    return "Success";
                 }
                 catch (Exception) { return "Error"; }
                 // con.Close();
@@ -221,7 +224,7 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Sucess";
+                    return "Success";
                 }
                 catch (Exception) { return "Error"; }
             }
@@ -235,7 +238,7 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Sucess";
+                    return "Success";
                 }
                 catch (Exception) { return "Error"; }
             }
@@ -248,7 +251,7 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Sucess";
+                    return "Success";
                 }
                 catch (Exception) { return "Error"; }
                 // con.Close();
@@ -300,12 +303,12 @@ namespace Server2
                     }
                     catch (Exception) { return "Error"; }
                     reader.Close();
-                    cmd.CommandText = "CREATE TABLE Data" + temp + " (Temperatur float, Feuchtigkeit float, Humid float, UV float)"; //Befehl neue Tabelle initalisieren
+                    cmd.CommandText = "CREATE TABLE Data" + temp + " (Id int IDENTITY(1,1) PRIMARY KEY, Temperatur float NOT NULL, Feuchtigkeit float NOT NULL, Humid float NOT NULL, UV float NOT NULL)"; //Befehl neue Tabelle initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     cmd.CommandText = "UPDATE Arduino SET Tabelle = Data"+temp+" WHERE Id=" + temp; //Befehl TabellenID speichern initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return temp;
                     // con.Close();
+                    return "Success";
                 }
             }
             else
@@ -367,7 +370,7 @@ namespace Server2
                         }
 
                     }
-                    return "Sucess";
+                    return "Success";
                 }
             }
         }
@@ -398,7 +401,7 @@ namespace Server2
                 try
                 {
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    return "Sucess";
+                    return "Success";
                 }
                 catch (Exception) { return "Error"; }
             }
@@ -426,7 +429,7 @@ namespace Server2
                 reader.Close();
                 OpenConnection();//Kommunikatio öffnen
                 cmd.CommandText = "SELECT COUNT (*) FROM "+temp;
-                return (string)cmd.ExecuteScalar();
+                return ""+cmd.ExecuteScalar();
             }
         }
 
@@ -627,7 +630,7 @@ namespace Server2
                         case "get length": reponse = SQLCommunication.GetLength(Convert.ToInt32(help[1])); break;//get length [ID:int]
                         case "set arduinoip": reponse= SQLCommunication.SetArduino("IDPflanze",Convert.ToInt32(help[1]),help[2]); break;//set arduinoip [ArduinoID:int] [ipAddress:string]
                         case "set arduinoidpflanze": reponse = SQLCommunication.SetArduino("IDPflanze", Convert.ToInt32(help[1]),help[2]); break; //set arduinoidpflanze [ArduinoID:int] [IDPflanze:int]
-  }
+                    }
                     //Antwort senden
                     if (reponse == "") reponse = "Error";
                     Send(handler, reponse);

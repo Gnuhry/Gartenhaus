@@ -80,7 +80,6 @@ public class Main2Activity extends AppCompatActivity {
             imageButton.setTag(Integer.parseInt(ID_));
             imageButton.setOnClickListener(new Edit());
             row.addView(imageButton);
-            row.setTop(10); //TODO Ausprobieren?
             tableLayout.addView(row);
         }
 
