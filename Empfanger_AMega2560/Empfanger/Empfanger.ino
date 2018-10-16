@@ -54,18 +54,27 @@ void loop() {
 
 //------------Überprüfung der Sensoren und Reaktion--------
 float GetTemp(){
+  Serial.println("Hey");
   float temp[10]; //initalisieren des temporärem ErgebnisArray
-  for(int f=0;f<sizeof(temp);f++)
+  for(int f=0;f<10;f++)
   {
     //Einlesen von 10 Temperaturen im Abstand von 20ms
   temp[f]=dht.readTemperature();
+  Serial.println(temp[f]);
+  Serial.println(f);
   delay(20);
   }
   //Berechnung der Durschnittstemperatur
   float temperatur=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
- Serial.println("Temperatur: "+String(temperatur));
+  Serial.println(FloatToString(temperatur));
  return temperatur;
 }
+
+String FloatToString(float value){ 
+   char help[15];
+  dtostrf(value,7,3,help);
+  return help;
+  }
 
 void TEMPUeberprufung(){
   float temperatur=GetTemp();
@@ -96,7 +105,7 @@ float mittelwert=(GetEEProm(2).toFloat()+GetEEProm(3).toFloat())/2;
 float GetFeucht(){
     float temp[10];//initalisieren des temporärem ErgebnisArray
 
-  for(int f=0;f<sizeof(temp);f++)
+  for(int f=0;f<10;f++)
   {
     //Einlesen von 10 Feuchtigkeiten im Abstand von 20ms
   temp[f]=analogRead(FeuchtSensor);
@@ -126,7 +135,7 @@ void FEUCHTUeberprufung(){
 float GetHumid(){
    float temp[10];//initalisieren des temporärem ErgebnisArray
 
-  for(int f=0;f<sizeof(temp);f++)
+  for(int f=0;f<10;f++)
   {
     //Einlesen von 10 Luftfeuchtigkeiten im Abstand von 20ms
   temp[f]=dht.readHumidity();
@@ -134,7 +143,7 @@ float GetHumid(){
   }
   //Berecnung der Duschnittsluftfeuchtigkeit
   float humid=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
-    Serial.println("Humid: "+String(humid));
+    Serial.println("Humid: "+FloatToString(humid));
     return humid;
 }
 
@@ -157,7 +166,7 @@ void HUMIDUeberprufung(){
 float GetUv(){
   float temp[10];//initalisieren des temporärem ErgebnisArray
 
-  for(int f=0;f<sizeof(temp);f++)
+  for(int f=0;f<10;f++)
   {
     //Einlesen von 10 UV-WErten im Abstand von 20ms
   temp[f]=analogRead(UVSensor);
@@ -165,7 +174,7 @@ float GetUv(){
   }
   //Berecnung der Duschnittfeuchtigkeit
   float UV=(temp[0]+temp[1]+temp[2]+temp[3]+temp[4]+temp[5]+temp[6]+temp[7]+temp[8]+temp[9])/10;
-  Serial.println("UV: "+String(UV));
+  Serial.println("UV: "+FloatToString(UV));
   return UV;
 }
 
@@ -221,7 +230,7 @@ String GetID(){
 
 // Funktion, die ausgeführt wird, wenn Master eine Nachricht erwartet
 void requestEvent() {
-  char buf[5]; //buffer initalisieren
+  char buf[50]; //buffer initalisieren
   String help;
   if(IDSenden){
     IDSenden=false;
@@ -229,7 +238,7 @@ void requestEvent() {
       if(help=="Fehler") return;
  }
  else{
-help=GetID()+"_"+GetTemp()+"_"+GetFeucht()+"_"+GetHumid()+"_"+GetUv();
+help=GetID()+"_"+FloatToString(GetTemp())+"_"+FloatToString(GetFeucht())+"_"+FloatToString(GetHumid())+"_"+FloatToString(GetUv());
   }
         help.toCharArray(buf,sizeof(help));
    Wire.write(buf);  //buffer senden

@@ -12,28 +12,39 @@ const char* host = "192.168.178.78"; //IP-Addresse des Server
 const int serverPort=5000; //Port des C# Server
 int wifiStatus; // Status des Wifi
 int counter=0;
+bool IsActive;
 WiFiClient client; //Client für erste Kommunikation mit C# Server
 WiFiServer server(5001); //Server für Kommunikation mit C# Client
 
 //------------------------SetUp-----------------------------
 void setup() {
+  IsActive=false;
   Serial.begin(9600); //Serial Communication für Debug starten
   Wire.begin(D1, D2); //I2C Bus an SDA(D1) und SCL(D2)
   Serial.println("-----------Start--------------");
   ConnectToWifi(); //Zu Wifi verbinden
   server.begin();
   String request=GetIDFromArduino(); //Request an Slave AMega2560
-  SendToServer("new arduino_"+request); //An Server melden, dass Arduino erreichbar
+  if(request="00000") 
+    request="";
+  else 
+    IsActive=true;
+  String erg=SendToServer("new arduino_"+request); //An Server melden, dass Arduino erreichbar
+  if(erg!="Succes"){
+    SendToArduino("0_"+erg);
+    }
 }
 
 //-----------------------Loop------------------------------
 void loop() {
   //TODO auf ServerKommunikation warten
   MessageFromCSharpServer();
+   if(IsActive){
   if(counter++==10){
     counter=0;
     String request=GetIDFromArduino(); //Request an Slave AMega2560
     SendToServer("set data_"+request); //An Server schicken 
+  }
   }
   delay(1000);
 }

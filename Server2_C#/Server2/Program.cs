@@ -291,9 +291,9 @@ namespace Server2
                 {
                     OpenConnection(); //Kommunikation öffnen
                     string ip = (handler.RemoteEndPoint as IPEndPoint).Address.MapToIPv4().ToString();
-                    cmd.CommandText = "INSERT INTO Arduino ArduinoIP VALUES " + ip; //Befehl neue Spalte initalisieren
+                    cmd.CommandText = "INSERT INTO (Arduino) ArduinoIP VALUES ('" + ip+"')"; //Befehl neue Spalte initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    cmd.CommandText = "SELECT * FROM Verzeichnis WHERE AndroidIP = " + ip; //Befehl ID finden initalisieren
+                    cmd.CommandText = "SELECT * FROM Verzeichnis WHERE AndroidIP = '" + ip+"'"; //Befehl ID finden initalisieren
                     SqlDataReader reader = cmd.ExecuteReader(); //Befehl ausführen
                     reader.Read();
                     string temp = "";
@@ -305,17 +305,16 @@ namespace Server2
                     reader.Close();
                     cmd.CommandText = "CREATE TABLE Data" + temp + " (Id int IDENTITY(1,1) PRIMARY KEY, Temperatur float NOT NULL, Feuchtigkeit float NOT NULL, Humid float NOT NULL, UV float NOT NULL)"; //Befehl neue Tabelle initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
-                    cmd.CommandText = "UPDATE Arduino SET Tabelle = Data"+temp+" WHERE Id=" + temp; //Befehl TabellenID speichern initalisieren
+                    cmd.CommandText = "UPDATE Arduino SET Tabelle = 'Data"+temp+"' WHERE Id=" + temp; //Befehl TabellenID speichern initalisieren
                     Console.WriteLine("Datensätze geändert: " + cmd.ExecuteNonQuery()); //Befehl ausführen
                     // con.Close();
-                    return "Success";
+                    return temp;
                 }
             }
             else
             {
                 using (con)
                 {
-                    //TODO inArduni Arduino id
                     OpenConnection(); //Kommunikation öffnen
                     cmd.CommandText = "SELECT * FROM Arduino WHERE Id = " + help[1]; //Auswahl Befehl initalisieren
                     SqlDataReader reader = null;

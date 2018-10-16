@@ -54,18 +54,6 @@ public class Client {
             }
         }
     }
-//    private boolean Connection(){
-//        Socket test=new Socket();
-//        SocketAddress testA=new InetSocketAddress("8.8.8.8",53);
-//        try {
-//            test.connect(testA);
-//            test.close();
-//            return true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
     public void Stop(){
         thread.interrupt();
     } //Client schließen
