@@ -1,0 +1,7 @@
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\bin\Debug\Gartenhaus.exe.config
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\bin\Debug\Gartenhaus.exe
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\bin\Debug\Gartenhaus.pdb
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\obj\Debug\Gartenhaus.csprojResolveAssemblyReference.cache
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\obj\Debug\Gartenhaus.csproj.CoreCompileInputs.cache
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\obj\Debug\Gartenhaus.exe
+c:\users\win7\source\repos\Gartenhaus\Gartenhaus\obj\Debug\Gartenhaus.pdb

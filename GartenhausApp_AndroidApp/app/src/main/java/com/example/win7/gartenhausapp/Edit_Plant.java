@@ -25,18 +25,12 @@ public class Edit_Plant extends AppCompatActivity {
         InitClickListner();
         if(ID==-1) return; //Wenn neu dann return
         findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
+        String[] help=client.Send("get plant all_"+ID).split("_"); //Daten bekommen
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        String[] help=client.Send("get all_"+ID).split("_"); //Daten bekommen
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        Log.e("help",help.length+"");
         if(help.length<2)return;
         //Text setzen in die zugehörigen TextViews
         ((EditText)findViewById(R.id.edTName)).setText(help[0]);
@@ -80,62 +74,39 @@ public class Edit_Plant extends AppCompatActivity {
                    Toast.makeText(getApplicationContext(),getString(R.string.edit_all),Toast.LENGTH_LONG).show();
                     return;
                 }
+                if(Float.parseFloat(MinTemp)>Float.parseFloat(MaxTemp)){
+                    Toast.makeText(getApplicationContext(), R.string.minGmaxTemp,Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinHumid)>Float.parseFloat(MaxHumid)){
+                    Toast.makeText(getApplicationContext(),getString(R.string.minGmaxHumid),Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinFeucht)>Float.parseFloat(MaxFeucht)){
+                    Toast.makeText(getApplicationContext(),getString(R.string.minGmaxFeucht),Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinUV)>Float.parseFloat(MaxUV)){
+                    Toast.makeText(getApplicationContext(),getString(R.string.minGmaxUV),Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if(ID!=-1) //wenn bearbeiten dann einzeln setzen
                 {
-                    Log.e("Change",client.Send("set name_"+ID+"_"+name));
+                    Log.e("Change",client.Send("set plant_"+ID+"_"+name+"_"+MinTemp+
+                            "_"+MaxTemp+"_"+MinFeucht+"_"+MaxFeucht+"_"+MinHumid+"_"+MaxHumid+
+                            "_"+MinUV+"_"+MaxUV));
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
                     }
-                    Log.e("Change",client.Send("set mintemp_"+ID+"_"+MinTemp));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set maxtemp_"+ID+"_"+MaxTemp));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set minfeucht_"+ID+"_"+MinFeucht));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set maxfeucht_"+ID+"_"+MaxFeucht));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set minhumid_"+ID+"_"+MinHumid));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set maxhumid_"+ID+"_"+MaxHumid));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set minuv_"+ID+"_"+MinUV));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(),"Nope",Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("Change",client.Send("set maxuv_"+ID+"_"+MaxUV));
-
                 }
                     else
+                        {
                         //neue Pflanze erstellen
-                Log.e("Add",client.Send("new_"+name+"_"+MinTemp+"_"+MaxTemp+"_"+MinFeucht+"_"+MaxFeucht+"_"+MinHumid+"_"+MaxHumid+"_"+MinUV+"_"+MaxUV));
+                Log.e("Add",client.Send("new plant_"+name+"_"+MinTemp+"_"+MaxTemp+"_"+MinFeucht+
+                        "_"+MaxFeucht+"_"+MinHumid+"_"+MaxHumid+"_"+MinUV+"_"+MaxUV));
+                }
             Close();
             }
         });

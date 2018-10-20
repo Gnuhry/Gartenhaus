@@ -214,7 +214,7 @@ public class Graphen extends AppCompatActivity {
     }
 
     private void Init() {
-        String [] ID =MainActivity.client.Send("get arduinoids").split("_");
+        String [] ID =MainActivity.client.Send("get arduino ids").split("_");
         if(!ID[0].equals("No Inet")){
         List<String> IDS= new ArrayList<>(Arrays.asList(ID));
         ArrayAdapter<String> arrayAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, IDS);
@@ -254,43 +254,34 @@ public class Graphen extends AppCompatActivity {
 
     private void Laden(int indexarduino,boolean Gestrichelt) {
         //TODO Ausprobieren
-        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm dd.MM.yyyy", Locale.GERMAN);
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.GERMAN);
         Client client=MainActivity.client;
-        int lenght=Integer.parseInt(client.Send("get length_"+indexarduino));
+        String datas=client.Send("get arduino data"+indexarduino);
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        String data[]=new String[lenght];
-        Date date=new Date();
-        for(int f=0;f<lenght-1;f++){
-            data[f]=client.Send("get data_"+indexarduino+"_"+(f+1));
-            try {
-                Thread.sleep(500); //warten auf Antwort
-            } catch (InterruptedException e) {
-                Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-            }
-        }
+        String data[]=datas.split("|");
         for(String data_:data){
-            String dat=data_.split("#")[1];
+            Date date=new Date();
             try {
-                date=dateFormat.parse(data_.split("#")[0]);
+                date=dateFormat.parse(data_.split("_")[0]);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             if(!Gestrichelt) {
                 Log.e("Malen","Malen------------");
-                seriesTemp.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[0])), false, 1000);
-                seriesFeucht.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[1])), false, 1000);
-                seriesHumid.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[2])), false, 1000);
-                seriesUV.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[3])), false, 1000);
+                seriesTemp.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[1])), false, 1000);
+                seriesFeucht.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[2])), false, 1000);
+                seriesHumid.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[3])), false, 1000);
+                seriesUV.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[4])), false, 1000);
             }
             else{
-                seriesTemp2.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[0])), false, 1000);
-                seriesFeucht2.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[1])), false, 1000);
-                seriesHumid2.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[2])), false, 1000);
-                seriesUV2.appendData(new DataPoint(date, Float.parseFloat(dat.split("-")[3])), false, 1000);
+                seriesTemp2.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[1])), false, 1000);
+                seriesFeucht2.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[2])), false, 1000);
+                seriesHumid2.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[3])), false, 1000);
+                seriesUV2.appendData(new DataPoint(date, Float.parseFloat(data_.split("_")[4])), false, 1000);
             }
         }
     }

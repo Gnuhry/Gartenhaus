@@ -39,55 +39,34 @@ public class Edit_Arduino extends AppCompatActivity {
         ID=getIntent().getIntExtra("ID",-1); //mitgesendete ID auslesen
         SpinnerInitalisieren();
          if(ID==-1) return; //Wenn neu dann return
+
+        StringBuilder help= new StringBuilder(client.Send("get arduino all_"+ID));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
         ((TextView)findViewById(R.id.txVID)).setText(ID+"");
-        ((EditText)findViewById(R.id.edTIP)).setText(client.Send("get arduinoip_"+ID));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        StringBuilder help= new StringBuilder(client.Send("get arduino data_"+ID));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        String erg[]= help.toString().split("|");
-        help = new StringBuilder();
+        ((EditText)findViewById(R.id.edTIP)).setText(help.toString().split("_")[0]);
+        String erg[]= help.toString().split("_")[2].split("|");
+        StringBuilder help2 = new StringBuilder();
         for(String x : erg)
-            help.append(x).append("\n");
-        ((TextView)findViewById(R.id.txVdataSend)).setText(help.toString());
-        String h=client.Send("get arduinoidpflanze_"+ID);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        String name=client.Send("get name_"+h);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        ((Spinner)findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(name));
+            help2.append(x).append("\n");
+        ((TextView)findViewById(R.id.txVdataSend)).setText(help2.toString());
+        ((Spinner)findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(help.toString().split("_")[1]));
     }
 
     private void SpinnerInitalisieren() {
         Spinner spinner= findViewById(R.id.spinner);
          spinnerlist= new ArrayList<>();
-        String[] ID=client.Send("get IDS").split("_"); //IDS bekommen vom Client(Server)
+        String[] names=client.Send("get plant names").split("_"); //IDS bekommen vom Client(Server)
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        for(String ID_:ID){
-            spinnerlist.add(client.Send("get name_"+ID_));
-            try {
-                Thread.sleep(500); //warten auf Antwort
-            } catch (InterruptedException e) {
-                Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-            }
+        for(String name:names){
+            spinnerlist.add(name);
         }
         ArrayAdapter<String> arrayAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerlist);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -100,20 +79,13 @@ public class Edit_Arduino extends AppCompatActivity {
     }
 
     public void btnClick_SaveArduino(View view) {
-        String ip=((EditText)findViewById(R.id.edTIP)).getText().toString();
-        client.Send("set arduinoip_"+ID+"_"+ip);
+        client.Send("set arduino _"+ID+"_"+((EditText)findViewById(R.id.edTIP)).getText().toString()+
+                "_"+((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition());
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        String[] ID=client.Send("get IDS").split("_"); //IDS bekommen vom Client(Server)
-        try {
-            Thread.sleep(500); //warten auf Antwort
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        client.Send("set arduinoidpflanze_"+this.ID+"_"+ID[((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition()]);
         Close();
     }
 

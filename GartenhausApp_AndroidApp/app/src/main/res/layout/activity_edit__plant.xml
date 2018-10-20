@@ -7,7 +7,6 @@
     tools:context=".Edit_Plant"
     android:onClick="btnClick_Tastatur">
 
-
     <ImageView
         android:id="@+id/imVDeletePlaint"
         android:layout_width="69dp"
