@@ -62,18 +62,20 @@ public class Main2Activity extends AppCompatActivity {
 
 //        Tabele mit ID, Name , Platz und BEarbeitung erstellen
         TableLayout tableLayout=findViewById(R.id.tablePlant);
+        String names[]=client.Send("get plant names").split("_");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+        }
+        int counter=0;
         for (String ID_ : ID) {
             TableRow row = new TableRow(this);
             TextView txV = new TextView(this);
             txV.setText(ID_ + "");
             row.addView(txV);
             txV = new TextView(this);
-            txV.setText(client.Send("get name_" + ID_));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-            }
+            txV.setText(names[counter++]);
             row.addView(txV);
             ImageView imageButton = new ImageView(this);
             imageButton.setImageResource(R.drawable.outline_edit_black_18dp);

@@ -6,19 +6,18 @@ namespace Gartenhaus
 
     public class DatabaseCommunication
     {
-        protected static string connectionString;
+        protected static string connectionString=Program.connectionString;
         protected static SqlConnection con;
         protected static SqlCommand cmd;
         protected static SqlDataReader reader;
-        public DatabaseCommunication(string connectionString_)
-        {
-            connectionString = connectionString_;
-            con = new SqlConnection(connectionString);
-            cmd = con.CreateCommand();
-        }
 
         protected static void OpenConnection()
         {
+            if (con == null)
+            {
+                con = new SqlConnection(connectionString);
+            }
+                cmd = con.CreateCommand();
             try
             {
                 con.Open();
@@ -30,7 +29,7 @@ namespace Gartenhaus
                     con.ConnectionString = connectionString;
                     con.Open();
                 }
-                catch (Exception) { }
+                catch (Exception) { /*OpenConnection();*/ }
             }
         }
     }

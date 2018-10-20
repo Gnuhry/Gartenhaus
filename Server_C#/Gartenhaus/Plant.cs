@@ -6,16 +6,12 @@ namespace Gartenhaus
 {
     public class Plant : DatabaseCommunication
     {
-        public Plant() : base(Program.connectionString)
-        {
-        }
         public static int New(string name, float minTemp, float maxTemp, float minHumid, float maxHumid, float minGroundHumid, float maxGroundHumid, float minUV, float maxUV)
         {
             using (con)
             {
                 OpenConnection();
-                cmd.CommandText = "INSERT INTO Plant (Name,MinTemp,MaxTemp,MinFeucht,MaxFeucht,MinHumid,MaxHumid,MinUV,MaxUV) VALUES (@Name,@MinTemp,@MaxTemp,@MinGroundHumid,@MaxGroundHumid," +
-                "@MinHumid,@MaxHumid,@MinUV ,@MaxUV)";
+                cmd.CommandText = "INSERT INTO Plant (Name,MinTemp,MaxTemp,MinGroundHumid,MaxGroundHumid,MinHumid,MaxHumid,MinUV,MaxUV) VALUES (@Name,@MinTemp,@MaxTemp,@MinGroundHumid,@MaxGroundHumid,@MinHumid,@MaxHumid,@MinUV ,@MaxUV)";
                 cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = name;
                 cmd.Parameters.Add("@MinTemp", SqlDbType.Float).Value = minTemp;
                 cmd.Parameters.Add("@MaxTemp", SqlDbType.Float).Value = maxTemp;
@@ -25,12 +21,9 @@ namespace Gartenhaus
                 cmd.Parameters.Add("@MaxHumid", SqlDbType.Float).Value = maxHumid;
                 cmd.Parameters.Add("@MinUV", SqlDbType.Float).Value = minUV;
                 cmd.Parameters.Add("@MaxUV", SqlDbType.Float).Value = maxUV;
+                Console.WriteLine(cmd.CommandText);
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
-                cmd.CommandText = "SeLECT * FROM Plant";
-                reader = cmd.ExecuteReader();
-                reader.Read();
                 return GetIDs().Length - 1;
-
             }
         }
 
@@ -48,7 +41,7 @@ namespace Gartenhaus
             string maxHumid = (maxHumid_ + "").Replace(',', '.');
             string minUV = (minUV_ + "").Replace(',', '.');
             string maxUV = (maxUV_ + "").Replace(',', '.');
-
+            //TODO in Arduino suchen, ob Pflanze registriert
             if (minTemp.Equals(Get(id, "MinTemp")))
             {
                 Client.Arduino_Send(id, "MinTemp_" + minTemp);
@@ -84,8 +77,8 @@ namespace Gartenhaus
             using (con)
             {
                 OpenConnection();
-                cmd.CommandText = "UPDATE Plant (Name,MinTemp,MaxTemp,MinFeucht,MaxFeucht,MinHumid,MaxHumid,MinUV,MaxUV) VALUES (@Name,@MinTemp,@MaxTemp,@MinGroundHumid,@MaxGroundHumid," +
-                 "@MinHumid,@MaxHumid,@MinUV ,@MaxUV) WHERE Id=@Id";
+                cmd.CommandText = "UPDATE Plant SET Name=@Name,MinTemp=@MinTemp,MaxTemp=@MaxTemp,MinGroundHumid=@MinGroundHumid," +
+                    "MaxGroundHumid=@MaxGroundHumid,MinHumid=@MinHumid,MaxHumid=@MaxHumid,MinUV=@MinUV,MaxUV=@MaxUV WHERE Id=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = name;
                 cmd.Parameters.Add("@MinTemp", SqlDbType.Float).Value = minTemp_;
@@ -111,19 +104,24 @@ namespace Gartenhaus
                 cmd.CommandText = "SELECT " + search + " FROM Plant WHERE Id=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 reader = cmd.ExecuteReader();
-                reader.Read();
-                return reader.ToString();
+                string erg = "";
+                while (reader.Read())
+                {
+                    erg += reader[search];
+                }
+                reader.Close();
+                return erg;
             }
         }
- 
+
         public static string[] GetAll(int id)
         {
             string[] erg = new string[9];
             erg[0] = Get(id, "Name");
             erg[1] = Get(id, "MinTemp");
             erg[2] = Get(id, "MaxTemp");
-            erg[3] = Get(id, "MinFeucht");
-            erg[4] = Get(id, "MaxFeucht");
+            erg[3] = Get(id, "MinGroundHumid");
+            erg[4] = Get(id, "MaxGroundHumid");
             erg[5] = Get(id, "MinHumid");
             erg[6] = Get(id, "MaxHumid");
             erg[7] = Get(id, "MinUV");
@@ -152,12 +150,12 @@ namespace Gartenhaus
                 OpenConnection();
                 cmd.CommandText = "SELECT Id FROM Plant";
                 reader = cmd.ExecuteReader();
-                for (int f = 0; f < reader.FieldCount; f++)
+                while (reader.Read())
                 {
-                    reader.Read();
                     erg.Add(Convert.ToInt32(reader["Id"]));
                 }
             }
+            reader.Close();
             return erg.ToArray();
         }
         private static bool IsRealID(int id)

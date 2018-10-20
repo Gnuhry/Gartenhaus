@@ -107,7 +107,7 @@ namespace Gartenhaus
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                         content.Length, content);
 
-                    string reponse = null;
+                    string reponse = "";
                     string[] help = content.Split('_');
                     string txt = help[0];
                     switch (txt.ToLower())
@@ -196,7 +196,7 @@ namespace Gartenhaus
                     }
                     //Antwort senden
                     if (reponse == "") reponse = "Error";
-                    Send(handler, reponse+"|");
+                    Send(handler, reponse);
                 }
                 else
                 {

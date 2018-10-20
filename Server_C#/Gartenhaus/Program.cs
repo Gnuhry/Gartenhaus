@@ -9,7 +9,7 @@ namespace Gartenhaus
 {
     class Program
     {
-        public static string connectionString ="";
+        public static string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Win7\\Documents\\Gartenhaus.mdf;Integrated Security=True;Connect Timeout=30";
         public static int loaclPort = 5000, arduinoport=5001;
         static void Main(string[] args)
         {
