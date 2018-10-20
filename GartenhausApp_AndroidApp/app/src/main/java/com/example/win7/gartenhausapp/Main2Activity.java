@@ -47,14 +47,14 @@ public class Main2Activity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")//Ausblenden der Fehlermeldung: "Kein festen Text in TextViews ausgeben"
     private void TabelleFullen() { //Tabelle füllen
-        String help=client.Send("get IDS");
-        if(help.equals("Error"))return;
-        String[] ID=help.split("_"); //IDS bekommen vom Client(Server)
+        String help=client.Send("get plant ids");
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
+        if(help.equals("Error"))return;
+        String[] ID=help.split("_"); //IDS bekommen vom Client(Server)
         Log.e("Länge",""+ID.length);
         if(ID.length<1){
             Toast.makeText(getApplicationContext(),"IDS",Toast.LENGTH_SHORT).show();

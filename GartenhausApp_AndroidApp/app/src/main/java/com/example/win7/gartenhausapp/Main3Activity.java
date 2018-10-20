@@ -57,18 +57,13 @@ public class Main3Activity extends AppCompatActivity {
             txV.setText(ID_ + "");
             row.addView(txV);
             txV = new TextView(this);
-            String help=client.Send("get arduinoidpflanze_" + ID_);
+            String help=client.Send("get arduino all" + ID_);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
             }
-            txV.setText(client.Send("get name_"+help));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-            }
+            txV.setText(help.split("_")[1]);
             row.addView(txV);
             ImageView imageButton = new ImageView(this);
             imageButton.setImageResource(R.drawable.outline_edit_black_18dp);

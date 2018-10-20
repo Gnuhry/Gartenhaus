@@ -3,6 +3,7 @@
 
 //-------------Einbinden seperater Bibilotheken-------------------------
 #include <Wire.h> //Bibilothek für Master-Slave-Kommunikation mit Slave AMega2560
+#include <EEPROM.h> //Bibilothek zum Schreiben in den Speicher
 #include <ESP8266WiFi.h> //Bibilothek für Server Kommunikation
 
 //--------------------------initalisieren-------------------
@@ -24,14 +25,19 @@ void setup() {
   Serial.println("-----------Start--------------");
   ConnectToWifi(); //Zu Wifi verbinden
   server.begin();
-  String request=GetIDFromArduino(); //Request an Slave AMega2560
-  if(request="00000") 
-    request="";
+  int id=GetID();
+  String erg="";
+  if(id==0)
+  {
+    erg=SendToServer("new arduino"); //An Server melden, dass Arduino erreichbar
+  }
   else 
+  {
+    erg=SendToServer("reconect arduino_"+id); //An Server melden, dass Arduino erreichbar
     IsActive=true;
-  String erg=SendToServer("new arduino_"+request); //An Server melden, dass Arduino erreichbar
-  if(erg!="Succes"){
-    SendToArduino("0_"+erg);
+  }
+  if(erg!="Success"){
+    SaveID(erg.toInt());
     }
 }
 
@@ -42,8 +48,8 @@ void loop() {
    if(IsActive){
   if(counter++==10){
     counter=0;
-    String request=GetIDFromArduino(); //Request an Slave AMega2560
-    SendToServer("set data_"+request); //An Server schicken 
+    String request=GetFromArduino(); //Request an Slave AMega2560
+    SendToServer("set arduino data_"+request); //An Server schicken
   }
   }
   delay(1000);
@@ -58,7 +64,7 @@ void SendToArduino(String message){ //String an Slave AMega2560 senden
  Wire.endTransmission();    //Übertragung beenden
   }
 
-  String GetIDFromArduino(){ //Request von Slave AMega2560
+  String GetFromArduino(){ //Request von Slave AMega2560
     String erg="";
     Wire.requestFrom(8, 5); //erwarte einen 5 byte langen Wert an Adresse 8
  while(Wire.available()){
@@ -66,6 +72,7 @@ void SendToArduino(String message){ //String an Slave AMega2560 senden
   }
   return erg;
     }
+
 
     //--------------------Kommunikation mit lokalem C# Server ----------
  void ConnectToWifi(){ //Zu Wifi verbinden
@@ -84,6 +91,8 @@ void SendToArduino(String message){ //String an Slave AMega2560 senden
          Serial.println("Your IP address is: ");
          Serial.println(WiFi.localIP());
   }
+
+  
 //Methode, die Befehle vom C# Client einließt
 void MessageFromCSharpServer(){
   String help="";
@@ -111,7 +120,7 @@ void MessageFromCSharpServer(){
  else{
   command+="_<EOF>"; //Ende-Flagge anhängen
   client.println(command); //senden
-  String erg=client.readStringUntil('\n'); //warten auf antwort
+  String erg=client.readStringUntil('|'); //warten auf antwort
   Serial.print(erg);
  Serial.println();
  Serial.println("Verbindung schliessen");
@@ -121,3 +130,15 @@ void MessageFromCSharpServer(){
  return erg;
   }
   }
+
+  //-------------------------speichern der id lokal ---------------------------------
+  void SaveID(int id){//Speichern der id
+    EEPROM.write(0,id);
+    EEPROM.commit();
+    Serial.println("Save");
+    }
+
+
+   int GetID(){//id aus dem Speicher holen
+      return EEPROM.read(0);
+      }

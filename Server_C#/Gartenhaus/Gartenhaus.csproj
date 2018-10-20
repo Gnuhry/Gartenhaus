@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AED41832-F671-41F0-A9F6-DE7914A25EEE}</ProjectGuid>
+    <ProjectGuid>{6791F0EE-F0E3-42D2-A83F-A10D4A38E1F8}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Server2</RootNamespace>
-    <AssemblyName>Server2</AssemblyName>
+    <RootNamespace>Gartenhaus</RootNamespace>
+    <AssemblyName>Gartenhaus</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,8 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arduino.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="DatabaseCommunication.cs" />
+    <Compile Include="Plant.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

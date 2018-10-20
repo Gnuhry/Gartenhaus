@@ -26,10 +26,19 @@
 
 //--------------------------initalisieren-------------------
 DHT dht(TempHumidSensor, DHTTYPE); //initalisieren des Temp-Humid-Sensor
-bool pumpon=false,heizungon=false,
-klimaanlageon=false,luftbefeuchteron=false,
-uvlichton=false,rolladenon=false,IDSenden=true; //initalisieren der bool Werte für die Relays
  int EEPROMAddress=0; //int-Wert für EEProm Addresse
+ int higher[]{
+   0,0,0,0 //heizung,befeuchter,pumpe,uvlicht
+ },
+ higherPin[]{
+   Heizung,Luftbefeuchter,Pumpe,UVLicht
+ },
+ lower[]{
+   0,-1,-1,0 //klimaanlage,-,-,rolladen
+ },
+ lowerPin[]{
+   Klimaanlage,0,0,Rolladen
+ };
 
 
 //------------------------SetUp-----------------------------
@@ -45,16 +54,15 @@ Serial.println("-----------Start--------------");
 
 //-----------------------Loop------------------------------
 void loop() {
-  TEMPUeberprufung();
-  FEUCHTUeberprufung();
-  HUMIDUeberprufung();
-  UVUeberprufung();
+  Ueberprufung(0);
+  Ueberprufung(1);
+  Ueberprufung(2);
+  Ueberprufung(3);
  delay(1000);
 }
 
 //------------Überprüfung der Sensoren und Reaktion--------
 float GetTemp(){
-  Serial.println("Hey");
   float temp[10]; //initalisieren des temporärem ErgebnisArray
   for(int f=0;f<10;f++)
   {
@@ -70,39 +78,55 @@ float GetTemp(){
  return temperatur;
 }
 
-String FloatToString(float value){ 
+String FloatToString(float value){
    char help[15];
   dtostrf(value,7,3,help);
   return help;
   }
-
-void TEMPUeberprufung(){
-  float temperatur=GetTemp();
-//Berechnung des Mittelwerts (min+max)/2
-float mittelwert=(GetEEProm(2).toFloat()+GetEEProm(3).toFloat())/2;
-//Wenn Heizung an und Mittelwert erreicht, Heizung aus
-  if(heizungon&&temperatur>=mittelwert){
-  digitalWrite(Heizung,LOW);
-  heizungon=false;
-  }
-  //Wenn Klimaanlage an und Mittelwert erreicht, Klimaanlage aus
-  if(klimaanlageon&&temperatur<=mittelwert){
-  digitalWrite(Klimaanlage,LOW);
-  klimaanlageon=false;
-  }
-  //Wenn IS-Temperatur unter Min-Soll-Temperatur, Heizung an
-  if(temperatur<=GetEEProm(2).toFloat()){
-    heizungon=true;
-    digitalWrite(Heizung,HIGH);
+  void Ueberprufung(int index){
+    int eepromMin;
+    float value;
+    switch(index){
+      case 0:
+        value=GetTemp();
+        eepromMin=0;
+        break;
+      case 1:
+        value=GetHumid();
+        eepromMin=2;
+        break;
+      case 2:
+        value=GetGroundHumid();
+        eepromMin=4;
+        break;
+      case 3:
+      eepromMin=6;
+      value=GetUV();
+        break;
     }
-    //Wenn IS-Temperatur über Max-Soll-Temperatur, Klimaanlage an
-    else if(temperatur>=GetEEProm(3).toFloat()){
-    klimaanlageon=true;
-    digitalWrite(Klimaanlage,HIGH);
+    float middlevalue=GetEEProm(eepromMin).toFloat()+GetEEProm(eepromMin+1).toFloat();
+    middlevalue/=2;
+    if(higher[index]==1&&(value>=middlevalue)){
+      digitalWrite(higherPin[index],LOW);
+      higher[index]=0;
+    }
+    if(lower[index]==1&&(value<=middlevalue)){
+      digitalWrite(lowerPin[index],LOW);
+      lower[index]=0;
+    }
+    if(higher[index]==0&&(value<GetEEProm(eepromMin).toFloat())){
+      higher[index]=1;
+      digitalWrite(higherPin[index],HIGH);
+    }
+    else if(lower[index]==0&&(value>GetEEProm(eepromMin+1).toFloat())){
+      lower[index]=1;
+      digitalWrite(lowerPin[index],HIGH);
     }
   }
 
-float GetFeucht(){
+
+
+float GetGroundHumid(){
     float temp[10];//initalisieren des temporärem ErgebnisArray
 
   for(int f=0;f<10;f++)
@@ -116,21 +140,6 @@ float GetFeucht(){
   return feuchtigkeit;
 }
 
-void FEUCHTUeberprufung(){
-  float feuchtigkeit=GetFeucht(); 
-  //Berechnung des Mittelwerts
-  float mittelwert=(GetEEProm(4).toFloat()+GetEEProm(5).toFloat())/2;
-  //Wenn Pumpe an und Mittelwert erreicht, Pumpe aus
-  if(pumpon&&feuchtigkeit>=mittelwert){
-  digitalWrite(Pumpe,LOW);
-  pumpon=false;
-  }
-  //Wenn IS-Feuchtigkeit unter Min-Soll-Feuchtigkeit, Pumpe an
-  if(feuchtigkeit<=GetEEProm(4).toFloat()){
-    pumpon=true;
-    digitalWrite(Pumpe,HIGH);
-    }
-  }
 
 float GetHumid(){
    float temp[10];//initalisieren des temporärem ErgebnisArray
@@ -147,23 +156,8 @@ float GetHumid(){
     return humid;
 }
 
-void HUMIDUeberprufung(){
-  float humid=GetHumid();
-   //Berechnung des Mittelwerts
-    float mittelwert=(GetEEProm(6).toFloat()+GetEEProm(7).toFloat())/2;
-    //Wenn Luftbefeuchter an und Mittelwert erreicht, Luftbefeuchter aus
-    if(luftbefeuchteron&&humid>=mittelwert){
-  digitalWrite(Luftbefeuchter,LOW);
-  luftbefeuchteron=false;
-  }
-  //Wenn IS-Luftfeuchtigkeit unter Min-Soll-Luftfeuchtigkeit, Luftbefeuchter an
-  if(humid<=GetEEProm(6).toFloat()){
-    luftbefeuchteron=true;
-    digitalWrite(Luftbefeuchter,HIGH);
-    }
-  }
 
-float GetUv(){
+float GetUV(){
   float temp[10];//initalisieren des temporärem ErgebnisArray
 
   for(int f=0;f<10;f++)
@@ -178,32 +172,6 @@ float GetUv(){
   return UV;
 }
 
-void UVUeberprufung(){
-   float UV=GetUv();
-  //Berechnung des Mittelwerts
-  float mittelwert=(GetEEProm(8).toFloat()+GetEEProm(9).toFloat())/2;
-  //Wenn UV-Licht an und IS-UV-Wert über Min-Soll-Wert, UVLicht aus
-  if(uvlichton&&UV>=GetEEProm(8).toFloat()){
-  digitalWrite(UVLicht,LOW);
-  uvlichton=false;
-  }
-  //Wenn Rolladen an und IS-UV-Wert unter Max-Soll-Wert, Rolladen hoch
-  if(rolladenon&&UV<=GetEEProm(9).toFloat()){
-  digitalWrite(Rolladen,LOW);
-  rolladenon=false;
-  }
-  //Wenn IS-UV-Wert unter Min-Soll-UV-Wert, UV-Licht an
-  if(UV<=GetEEProm(8).toFloat()){
-    uvlichton=true;
-    digitalWrite(UVLicht,HIGH);
-    }
-    //Wenn IS-UV-Wert über Max-Soll-UV-Wert, Rolladen runter
-  else if(UV>=GetEEProm(9).toFloat()){
-    rolladenon=true;
-    digitalWrite(Rolladen,HIGH);
-  }
-}
-
 
 
 //-----------------Master-Slave.Kommunikation mit NodeMCU -------------------
@@ -213,102 +181,124 @@ void receiveEvent(int howMany) {
  while (0 <Wire.available()) {
     help += Wire.read();  //bytes lesen, solange Wire available ist
   }
+  if(help=="on"){
+    //TODO on (live)
+  }else
+  {
   int seperator=help.indexOf("_"); //Index vom Unterstrich
  String temp=help.substring(0,seperator); //Index Teil
  help=help.substring(seperator+1,sizeof(help)); //Data Teil
- SaveEEProm(temp.toInt(),help);//Data an Index speichern
-}
-
-String GetID(){
-   String help=GetEEProm(0); //ID aus Speicher holen
-  if(sizeof(help)>5)return "Fehler"; //Wenn ID länger als 5 Ziffer, ID ist falsch
-  while(sizeof(help)!=5){
-    help="0"+help; //0 auffüllen, um die Länge 5 zu erhalten
-    }
-    return help;
+ SaveEEProm(temp,help);
+ }
 }
 
 // Funktion, die ausgeführt wird, wenn Master eine Nachricht erwartet
-void requestEvent() {
+void requestEvent() {//----------------------------------------------------------------------------------------------------------------------------
   char buf[50]; //buffer initalisieren
-  String help;
-  if(IDSenden){
-    IDSenden=false;
-      help=GetID();
-      if(help=="Fehler") return;
- }
- else{
-help=GetID()+"_"+FloatToString(GetTemp())+"_"+FloatToString(GetFeucht())+"_"+FloatToString(GetHumid())+"_"+FloatToString(GetUv());
-  }
-        help.toCharArray(buf,sizeof(help));
-   Wire.write(buf);  //buffer senden
+  String help=FloatToString(GetTemp())+"_"+FloatToString(GetGroundHumid())+
+  "_"+FloatToString(GetHumid())+"_"+FloatToString(GetUV());
+  help.toCharArray(buf,sizeof(help));
+  Wire.write(buf);  //buffer senden
 }
 
 
 
 //-------------------------speichern der Werte lokal ---------------------------------
-void SaveEEProm(int index,String wert){//Speichern des wertes an index
-  switch(index){ //Speicherstelle anhand index herausfinden
-    case 0:EEPROMAddress=0; break; //index
-    case 1:EEPROMAddress=90; break;//name
-    case 2:EEPROMAddress=10; break; //mintemp
-    case 3:EEPROMAddress=20; break; //maxtemp
-    case 4:EEPROMAddress=30; break; //minfeucht
-    case 5:EEPROMAddress=40; break; //maxfeucht
-    case 6:EEPROMAddress=50; break; //minhumid
-    case 7:EEPROMAddress=60; break; //maxhumid
-    case 8:EEPROMAddress=70; break; //minUV
-    case 9:EEPROMAddress=80; break; //maxUV
+void SaveEEProm(String type,String value){//Speichern des wertes an index
+    /*case "Name":
+    value+="_";
+      for(int f=0;f<sizeof(value);f++)
+      {
+        EEPROM.write(80+f,value.charAt(f).toInt());
+      }
+      return;//name*/
+    if(type== "MinTemp")
+    {
+      EEPROMAddress=0;
+    }//mintemp
+    else if(type== "MaxTemp")
+    {
+      EEPROMAddress=10;
+    }//maxtemp
+    else if(type== "MinGroundHumid")
+    {
+      EEPROMAddress=20;
+    }//minfeucht
+    else if(type== "MaxGroundHumid")
+    {
+      EEPROMAddress=30;   
+    }//maxfeucht
+    else if(type== "MinHumid")
+    {    
+      EEPROMAddress=40;
+    }//minhumid
+    else if(type== "MaxHumid")
+    {
+      EEPROMAddress=50;
+    }//maxhumid
+    else if(type== "MinUV")
+    {
+      EEPROMAddress=60;
+    }//minUV
+    else if(type== "MaxUV")
+    {
+      EEPROMAddress=70;
+    }//maxUV
+    int help[10];
+    for(int f=0;f<10;f++){
+      if(f<sizeof(value)){
+        help[f]=value.charAt(f);
+      }
+      else{
+        help[f]='_';
+      }
+    }
+    for(int f=0;f<10;f++)
+    {
+      EEPROM.write(EEPROMAddress+f,help[f]);
     }
    // byte help[sizeof(wert)];
     //wert.getBytes(help,sizeof(wert));
-
-    for(int f=0;f<sizeof(wert)&&f<10;f++){
-       EEPROM.put(EEPROMAddress+f,wert.charAt(f));  //data speichern bis maximal 10 stellen
-      }
-      if(index!=1||(index==1&&sizeof(wert)<10)){
-      for(int f=sizeof(wert);f<10;f++){
-        EEPROM.put(EEPROMAddress+f,'$'); //freien speicherplatz makieren bis maximal 10 stellen
-        }
-      }
-      else{
-        for(int f=10;f<sizeof(wert);f++){
-          EEPROM.put(EEPROMAddress+f,wert.charAt(f)); //data speichern ohne maximum
-          }
-          EEPROM.put(EEPROMAddress+sizeof(wert),'$');//Ende makieren
-        }
   //EEPROM.commit();
   Serial.println("Save");
   }
 
 
  String GetEEProm(int index){//Daten an index im Speicher holen
-     switch(index){//Speicherplatzstelle anhand index bekommen
-    case 0:EEPROMAddress=0; break; //index
-    case 1:EEPROMAddress=90; break;//name
-    case 2:EEPROMAddress=10; break; //mintemp
-    case 3:EEPROMAddress=20; break; //maxtemp
-    case 4:EEPROMAddress=30; break; //minfeucht
-    case 5:EEPROMAddress=40; break; //maxfeucht
-    case 6:EEPROMAddress=50; break; //minhumid
-    case 7:EEPROMAddress=60; break; //maxhumid
-    case 8:EEPROMAddress=70; break; //minUV
-    case 9:EEPROMAddress=80; break; //maxUV
-    }
-    String erg="";
-    if(EEPROMAddress!=90){//Alles außer Name, da Name keine begrenzung
-      for(int f=0;f<10;f++){
-        char help=(char)EEPROM.read(EEPROMAddress+f); //Data lesen
-        if(help!='$') erg+=help; //stoppen an $
-        else return erg;
-        }
-      }
-      else{
-for(int f=0;true;f++){
-        char help=(char)EEPROM.read(EEPROMAddress+f); //DAta lesen
-        if(help!='$') erg+=help;//stoppen an $
-        else return erg;
-        }
-      }
-    return erg;
+   String erg=""; char last;
+   switch(index){ //Speicherstelle anhand index herausfinden
+     case 0:
+       EEPROMAddress=0;
+       break; //mintemp
+     case 1:
+       EEPROMAddress=10;
+       break; //maxtemp
+     case 2:
+       EEPROMAddress=20;
+       break; //minfeucht
+     case 3:
+       EEPROMAddress=30;
+       break; //maxfeucht
+     case 4:
+       EEPROMAddress=40;
+       break; //minhumid
+     case 5:
+       EEPROMAddress=50;
+       break; //maxhumid
+     case 6:
+       EEPROMAddress=60;
+       break; //minUV
+     case 7:
+       EEPROMAddress=70;
+       break; //maxUV
+     }
+
+     do
+     {
+       last=EEPROM.read(EEPROMAddress);
+       erg+=last;
+       EEPROMAddress++;
+     }
+     while(last!='_');
+      return erg;
     }

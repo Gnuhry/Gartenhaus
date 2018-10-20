@@ -39,7 +39,7 @@ public class LiveAction extends AppCompatActivity {
         setContentView(R.layout.activity_live_action);
         ID = getIntent().getIntExtra("ID", -1);
         if(ID <0)startActivity(new Intent(getApplicationContext(),Main3Activity.class));
-        String ip = MainActivity.client.Send("get arduinoip_" + ID);
+        String ip = MainActivity.client.Send("get arduino arduinoIP_" + ID);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -48,7 +48,7 @@ public class LiveAction extends AppCompatActivity {
         //TODO Fehler: Sendet an Server anstatt an Arduino!!
         clientArduino = new Client(ip, 5001);
       //  Starten();
-        String on[] = clientArduino.Send("an").split("_");
+        String on[] = clientArduino.Send("on").split("_");
         if (on[0].equals("y")) ((Switch) findViewById(R.id.swHeizung)).setChecked(true);
         if (on[1].equals("y")) ((Switch) findViewById(R.id.swKuhlung)).setChecked(true);
         if (on[2].equals("y")) ((Switch) findViewById(R.id.swPumpe)).setChecked(true);
@@ -148,22 +148,18 @@ class myThread implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String help=client.Send("get length_"+ID);
+        String help=client.Send("get arduino data");
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-            String data[]=client.Send("get data_"+ID+"_"+(Integer.parseInt(help)-1)).split(":")[1].split("-");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ((TextView)activity.findViewById(R.id.txVTemp)).setText("Temperatur: "+data[0]+" °C");
-        ((TextView)activity.findViewById(R.id.txVFeucht)).setText("Feuchtigkeit: "+data[1]);
-        ((TextView)activity.findViewById(R.id.txVHumid)).setText("Humid: "+data[2]);
-        ((TextView)activity.findViewById(R.id.txVUV)).setText("UV: "+data[3]);
+        String help2[]=help.split("|");
+        String data[]=help2[help2.length-1].split("_");
+        ((TextView)activity.findViewById(R.id.txVTemp)).setText("Temperatur: "+data[1]+" °C");
+        ((TextView)activity.findViewById(R.id.txVFeucht)).setText("Feuchtigkeit: "+data[2]);
+        ((TextView)activity.findViewById(R.id.txVHumid)).setText("Humid: "+data[3]);
+        ((TextView)activity.findViewById(R.id.txVUV)).setText("UV: "+data[4]);
         //Starten();
     }
     }

@@ -35,4 +35,8 @@
     <string name="graphen">Graphen</string>
     <string name="live">Live</string>
     <string name="minus">-</string>
+    <string name="minGmaxTemp">Min Temperatur ist größer als Max Temperatur</string>
+    <string name="minGmaxHumid">Min Humid ist größer als Max Humid</string>
+    <string name="minGmaxFeucht">Min Feucht ist größer als Max Feucht</string>
+    <string name="minGmaxUV">Min UV ist größer als Max UV</string>
 </resources>
