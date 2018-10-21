@@ -39,4 +39,7 @@
     <string name="minGmaxHumid">Min Humid ist größer als Max Humid</string>
     <string name="minGmaxFeucht">Min Feucht ist größer als Max Feucht</string>
     <string name="minGmaxUV">Min UV ist größer als Max UV</string>
+    <string name="tempValue">Temperatur nur zwischen 0°C und 50°C</string>
+    <string name="humidValue">Humid nur zwischen 0g/m³ und 100g/m³</string>
+    <string name="uvValue">UV nur zwischen 0 und 15</string>
 </resources>

@@ -6,9 +6,6 @@ namespace Gartenhaus
 {
     public class Arduino : DatabaseCommunication
     {
-        public Arduino(string connectionString_) : base(connectionString_)
-        {
-        }
 
         public static int[] GetIDs()
         {
@@ -23,6 +20,7 @@ namespace Gartenhaus
                     reader.Read();
                     erg.Add(Convert.ToInt32(reader["Id"]));
                 }
+                reader.Close();
             }
             return erg.ToArray();
         }
@@ -39,6 +37,7 @@ namespace Gartenhaus
                     reader.Read();
                     Delete(Convert.ToInt32(reader["Id"]));
                 }
+                reader.Close();
                 cmd.CommandText = "INSERT INTO Arduino (ArduinoIP) VALUES (@ArduinoIP)";
                 cmd.Parameters.Add("@ArduinoIP", SqlDbType.NVarChar).Value = ArduinoIP;
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
@@ -61,6 +60,7 @@ namespace Gartenhaus
                         Client.Arduino_Send(id, "ArduinoID_" + id);
                     }
                 }
+                reader.Close();
             }
         }
 
@@ -117,7 +117,7 @@ namespace Gartenhaus
         }
         public static void AddDataSend(int Id, string message)
         {
-            if (message.Split('_')[0]=="Name")
+            if (message.Split('_')[0] == "Name")
             {
                 return;
             }
@@ -143,9 +143,12 @@ namespace Gartenhaus
                 OpenConnection();
                 cmd.CommandText = "SELECT " + Search + " From Arduino WHERE Id=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Id;
-                reader = cmd.ExecuteReader();
-                reader.Read();
-                return reader.ToString();
+                using (reader)
+                {
+                    reader = cmd.ExecuteReader();
+                    reader.Read();
+                    return reader[Search].ToString();
+                }
             }
         }
         private static string GetPlantName(int Id)
@@ -155,9 +158,12 @@ namespace Gartenhaus
                 OpenConnection();
                 cmd.CommandText = "SELECT Plant.Name From Plant INNER JOIN Arduino ON Plant.Id=Arduino.PlantID WHERE Arduino.Id=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Id;
-                reader = cmd.ExecuteReader();
-                reader.Read();
-                return reader.ToString();
+                using (reader)
+                {
+                    reader = cmd.ExecuteReader();
+                    reader.Read();
+                    return reader["Name"].ToString();
+                }
             }
         }
         public static void Delete(int Id)
@@ -193,7 +199,7 @@ namespace Gartenhaus
             using (con)
             {
                 OpenConnection();
-                cmd.CommandText = "INSERT INTO Data (time,arduinoId,temperatur,humid,groundhumid,uv) VALUES (@Day,@Id,@temperatur,@humid,@groundhumid,@uv)";
+                cmd.CommandText = "INSERT INTO Data (time,arduinoId,Temperatur,Humid,GroundHumid,UV) VALUES (@Day,@Id,@temperatur,@humid,@groundhumid,@uv)";
                 cmd.Parameters.Add("@Day", SqlDbType.DateTime).Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 cmd.Parameters.Add("@temperatur", SqlDbType.Float).Value = temperatur;
                 cmd.Parameters.Add("@humid", SqlDbType.Float).Value = humid;
@@ -207,15 +213,16 @@ namespace Gartenhaus
         {
             using (con)
             {
-                string erg="";
+                string erg = "";
                 OpenConnection();
                 cmd.CommandText = "SELLECT * FROM Data WHERE arduinoId=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = arduinoID;
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    erg += reader["time"] + "_" + reader["temperatur"] + "_" + reader["humid"] + "_" + reader["groundhumid"] + "_" + reader["uv"]+"|";
+                    erg += reader["time"] + "_" + reader["temperatur"] + "_" + reader["humid"] + "_" + reader["groundhumid"] + "_" + reader["uv"] + "|";
                 }
+                reader.Close();
                 return erg;
             }
         }

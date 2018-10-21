@@ -105,14 +105,11 @@
                 tools:text="@string/table_Plant_Temp" />
 
             <EditText
-                android:hint="@string/Min"
                 android:id="@+id/edTminTemp"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
-
+                android:hint="@string/Min"
+                android:inputType="numberDecimal" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -125,9 +122,7 @@
                 android:id="@+id/edTmaxTemp"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
+                android:inputType="numberDecimal" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -151,10 +146,8 @@
                 android:id="@+id/edTminFeucht"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="@string/Min"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
+                android:inputType="numberDecimal" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -168,9 +161,7 @@
                 android:id="@+id/edTmaxFeucht"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
+                android:inputType="numberDecimal" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -195,9 +186,7 @@
                 android:id="@+id/edTminHumid"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions"/>
+                android:inputType="numberDecimal" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -211,9 +200,7 @@
                 android:id="@+id/edTmaxHumid"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
+                android:inputType="numberDecimal" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -238,9 +225,7 @@
                 android:id="@+id/edTminUV"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
+                android:inputType="numberDecimal" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -254,9 +239,7 @@
                 android:id="@+id/edTmaxUV"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:digits="0123456789,-."
-                android:inputType="textNoSuggestions" />
+                android:inputType="numberDecimal" />
         </LinearLayout>
     </LinearLayout>
 
