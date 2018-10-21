@@ -6,7 +6,7 @@ namespace Gartenhaus
 {
     public class Plant : DatabaseCommunication
     {
-        public static int New(string name, float minTemp, float maxTemp, float minHumid, float maxHumid, float minGroundHumid, float maxGroundHumid, float minUV, float maxUV)
+        public static int New(string name, float minTemp, float maxTemp, float minGroundHumid, float maxGroundHumid, float minHumid, float maxHumid, float minUV, float maxUV)
         {
             using (con)
             {
@@ -27,21 +27,14 @@ namespace Gartenhaus
             }
         }
 
-        public static void Set(int id, string name, float minTemp_, float maxTemp_, float minHumid_, float maxHumid_, float minGroundHumid_, float maxGroundHumid_, float minUV_, float maxUV_)
+        public static void Set(int id, string name, float minTemp, float maxTemp, float minGroundHumid, float maxGroundHumid, float minHumid, float maxHumid, float minUV, float maxUV)
         {
             if (!IsRealID(id))
             {
                 return;
             }
-            string minTemp = (minTemp_ + "").Replace(',', '.');
-            string maxTemp = (maxTemp_ + "").Replace(',', '.');
-            string minGroundHumid = (minGroundHumid_ + "").Replace(',', '.');
-            string maxGroundHumid = (maxGroundHumid_ + "").Replace(',', '.');
-            string minHumid = (minHumid_ + "").Replace(',', '.');
-            string maxHumid = (maxHumid_ + "").Replace(',', '.');
-            string minUV = (minUV_ + "").Replace(',', '.');
-            string maxUV = (maxUV_ + "").Replace(',', '.');
             //TODO in Arduino suchen, ob Pflanze registriert
+            /*
             if (minTemp.Equals(Get(id, "MinTemp")))
             {
                 Client.Arduino_Send(id, "MinTemp_" + minTemp);
@@ -73,7 +66,7 @@ namespace Gartenhaus
             if (minTemp.Equals(Get(id, "MaxUV")))
             {
                 Client.Arduino_Send(id, "MaxUV_" + maxUV);
-            }
+            }*/
             using (con)
             {
                 OpenConnection();
@@ -81,14 +74,14 @@ namespace Gartenhaus
                     "MaxGroundHumid=@MaxGroundHumid,MinHumid=@MinHumid,MaxHumid=@MaxHumid,MinUV=@MinUV,MaxUV=@MaxUV WHERE Id=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = name;
-                cmd.Parameters.Add("@MinTemp", SqlDbType.Float).Value = minTemp_;
-                cmd.Parameters.Add("@MaxTemp", SqlDbType.Float).Value = maxTemp_;
-                cmd.Parameters.Add("@MinGroundHumid", SqlDbType.Float).Value = minGroundHumid_;
-                cmd.Parameters.Add("@MaxGroundHumid", SqlDbType.Float).Value = maxGroundHumid_;
-                cmd.Parameters.Add("@MinHumid", SqlDbType.Float).Value = minHumid_;
-                cmd.Parameters.Add("@MaxHumid", SqlDbType.Float).Value = maxHumid_;
-                cmd.Parameters.Add("@MinUV", SqlDbType.Float).Value = minUV_;
-                cmd.Parameters.Add("@MaxUV", SqlDbType.Float).Value = maxUV_;
+                cmd.Parameters.Add("@MinTemp", SqlDbType.Float).Value = minTemp;
+                cmd.Parameters.Add("@MaxTemp", SqlDbType.Float).Value = maxTemp;
+                cmd.Parameters.Add("@MinGroundHumid", SqlDbType.Float).Value = minGroundHumid;
+                cmd.Parameters.Add("@MaxGroundHumid", SqlDbType.Float).Value = maxGroundHumid;
+                cmd.Parameters.Add("@MinHumid", SqlDbType.Float).Value = minHumid;
+                cmd.Parameters.Add("@MaxHumid", SqlDbType.Float).Value = maxHumid;
+                cmd.Parameters.Add("@MinUV", SqlDbType.Float).Value = minUV;
+                cmd.Parameters.Add("@MaxUV", SqlDbType.Float).Value = maxUV;
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
             }
         }
@@ -109,6 +102,11 @@ namespace Gartenhaus
                 {
                     erg += reader[search];
                 }
+                if (search != "Name")
+                {
+                    erg=Math.Round(Convert.ToSingle(erg),2).ToString();
+                    erg = erg.Replace(',', '.');
+                }
                 reader.Close();
                 return erg;
             }
@@ -126,6 +124,10 @@ namespace Gartenhaus
             erg[6] = Get(id, "MaxHumid");
             erg[7] = Get(id, "MinUV");
             erg[8] = Get(id, "MaxUV");
+            Console.WriteLine(erg[1]);
+            Console.WriteLine(erg[2]);
+            Console.WriteLine(erg[3]);
+            Console.WriteLine(erg[4]);
             return erg;
         }
         public static void Delete(int id)

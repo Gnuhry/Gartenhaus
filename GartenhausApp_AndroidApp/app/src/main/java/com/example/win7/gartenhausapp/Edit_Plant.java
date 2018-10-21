@@ -61,17 +61,33 @@ public class Edit_Plant extends AppCompatActivity {
                 String name=((EditText)findViewById(R.id.edTName)).getText().toString();
                 String MinTemp=((EditText)findViewById(R.id.edTminTemp)).getText().toString();
                 String MaxTemp=((EditText)findViewById(R.id.edTmaxTemp)).getText().toString();
-                String MinFeucht=((EditText)findViewById(R.id.edTminFeucht)).getText().toString();
-                String MaxFeucht=((EditText)findViewById(R.id.edTmaxFeucht)).getText().toString();
+                String MinGroundHumid=((EditText)findViewById(R.id.edTminFeucht)).getText().toString();
+                String MaxGroundHumid=((EditText)findViewById(R.id.edTmaxFeucht)).getText().toString();
                 String MinHumid=((EditText)findViewById(R.id.edTminHumid)).getText().toString();
                 String MaxHumid=((EditText)findViewById(R.id.edTmaxHumid)).getText().toString();
                 String MaxUV=((EditText)findViewById(R.id.edTmaxUV)).getText().toString();
                 String MinUV=((EditText)findViewById(R.id.edTminUV)).getText().toString();
 
                 //Wenn etwas nicht ausgefüllt, FEhlermeldung an Benutzer
-                if(name.trim().equals("") ||MinTemp.equals("")||MaxTemp.equals("")||MinFeucht.equals("")||
-                        MaxFeucht.equals("")||MinHumid.equals("")||MaxHumid.equals("")||MaxUV.equals("")||MinUV.equals("")){
+                if(name.trim().equals("") ||MinTemp.equals("")||MaxTemp.equals("")||MinGroundHumid.equals("")||
+                        MaxGroundHumid.equals("")||MinHumid.equals("")||MaxHumid.equals("")||MaxUV.equals("")||MinUV.equals("")){
                    Toast.makeText(getApplicationContext(),getString(R.string.edit_all),Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinTemp)>50||Float.parseFloat(MinTemp)<0||Float.parseFloat(MaxTemp)>50||Float.parseFloat(MinTemp)<0){
+                    Toast.makeText(getApplicationContext(), R.string.tempValue,Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinHumid)>100||Float.parseFloat(MinHumid)<0||Float.parseFloat(MaxHumid)>100||Float.parseFloat(MaxHumid)<0){
+                    Toast.makeText(getApplicationContext(), R.string.humidValue,Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinGroundHumid)>100||Float.parseFloat(MinGroundHumid)<0||Float.parseFloat(MaxGroundHumid)>100||Float.parseFloat(MaxGroundHumid)<0){
+                    Toast.makeText(getApplicationContext(), R.string.humidValue,Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(Float.parseFloat(MinUV)>15||Float.parseFloat(MinUV)<0||Float.parseFloat(MaxUV)>15||Float.parseFloat(MaxUV)<0){
+                    Toast.makeText(getApplicationContext(), R.string.uvValue,Toast.LENGTH_LONG).show();
                     return;
                 }
                 if(Float.parseFloat(MinTemp)>Float.parseFloat(MaxTemp)){
@@ -82,7 +98,7 @@ public class Edit_Plant extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),getString(R.string.minGmaxHumid),Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(Float.parseFloat(MinFeucht)>Float.parseFloat(MaxFeucht)){
+                if(Float.parseFloat(MinGroundHumid)>Float.parseFloat(MaxGroundHumid)){
                     Toast.makeText(getApplicationContext(),getString(R.string.minGmaxFeucht),Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -92,9 +108,10 @@ public class Edit_Plant extends AppCompatActivity {
                 }
                 if(ID!=-1) //wenn bearbeiten dann einzeln setzen
                 {
-                    Log.e("Change",client.Send("set plant_"+ID+"_"+name+"_"+MinTemp+
-                            "_"+MaxTemp+"_"+MinFeucht+"_"+MaxFeucht+"_"+MinHumid+"_"+MaxHumid+
-                            "_"+MinUV+"_"+MaxUV));
+                    Log.e("Change",client.Send("set plant_"+ID+"_"+name+"_"+MinTemp.replace('.',',')+
+                            "_"+MaxTemp.replace('.',',')+"_"+MinGroundHumid.replace('.',',')+"_"+MaxGroundHumid.replace('.',',')+
+                            "_"+MinHumid.replace('.',',')+"_"+MaxHumid.replace('.',',')+
+                            "_"+MinUV.replace('.',',')+"_"+MaxUV.replace('.',',')));
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -104,8 +121,9 @@ public class Edit_Plant extends AppCompatActivity {
                     else
                         {
                         //neue Pflanze erstellen
-                Log.e("Add",client.Send("new plant_"+name+"_"+MinTemp+"_"+MaxTemp+"_"+MinFeucht+
-                        "_"+MaxFeucht+"_"+MinHumid+"_"+MaxHumid+"_"+MinUV+"_"+MaxUV));
+                Log.e("Add",client.Send("new plant_"+name+"_"+MinTemp.replace('.',',')+"_"+MaxTemp.replace('.',',')+"_"+MinGroundHumid.replace('.',',')+
+                        "_"+MaxGroundHumid.replace('.',',')+"_"+MinHumid.replace('.',',')+"_"+MaxHumid.replace('.',',')+
+                        "_"+MinUV.replace('.',',')+"_"+MaxUV.replace('.',',')));
                 }
             Close();
             }
