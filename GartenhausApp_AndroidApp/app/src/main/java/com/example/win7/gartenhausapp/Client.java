@@ -9,43 +9,57 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-//Objekt für TCP/IP Socket Kommunikation
 public class Client {
 
-    private static Socket socket; //Socket initalisieren
-    private static String IP;      //IP initalisieren
-    private int Port=5000; //Serverport initalisieren
+    private static Socket socket;
+    private static String IP;
+    private int Port = 5000;
     private volatile static String message;
-    private Thread thread;
+    private Thread receiveThread;
 
+    /**
+     * Construcor
+     *
+     * @param IP IP-Adress of Server
+     */
+    Client(String IP) {
+        Client.IP = IP;
+        receiveThread = new Thread(new Receive());
+        receiveThread.start();
+    }
 
-    Client(String IP){ //Konstrukter
-        Client.IP =IP;
-        thread=new Thread(new Receive());//Receive Thread initalisieren
-        thread.start();
+    /**
+     * Constructor 2
+     *
+     * @param IP   IP-Adress of Server
+     * @param Port Port of Server
+     */
+    Client(String IP, int Port) {
+        this.Port = Port;
+        Client.IP = IP;
+        receiveThread = new Thread(new Receive());
+        receiveThread.start();
     }
-    Client(String IP,int Port){ //Konstrukter
-        this.Port=Port;
-        Client.IP =IP;
-        thread=new Thread(new Receive());//Receive Thread initalisieren
-        thread.start();
-    }
-    private class Receive implements Runnable{
-        Boolean b=false;
+
+    /**
+     * Receive Thread
+     * Handle incoming message
+     */
+    private class Receive implements Runnable {
+        Boolean b = false;
+
         @Override
         public void run() {
 
-            while(true){//endlos nach Kommunikation suchen und auslesen
+            while (true) {
                 try {
-                    b=false;
-                    socket=new Socket(IP,Port);
-                    BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    while(!b){
-                        message=bufferedReader.readLine();
-//                        Log.e("Receive",message);
-                        if(message!=null) b=true;
+                    b = false;
+                    socket = new Socket(IP, Port);
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    while (!b) {
+                        message = bufferedReader.readLine();
+                        if (message != null) b = true;
                     }
-//                    bufferedReader.close();
                 } catch (IOException e) {
                     e.printStackTrace();
 
@@ -54,38 +68,65 @@ public class Client {
             }
         }
     }
-    public void Stop(){
-        thread.interrupt();
-    } //Client schließen
-    public String Send(String command){ //An Server senden
-        try{
-        if(!socket.isConnected()) return "Error";} //Abfangen von Fehlern
-        catch(Exception ex){return "Error";}
-        new ClientTask(command+"_<EOF>").execute(); //Befehl senden
 
-        while(message==null) //Auf Antwort warten
-        { }
+    /**
+     * Stop Receive Thread
+     */
+    public void Stop() {
+        receiveThread.interrupt();
+    }
+
+    /**
+     * Send to server
+     *
+     * @param command command for Server
+     * @return Answer from Server
+     */
+    public String Send(String command) {
         try {
-            socket.close();//Socket Kommunikation schließen
+            if (!socket.isConnected()) {
+                return "Error";
+            }
+        } catch (Exception ex) {
+            return "Error";
+        }
+        //sending
+        new ClientTask(command + "_<EOF>").execute();
+        //wait for answer
+        while (message == null) {
+        }
+        try {
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String ret=message;
-        message=null; //Message leeren
-        return ret; //Antwort returnen
+        String ret = message;
+        message = null;
+        return ret;
     }
-    private static class ClientTask extends AsyncTask<Void,Void,Void> { //Asynchrone Klasse zum Senden
 
+    /**
+     * asynchron Class for Sending to Server
+     */
+    private static class ClientTask extends AsyncTask<Void, Void, Void> {
+
+        /**
+         * Constructor
+         */
         String command;
-        private ClientTask(String command) {
-            this.command=command;
-        }//Konstruker
 
+        private ClientTask(String command) {
+            this.command = command;
+        }
+
+        /**
+         * Sending in background
+         */
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                PrintWriter printWriter=new PrintWriter(socket.getOutputStream());
-                printWriter.write(command); //sendern an Server
+                PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+                printWriter.write(command);
                 printWriter.flush();
             } catch (IOException e) {
                 Log.e("Error3",

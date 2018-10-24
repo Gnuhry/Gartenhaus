@@ -45,17 +45,17 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btnGraphen"
+        android:id="@+id/btnGraph"
         android:layout_width="102dp"
         android:layout_height="59dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="51dp"
         android:layout_marginStart="51dp"
-        android:text="@string/graphen"
-        android:onClick="btn_Graphen"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="51dp" />
+        android:onClick="btn_Graph"
+        android:text="@string/graph" />
 
 
 

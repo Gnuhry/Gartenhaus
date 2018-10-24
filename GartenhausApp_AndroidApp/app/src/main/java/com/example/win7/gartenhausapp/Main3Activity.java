@@ -17,50 +17,60 @@ import android.widget.Toast;
 public class Main3Activity extends AppCompatActivity {
 
     Client client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        client=MainActivity.client;
-        TabelleFullen();
+        client = MainActivity.client;
+        FillTable();
         client.Stop();
     }
 
+    /**
+     * Create the menue house item in the right top corner
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu); //Menü initalisieren
+        getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Click Listener for menue item
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(),MainActivity.class)); //Menü Click Listener
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Methode to fill the table
+     */
     @SuppressLint("SetTextI18n")
-    private void TabelleFullen() {
-        String ID =client.Send("get arduino ids");
+    private void FillTable() {
+        String ID = client.Send("get arduino ids");
         try {
-            Thread.sleep(500); //warten auf Antwort
+            Thread.sleep(500);
         } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
-        String[]IDs=ID.split("_");
-        Log.e("Länge",""+IDs.length);
-        if(IDs.length<1){
-            Toast.makeText(getApplicationContext(),"IDS",Toast.LENGTH_SHORT).show();
+        String[] IDs = ID.split("_");
+        Log.e("Länge", "" + IDs.length);
+        if (IDs.length < 1) {
+            Toast.makeText(getApplicationContext(), "IDS", Toast.LENGTH_SHORT).show();
             return;
         }
-        TableLayout tableLayout=findViewById(R.id.tableArduino);
-        for(String ID_:IDs){ //Tabelle füllen
+        TableLayout tableLayout = findViewById(R.id.tableArduino);
+        for (String ID_ : IDs) {
             TableRow row = new TableRow(this);
             TextView txV = new TextView(this);
-            String help=client.Send("get arduino all_" + ID_);
+            String help = client.Send("get arduino all_" + ID_);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
             }
             txV.setText(help.split("_")[0]);
             row.addView(txV);
@@ -77,23 +87,22 @@ public class Main3Activity extends AppCompatActivity {
 
     }
 
-    public void btnClick_btnLive(View view) {
-        Intent intent = new Intent(getApplicationContext(),LiveAction.class);
-        intent.putExtra("ID",(int)view.getTag()); //ID mitsenden
-        startActivity(intent);
+    /**
+     * Click Listener for Graph Button
+     */
+    public void btn_Graph(View view) {
+        startActivity(new Intent(getApplicationContext(), Graphen.class));
     }
 
-    public void btn_Graphen(View view) {
-        startActivity(new Intent(getApplicationContext(),Graphen.class));
-    }
-
+    /**
+     * Click Listener for Edit Button
+     */
     public class Edit implements View.OnClickListener {
         @Override
-        public void onClick(View view) {//Bearbeitung Activity starten
-            Intent intent = new Intent(getApplicationContext(),Edit_Arduino.class);
-            intent.putExtra("ID",(int)view.getTag()); //ID mitsenden
+        public void onClick(View view) {
+            Intent intent = new Intent(getApplicationContext(), Edit_Arduino.class);
+            intent.putExtra("ID", (int) view.getTag());
             startActivity(intent);
-            // Toast.makeText(getApplicationContext(),"HEy"+view.getTag(),Toast.LENGTH_LONG).show();
 
         }
     }

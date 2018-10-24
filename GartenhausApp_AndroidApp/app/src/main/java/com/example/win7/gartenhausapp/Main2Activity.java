@@ -16,59 +16,67 @@ import android.widget.Toast;
 
 public class Main2Activity extends AppCompatActivity {
     Client client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        client=MainActivity.client; //Client bekommen von der Haupt Activity
-     //   Toast.makeText(this,"yeh",Toast.LENGTH_SHORT).show();
-//        client.Send("get time");
-          TabelleFullen();
-        client.Stop(); //client stoppen
-        findViewById(R.id.imageView).setOnClickListener(new View.OnClickListener() {
+        client = MainActivity.client;
+        FillTable();
+        client.Stop();
+        findViewById(R.id.imVaddPlant).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { //Click Listener
-                startActivity(new Intent(getApplicationContext(),Edit_Plant.class));
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Edit_Plant.class));
             }
         });
     }
+
+    /**
+     * Create the menue house item in the right top corner
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu); //Menü initalisieren
+        getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Click Listener for menue item
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(),MainActivity.class)); //Menü Click Listener
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
-
-    @SuppressLint("SetTextI18n")//Ausblenden der Fehlermeldung: "Kein festen Text in TextViews ausgeben"
-    private void TabelleFullen() { //Tabelle füllen
-        String help=client.Send("get plant ids");
-        try {
-            Thread.sleep(500); //warten auf Antwort
-        } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
-        }
-        if(help.equals("Error"))return;
-        String[] ID=help.split("_"); //IDS bekommen vom Client(Server)
-        Log.e("Länge",""+ID.length);
-        if(ID.length<1){
-            Toast.makeText(getApplicationContext(),"IDS",Toast.LENGTH_SHORT).show();
-            return;}
-
-//        Tabele mit ID, Name , Platz und BEarbeitung erstellen
-        TableLayout tableLayout=findViewById(R.id.tablePlant);
-        String names[]=client.Send("get plant names").split("_");
+    /**
+     * Method to Fill the Table
+     */
+    @SuppressLint("SetTextI18n")
+    private void FillTable() {
+        String help = client.Send("get plant ids");
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
-        int counter=0;
+        if (help.equals("Error")) return;
+        String[] ID = help.split("_");
+        Log.e("Länge", "" + ID.length);
+        if (ID.length < 1) {
+            Toast.makeText(getApplicationContext(), "IDS", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        TableLayout tableLayout = findViewById(R.id.tablePlant);
+        String names[] = client.Send("get plant names").split("_");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
+        }
+        int counter = 0;
         for (String ID_ : ID) {
             TableRow row = new TableRow(this);
             TextView txV = new TextView(this);
@@ -86,14 +94,16 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
-    public class Edit implements View.OnClickListener{
+    /**
+     * Click Listener for Edit Button
+     */
+    public class Edit implements View.OnClickListener {
 
         @Override
-        public void onClick(View view) { //Bearbeitung Activity starten
-            Intent intent = new Intent(getApplicationContext(),Edit_Plant.class);
-            intent.putExtra("ID",(int)view.getTag()); //ID mitsenden
+        public void onClick(View view) {
+            Intent intent = new Intent(getApplicationContext(), Edit_Plant.class);
+            intent.putExtra("ID", (int) view.getTag());
             startActivity(intent);
-           // Toast.makeText(getApplicationContext(),"HEy"+view.getTag(),Toast.LENGTH_LONG).show();
         }
     }
 

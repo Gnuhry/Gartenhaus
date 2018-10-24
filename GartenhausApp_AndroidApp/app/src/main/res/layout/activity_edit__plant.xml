@@ -137,13 +137,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/table_Plant_Feucht"
+                android:text="@string/table_Plant_GroundHumid"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                tools:text="@string/table_Plant_Feucht" />
+                tools:text="@string/table_Plant_GroundHumid" />
 
             <EditText
-                android:id="@+id/edTminFeucht"
+                android:id="@+id/edTminGroundHumid"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/Min"
@@ -157,10 +157,10 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:hint="@string/Max"
-                android:id="@+id/edTmaxFeucht"
+                android:id="@+id/edTmaxGroundHumid"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:hint="@string/Max"
                 android:inputType="numberDecimal" />
         </LinearLayout>
         <LinearLayout
