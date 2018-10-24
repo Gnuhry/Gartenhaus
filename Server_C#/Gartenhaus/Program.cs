@@ -16,15 +16,14 @@ namespace Gartenhaus
             Server.StartListening();
         }
     }
+    /// <summary>
+    /// Object, which store data during the programm life
+    /// </summary>
     public class StateObject
     {
-        // Client  socket.
         public Socket workSocket = null;
-        // Buffergröße initalisieren
         public const int BufferSize = 1024;
-        // Buffer initalisieren
         public byte[] buffer = new byte[BufferSize];
-        // Empfangede Daten String initalisieren
         public StringBuilder sb = new StringBuilder();
     }
 }

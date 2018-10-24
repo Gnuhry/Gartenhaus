@@ -40,29 +40,31 @@ public class Main3Activity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void TabelleFullen() {
-        String [] ID =client.Send("get arduinoids").split("_");
+        String ID =client.Send("get arduino ids");
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        Log.e("Länge",""+ID.length);
-        if(ID.length<=1){
+        String[]IDs=ID.split("_");
+        Log.e("Länge",""+IDs.length);
+        if(IDs.length<1){
             Toast.makeText(getApplicationContext(),"IDS",Toast.LENGTH_SHORT).show();
-            return;}
+            return;
+        }
         TableLayout tableLayout=findViewById(R.id.tableArduino);
-        for(String ID_:ID){ //Tabelle füllen
+        for(String ID_:IDs){ //Tabelle füllen
             TableRow row = new TableRow(this);
             TextView txV = new TextView(this);
-            txV.setText(ID_ + "");
-            row.addView(txV);
-            txV = new TextView(this);
-            String help=client.Send("get arduino all" + ID_);
+            String help=client.Send("get arduino all_" + ID_);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
             }
+            txV.setText(help.split("_")[0]);
+            row.addView(txV);
+            txV = new TextView(this);
             txV.setText(help.split("_")[1]);
             row.addView(txV);
             ImageView imageButton = new ImageView(this);

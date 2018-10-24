@@ -22,7 +22,7 @@
     <string name="btn_edit_arduino">Arduino einstellen</string>
     <string name="table_Arduino_ID">ID</string>
     <string name="table_Arduino_NamePflanze">Pflanzenname</string>
-    <string name="table_Arduino_edit">Einstellen</string>
+    <string name="table_Arduino_edit">Edit</string>
     <string name="pflanze">Pflanze</string>
     <string name="pumpe">Pumpe</string>
     <string name="licht">Licht</string>

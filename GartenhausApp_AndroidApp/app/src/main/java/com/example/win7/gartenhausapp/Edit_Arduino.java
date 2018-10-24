@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Edit_Arduino extends AppCompatActivity {
@@ -46,28 +47,34 @@ public class Edit_Arduino extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
+        String[]data=help.toString().split("_");
         ((TextView)findViewById(R.id.txVID)).setText(ID+"");
-        ((EditText)findViewById(R.id.edTIP)).setText(help.toString().split("_")[0]);
-        String erg[]= help.toString().split("_")[2].split("|");
-        StringBuilder help2 = new StringBuilder();
-        for(String x : erg)
-            help2.append(x).append("\n");
-        ((TextView)findViewById(R.id.txVdataSend)).setText(help2.toString());
-        ((Spinner)findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(help.toString().split("_")[1]));
+        ((EditText)findViewById(R.id.edTIP)).setText(data[0]);
+        StringBuilder dataSend= new StringBuilder();
+        for(char help2:data[2].toCharArray()){
+            if(help2=='|'){
+                dataSend.append("\n");
+            }
+            else{
+                dataSend.append(help2);
+            }
+        }
+        ((TextView)findViewById(R.id.txVdataSend)).setText(dataSend.toString());
+        ((Spinner)findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(data[1]));
     }
 
     private void SpinnerInitalisieren() {
         Spinner spinner= findViewById(R.id.spinner);
          spinnerlist= new ArrayList<>();
-        String[] names=client.Send("get plant names").split("_"); //IDS bekommen vom Client(Server)
+         spinnerlist.add("keine");
+        String name=client.Send("get plant names"); //IDS bekommen vom Client(Server)
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {
             Toast.makeText(this,"Nope",Toast.LENGTH_SHORT).show();
         }
-        for(String name:names){
-            spinnerlist.add(name);
-        }
+        String [] names=name.split("_");
+        Collections.addAll(spinnerlist, names);
         ArrayAdapter<String> arrayAdapter= new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerlist);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
@@ -79,8 +86,8 @@ public class Edit_Arduino extends AppCompatActivity {
     }
 
     public void btnClick_SaveArduino(View view) {
-        client.Send("set arduino _"+ID+"_"+((EditText)findViewById(R.id.edTIP)).getText().toString()+
-                "_"+((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition());
+        client.Send("set arduino_"+ID+"_"+((EditText)findViewById(R.id.edTIP)).getText().toString()+
+                "_"+(((Spinner)findViewById(R.id.spinner)).getSelectedItemPosition()-1));
         try {
             Thread.sleep(500); //warten auf Antwort
         } catch (InterruptedException e) {

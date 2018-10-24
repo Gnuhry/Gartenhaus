@@ -45,11 +45,6 @@
     <Compile Include="Arduino.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DatabaseCommunication.cs" />
-    <Compile Include="GartenhausDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GartenhausDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Plant.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,17 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="GartenhausDataSet.xsc">
-      <DependentUpon>GartenhausDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="GartenhausDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>GartenhausDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="GartenhausDataSet.xss">
-      <DependentUpon>GartenhausDataSet.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -7,9 +7,9 @@
 #include <ESP8266WiFi.h> //Bibilothek für Server Kommunikation
 
 //--------------------------initalisieren-------------------
-const char* ssid     = "VT"; //Name des Wifi
-const char* password = "1631492500942971"; //Code des Wifi
-const char* host = "192.168.178.78"; //IP-Addresse des Server
+const char* ssid     = "VTHHH"; //Name des Wifi
+const char* password = "v19t25h16h06h11"; //Code des Wifi
+const char* host = "192.168.178.29"; //IP-Addresse des Server
 const int serverPort=5000; //Port des C# Server
 int wifiStatus; // Status des Wifi
 int counter=0;
@@ -110,7 +110,14 @@ void MessageFromCSharpServer(){
               }
           }
         }
+         int seperator=help.indexOf("_"); //Index vom Unterstrich
+          String temp=help.substring(0,seperator); //Index Teil
+        if(temp=="Id"){
+         SaveID(help.substring(seperator+1,sizeof(help)).toInt());
+          }
+        else{
         SendToArduino(help); //Zeichenkette als Befehl ausführen und speichern
+        }
       }
   }
 
