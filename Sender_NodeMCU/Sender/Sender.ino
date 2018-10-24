@@ -2,143 +2,152 @@
 //NodeMCU
 
 //-------------Einbinden seperater Bibilotheken-------------------------
-#include <Wire.h> //Bibilothek für Master-Slave-Kommunikation mit Slave AMega2560
-#include <EEPROM.h> //Bibilothek zum Schreiben in den Speicher
-#include <ESP8266WiFi.h> //Bibilothek für Server Kommunikation
+#include <Wire.h>
+#include <EEPROM.h>
+#include <ESP8266WiFi.h>
 
 //--------------------------initalisieren-------------------
-const char* ssid     = "VT"; //Name des Wifi
-const char* password = "1631492500942971"; //Code des Wifi
-const char* host = "192.168.178.78"; //IP-Addresse des Server
-const int serverPort=5000; //Port des C# Server
-int wifiStatus; // Status des Wifi
-int counter=0;
+const char* ssid     = "VTHHH";
+const char* password = "v19t25h16h06h11";
+const char* host = "192.168.178.29";
+const int serverPort = 5000;
+int wifiStatus;
+int counter = 0;
 bool IsActive;
-WiFiClient client; //Client für erste Kommunikation mit C# Server
-WiFiServer server(5001); //Server für Kommunikation mit C# Client
+WiFiClient client;
+WiFiServer server(5001);
 
 //------------------------SetUp-----------------------------
 void setup() {
-  IsActive=false;
-  Serial.begin(9600); //Serial Communication für Debug starten
-  Wire.begin(D1, D2); //I2C Bus an SDA(D1) und SCL(D2)
+  IsActive = false;
+  Serial.begin(9600); //start Serial Communication
+  Wire.begin(D1, D2); //start Wire Communication
   Serial.println("-----------Start--------------");
-  ConnectToWifi(); //Zu Wifi verbinden
+  ConnectToWifi();
   server.begin();
-  int id=GetID();
-  String erg="";
-  if(id==0)
+  int id = GetID();
+  String erg = "";
+  //connect to server
+  if (id == 0)
   {
-    erg=SendToServer("new arduino"); //An Server melden, dass Arduino erreichbar
+    erg = SendToServer("new arduino");
   }
-  else 
+  else
   {
-    erg=SendToServer("reconect arduino_"+id); //An Server melden, dass Arduino erreichbar
-    IsActive=true;
+    erg = SendToServer("reconect arduino_" + id);
+    IsActive = true;
   }
-  if(erg!="Success"){
+  if (erg != "Success") {
     SaveID(erg.toInt());
-    }
+  }
 }
 
 //-----------------------Loop------------------------------
 void loop() {
-  //TODO auf ServerKommunikation warten
   MessageFromCSharpServer();
-   if(IsActive){
-  if(counter++==10){
-    counter=0;
-    String request=GetFromArduino(); //Request an Slave AMega2560
-    SendToServer("set arduino data_"+request); //An Server schicken
-  }
+  if (IsActive) {
+    if (counter++ == 10) {
+      counter = 0;
+      String request = GetFromArduino(); //Request Data
+      SendToServer("set arduino data_" + request);
+    }
   }
   delay(1000);
 }
 
-//-----------------Master-Slave.Kommunikation mit AMega2560 -------------------
-void SendToArduino(String message){ //String an Slave AMega2560 senden
-   char buffer_[sizeof(message)];
-  message.toCharArray(buffer_,sizeof(message));
-  Wire.beginTransmission(8); //I2C Bus an Adresse 8
- Wire.write(buffer_);  //string senden
- Wire.endTransmission();    //Übertragung beenden
-  }
+//-----------------Master-Slave Communication with AMega2560 -------------------
+void SendToArduino(String message) {
+  char buffer_[sizeof(message)];
+  message.toCharArray(buffer_, sizeof(message));
+  Wire.beginTransmission(8);
+  Wire.write(buffer_);
+  Wire.endTransmission();
+}
 
-  String GetFromArduino(){ //Request von Slave AMega2560
-    String erg="";
-    Wire.requestFrom(8, 5); //erwarte einen 5 byte langen Wert an Adresse 8
- while(Wire.available()){
-    erg+= Wire.read(); //bytes lesen, solange Wire available ist
+String GetFromArduino() {
+  String erg = "";
+  Wire.requestFrom(8, 5);
+  while (Wire.available()) {
+    erg += Wire.read();
   }
   return erg;
-    }
+}
 
 
-    //--------------------Kommunikation mit lokalem C# Server ----------
- void ConnectToWifi(){ //Zu Wifi verbinden
-   Serial.print("Your are connecting to;");
-      Serial.println(ssid);
+//--------------------Communication with local C# server ----------
+void ConnectToWifi() {
+  Serial.print("Your are connecting to;");
+  Serial.println(ssid);
 
-      WiFi.begin(ssid, password); //verbinden
+  WiFi.begin(ssid, password);
 
-      while (WiFi.status() != WL_CONNECTED) {//Solange nicht verbunden, erneut versuchen nach 500ms
-        delay(500);
-        Serial.println("WiFi not connected");
-      }
-      //verbunden
-      Serial.println("");
-         Serial.println("Your ESP is connected!");
-         Serial.println("Your IP address is: ");
-         Serial.println(WiFi.localIP());
+  while (WiFi.status() != WL_CONNECTED) {//try to connect evere 500 ms
+    delay(500);
+    Serial.println("WiFi not connected");
   }
+  //connected
+  Serial.println("");
+  Serial.println("Your ESP is connected!");
+  Serial.println("Your IP address is: ");
+  Serial.println(WiFi.localIP());
+}
 
-  
-//Methode, die Befehle vom C# Client einließt
-void MessageFromCSharpServer(){
-  String help="";
-    WiFiClient client2=server.available(); //Überprügung ob Client versucht Server Daten zu schicken
-    if(client2){
-      while(client2.connected()){ //Wenn der Client verbunden
-        if(client2.available()){ //Wenn der Client Daten sendet
-          char c=client2.read(); //Zeichen auslesen
-          if(c=='|'){ //End Zeichen ausfiltern
-            client2.println("Done<EOF>"); //antworten, dass nachricht angekommen ist
-            client2.stop(); //Verbindung beenden
-            }
-            else{
-              help+=c; //Zeichen speichern
-              }
-          }
+
+
+void MessageFromCSharpServer() {
+  String help = "";
+  WiFiClient client2 = server.available();
+  if (client2) {
+    while (client2.connected()) {
+      if (client2.available()) {
+        char c = client2.read(); //read command from Server
+        if (c == '|') {
+          client2.println("Done<EOF>");
+          client2.stop();
         }
-        SendToArduino(help); //Zeichenkette als Befehl ausführen und speichern
+        else {
+          help += c;
+        }
       }
-  }
-
-
-  String SendToServer(String command){ //Zum Sever senden
-  if (!client.connect(host, serverPort)) {Serial.print("X");} //Wenn keine Verbindung zum Server
- else{
-  command+="_<EOF>"; //Ende-Flagge anhängen
-  client.println(command); //senden
-  String erg=client.readStringUntil('|'); //warten auf antwort
-  Serial.print(erg);
- Serial.println();
- Serial.println("Verbindung schliessen");
- client.flush(); //Verbindung schließen
- client.stop();
- Serial.println("Verbindung geschlossen");
- return erg;
-  }
-  }
-
-  //-------------------------speichern der id lokal ---------------------------------
-  void SaveID(int id){//Speichern der id
-    EEPROM.write(0,id);
-    EEPROM.commit();
-    Serial.println("Save");
     }
+    int seperator = help.indexOf("_");
+    String temp = help.substring(0, seperator);
+    if (temp == "Id") {//save ID
+      SaveID(help.substring(seperator + 1, sizeof(help)).toInt());
+    }
+    else {
+      SendToArduino(help);
+    }
+  }
+}
 
 
-   int GetID(){//id aus dem Speicher holen
-      return EEPROM.read(0);
-      }
+String SendToServer(String command) { //send to server
+  if (!client.connect(host, serverPort)) {
+    Serial.print("X");
+  }
+  else {
+    command += "_<EOF>";
+    client.println(command); //send
+    String erg = client.readStringUntil('|'); //wait for answer
+    Serial.print(erg);
+    Serial.println();
+    Serial.println("Closing connection");
+    client.flush();
+    client.stop();
+    Serial.println("Close connection");
+    return erg;
+  }
+}
+
+//-------------------------local save of the Arduino ID ---------------------------------
+void SaveID(int id) {
+  EEPROM.write(0, id);
+  EEPROM.commit();
+  Serial.println("Save");
+}
+
+
+int GetID() {
+  return EEPROM.read(0);
+}

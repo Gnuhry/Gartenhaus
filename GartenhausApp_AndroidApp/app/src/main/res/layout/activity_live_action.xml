@@ -18,41 +18,41 @@
             android:id="@+id/swPumpe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/pumpe" />
+            android:text="@string/pump" />
 
         <Switch
             android:id="@+id/swLicht"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/licht" />
+            android:text="@string/light" />
         <Switch
             android:id="@+id/swRolladen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/rolladen" />
+            android:text="@string/shutters" />
 
         <Switch
             android:id="@+id/swSpruher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/spr_her" />
+            android:text="@string/spray" />
 
         <Switch
             android:id="@+id/swHeizung"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/heizung" />
+            android:text="@string/heater" />
 
         <Switch
             android:id="@+id/swKuhlung"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/kuhlung" />
+            android:text="@string/cooler" />
     </LinearLayout>
 
     <TableLayout
@@ -94,7 +94,7 @@
                 android:id="@+id/txVFeucht"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/table_Plant_Feucht" />
+                android:text="@string/table_Plant_GroundHumid" />
 
             <TextView
                 android:id="@+id/txVUV"

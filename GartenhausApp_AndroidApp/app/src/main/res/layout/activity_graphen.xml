@@ -52,9 +52,9 @@
         android:layout_below="@+id/btnTemp"
         android:layout_marginTop="-45dp"
         android:layout_toStartOf="@+id/btnUV"
-        android:text="@string/table_Plant_Feucht"
-        android:layout_toLeftOf="@+id/btnUV"
-        android:onClick="btnClick_RFeucht"/>
+        android:text="@string/table_Plant_GroundHumid"
+        android:onClick="btnClick_RFeucht"
+        android:layout_toLeftOf="@+id/btnUV" />
 
     <CheckBox
         android:textColor="@color/Humid"
@@ -86,7 +86,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/btnTemp"
         android:layout_marginTop="-45dp"
-        android:text="@string/vegleichen"
+        android:text="@string/compare"
         android:visibility="gone" />
 
     <TextView
@@ -95,7 +95,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/spinnerGraph"
         android:layout_toRightOf="@+id/spinnerGraph"
-        android:text="@string/gestrichelt"
+        android:text="@string/dashed"
         android:visibility="gone" />
 
 </RelativeLayout>

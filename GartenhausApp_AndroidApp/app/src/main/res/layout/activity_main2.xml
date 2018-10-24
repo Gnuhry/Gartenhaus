@@ -46,7 +46,7 @@
 </ScrollView>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imVaddPlant"
         android:layout_width="53dp"
         android:layout_height="46dp"
         android:layout_alignParentBottom="true"

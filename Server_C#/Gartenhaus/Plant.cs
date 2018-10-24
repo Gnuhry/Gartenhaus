@@ -4,8 +4,41 @@ using System.Data;
 
 namespace Gartenhaus
 {
+    /// <summary>
+    /// Class for Plant database
+    /// </summary>
     public class Plant : DatabaseCommunication
     {
+        /// <summary>
+        /// Create a new column in database
+        /// </summary>
+        /// <param name="name">
+        /// Name of the Plant
+        /// </param>
+        /// <param name="minTemp">
+        /// The lowest working Temperatur
+        /// </param>
+        /// <param name="maxTemp">
+        /// The highes working Temperatur
+        /// </param>
+        /// <param name="minGroundHumid">
+        /// The lowest working GroundHumid
+        /// </param>
+        /// <param name="maxGroundHumid">
+        /// The highest working GroundHumid
+        /// </param>
+        /// <param name="minHumid">
+        /// The lowest working AirHumid
+        /// </param>
+        /// <param name="maxHumid">
+        /// The highest working AirHumid
+        /// </param>
+        /// <param name="minUV">
+        /// The lowest working UV
+        /// </param>
+        /// <param name="maxUV">
+        /// The highest working UV
+        /// </param>
         public static int New(string name, float minTemp, float maxTemp, float minGroundHumid, float maxGroundHumid, float minHumid, float maxHumid, float minUV, float maxUV)
         {
             using (con)
@@ -21,52 +54,89 @@ namespace Gartenhaus
                 cmd.Parameters.Add("@MaxHumid", SqlDbType.Float).Value = maxHumid;
                 cmd.Parameters.Add("@MinUV", SqlDbType.Float).Value = minUV;
                 cmd.Parameters.Add("@MaxUV", SqlDbType.Float).Value = maxUV;
-                Console.WriteLine(cmd.CommandText);
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
                 return GetIDs().Length - 1;
             }
         }
-
+        /// <summary>
+        /// Change data of a column in database
+        /// </summary>
+        /// /// <param name="id">
+        /// PlantID
+        /// </param>
+        /// <param name="name">
+        /// Name of the Plant
+        /// </param>
+        /// <param name="minTemp">
+        /// The lowest working Temperatur
+        /// </param>
+        /// <param name="maxTemp">
+        /// The highes working Temperatur
+        /// </param>
+        /// <param name="minGroundHumid">
+        /// The lowest working GroundHumid
+        /// </param>
+        /// <param name="maxGroundHumid">
+        /// The highest working GroundHumid
+        /// </param>
+        /// <param name="minHumid">
+        /// The lowest working AirHumid
+        /// </param>
+        /// <param name="maxHumid">
+        /// The highest working AirHumid
+        /// </param>
+        /// <param name="minUV">
+        /// The lowest working UV
+        /// </param>
+        /// <param name="maxUV">
+        /// The highest working UV
+        /// </param>
         public static void Set(int id, string name, float minTemp, float maxTemp, float minGroundHumid, float maxGroundHumid, float minHumid, float maxHumid, float minUV, float maxUV)
         {
             if (!IsRealID(id))
             {
                 return;
             }
-            //TODO in Arduino suchen, ob Pflanze registriert
-            /*
-            if (minTemp.Equals(Get(id, "MinTemp")))
+            //Serach if the PlantID is register in a arduino and send the changes to it
+            int[] ids = Arduino.GetIDs();
+            foreach (int iD in ids)
             {
-                Client.Arduino_Send(id, "MinTemp_" + minTemp);
+                if (Arduino.GetPlantId(iD) == id)
+                {
+                    if (minTemp.Equals(Get(iD, "MinTemp")))
+                    {
+                        Client.Arduino_Send(iD, "MinTemp_" + minTemp);
+                    }
+                    if (minTemp.Equals(Get(iD, "MaxTemp")))
+                    {
+                        Client.Arduino_Send(iD, "MaxTemp_" + maxTemp);
+                    }
+                    if (minTemp.Equals(Get(iD, "MinHumid")))
+                    {
+                        Client.Arduino_Send(iD, "MinHumid_" + minHumid);
+                    }
+                    if (minTemp.Equals(Get(iD, "MaxHumid")))
+                    {
+                        Client.Arduino_Send(iD, "MaxHumid_" + maxHumid);
+                    }
+                    if (minTemp.Equals(Get(iD, "MinGroundHumid")))
+                    {
+                        Client.Arduino_Send(iD, "MinGroundHumid_" + minGroundHumid);
+                    }
+                    if (minTemp.Equals(Get(iD, "MaxGroundHumid")))
+                    {
+                        Client.Arduino_Send(iD, "MaxGroundHumid_" + maxGroundHumid);
+                    }
+                    if (minTemp.Equals(Get(iD, "MinUV")))
+                    {
+                        Client.Arduino_Send(iD, "MinUV_" + minUV);
+                    }
+                    if (minTemp.Equals(Get(iD, "MaxUV")))
+                    {
+                        Client.Arduino_Send(iD, "MaxUV_" + maxUV);
+                    }
+                }
             }
-            if (minTemp.Equals(Get(id, "MaxTemp")))
-            {
-                Client.Arduino_Send(id, "MaxTemp_" + maxTemp);
-            }
-            if (minTemp.Equals(Get(id, "MinHumid")))
-            {
-                Client.Arduino_Send(id, "MinHumid_" + minHumid);
-            }
-            if (minTemp.Equals(Get(id, "MaxHumid")))
-            {
-                Client.Arduino_Send(id, "MaxHumid_" + maxHumid);
-            }
-            if (minTemp.Equals(Get(id, "MinGroundHumid")))
-            {
-                Client.Arduino_Send(id, "MinGroundHumid_" + minGroundHumid);
-            }
-            if (minTemp.Equals(Get(id, "MaxGroundHumid")))
-            {
-                Client.Arduino_Send(id, "MaxGroundHumid_" + maxGroundHumid);
-            }
-            if (minTemp.Equals(Get(id, "MinUV")))
-            {
-                Client.Arduino_Send(id, "MinUV_" + minUV);
-            }
-            if (minTemp.Equals(Get(id, "MaxUV")))
-            {
-                Client.Arduino_Send(id, "MaxUV_" + maxUV);
-            }*/
             using (con)
             {
                 OpenConnection();
@@ -85,6 +155,15 @@ namespace Gartenhaus
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
             }
         }
+        /// <summary>
+        /// Get Data from Database
+        /// </summary>
+        /// <param name="id">
+        /// PlantID
+        /// </param>
+        /// <param name="search">
+        /// rowname like "Name","MinTemp","MaxTemp","MinFeucht","MaxFeucht","MinGroundHumid","MaxGroundHumid","MinUV","MaxUV"
+        /// </param>
         public static string Get(int id, string search)
         {
             if (!IsRealID(id))
@@ -104,14 +183,22 @@ namespace Gartenhaus
                 }
                 if (search != "Name")
                 {
-                    erg=Math.Round(Convert.ToSingle(erg),2).ToString();
+                    erg = Math.Round(Convert.ToSingle(erg), 2).ToString();
                     erg = erg.Replace(',', '.');
                 }
                 reader.Close();
                 return erg;
             }
         }
-
+        /// <summary>
+        /// Get All Data from one column
+        /// </summary>
+        /// <param name="id">
+        /// PlantID
+        /// </param>
+        /// <returns>
+        /// Array of Name,MinTemp,MaxTemp,MinGroundHumid,MaxGroundHumid,MinHumid,MaxHumid,MinUV,MaxUV
+        /// </returns>
         public static string[] GetAll(int id)
         {
             string[] erg = new string[9];
@@ -124,12 +211,14 @@ namespace Gartenhaus
             erg[6] = Get(id, "MaxHumid");
             erg[7] = Get(id, "MinUV");
             erg[8] = Get(id, "MaxUV");
-            Console.WriteLine(erg[1]);
-            Console.WriteLine(erg[2]);
-            Console.WriteLine(erg[3]);
-            Console.WriteLine(erg[4]);
             return erg;
         }
+        /// <summary>
+        /// Delete a column in database
+        /// </summary>
+        /// <param name="id">
+        /// PlantID
+        /// </param>
         public static void Delete(int id)
         {
             if (!IsRealID(id))
@@ -144,6 +233,9 @@ namespace Gartenhaus
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
             }
         }
+        /// <summary>
+        /// Get All IDs from database
+        /// </summary>
         public static int[] GetIDs()
         {
             List<int> erg = new List<int>();
@@ -160,6 +252,15 @@ namespace Gartenhaus
             reader.Close();
             return erg.ToArray();
         }
+        /// <summary>
+        /// Check if ID can be found in database
+        /// </summary>
+        /// <param name="id">
+        /// PlantID
+        /// </param>
+        /// <returns>
+        /// Is the ID in the database
+        /// </returns>
         private static bool IsRealID(int id)
         {
             bool realID = false;

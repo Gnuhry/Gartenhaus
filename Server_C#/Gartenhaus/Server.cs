@@ -6,33 +6,39 @@ using System.Threading;
 
 namespace Gartenhaus
 {
+    /// <summary>
+    /// Class for Server
+    /// </summary>
     public class Server
     {
         private static ManualResetEvent allDone = new ManualResetEvent(false);
 
-        public static string GetLocalIPAddress() //Locale Addresse bekommen
+        /// <summary>
+        /// Get Local IP Adress
+        /// </summary>
+        public static string GetLocalIPAddress()
         {
-            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName()); //Host aus DNS-Liste initalisieren
-            foreach (IPAddress ip in host.AddressList) //Nach IP-Addresse suchen, die im lokalen Netzwerk ist
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    return ip.ToString();//IP zurückgeben
+                    return ip.ToString();
                 }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
+        /// <summary>
+        /// Start Server listening
+        /// </summary>
         public static void StartListening()
         {
-            // Lokalen Schlußpunkt initalisieren
             IPAddress ipAddress = IPAddress.Parse(GetLocalIPAddress());
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Program.loaclPort);
 
-            // TCP/IP socket initalisiern
             Socket listener = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
 
-            //Socket zum lokalen Endpunkt binden und für neue Verbindungen warten
             try
             {
                 listener.Bind(localEndPoint);
@@ -40,16 +46,11 @@ namespace Gartenhaus
 
                 while (true)
                 {
-                    // Event zu kein Signal Status setzen
                     allDone.Reset();
-
-                    // Asynchronen Socket für kommende Kommunikationen initalisieren
                     Console.WriteLine("Waiting for a connection...");
                     listener.BeginAccept(
                         new AsyncCallback(AcceptCallback),
                         listener);
-
-                    //Auf Kommunikation warten und dann weitermachen
                     allDone.WaitOne();
                 }
 
@@ -63,17 +64,16 @@ namespace Gartenhaus
             Console.Read();
 
         }
-
+        /// <summary>
+        /// Accept Callback
+        /// </summary>
         private static void AcceptCallback(IAsyncResult ar)
         {
-            //Dem Haupt Thread signalisieren fortzusetzen
             allDone.Set();
 
-            //Socket mit dem Client bekommen
             Socket listener = (Socket)ar.AsyncState;
             Socket handler = listener.EndAccept(ar);
 
-            //StateObject initalisieren
             StateObject state = new StateObject
             {
                 workSocket = handler
@@ -81,52 +81,51 @@ namespace Gartenhaus
             handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                 new AsyncCallback(ReadCallback), state);
         }
-
+        /// <summary>
+        /// Read Callback
+        /// </summary>
         private static void ReadCallback(IAsyncResult ar)
         {
             String content = String.Empty;
 
-            //StatObject und Socket bekommen
             StateObject state = (StateObject)ar.AsyncState;
             Socket handler = state.workSocket;
 
-            // Daten vom Socket lesen
             int bytesRead = handler.EndReceive(ar);
 
             if (bytesRead > 0)
             {
-                //Daten speichern, falls weitere DAten kommen
                 state.sb.Append(Encoding.ASCII.GetString(
                     state.buffer, 0, bytesRead));
 
-                // Nach Ende-Flagge suchen, wenn nicht gefunden, weiterlesen
                 content = state.sb.ToString();
                 if (content.IndexOf("<EOF>") > -1)
                 {
-                    //Fertig gelesen
+                    //Read done
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                         content.Length, content);
 
                     string reponse = "";
                     string[] help = content.Split('_');
                     string txt = help[0];
+                    //Analyze message
                     switch (txt.ToLower())
                     {
-                        case "get time":
+                        case "get time": //get time
                             reponse = DateTime.Now.ToLongDateString();
                             break;
-                        case "get plant name":
+                        case "get plant name": //get plant name_[Name:string]
                             reponse = Plant.Get(Convert.ToInt32(help[1]), "Name");
                             break;
-                        case "get plant all":
+                        case "get plant all"://get plant all_[PlantID:int]
                             foreach (string text in Plant.GetAll(Convert.ToInt32(help[1])))
                                 reponse += text + "_";
                             break;
-                        case "get plant ids":
+                        case "get plant ids"://get plant ids
                             foreach (int text in Plant.GetIDs())
                                 reponse += text + "_";
                             break;
-                        case "get plant names":
+                        case "get plant names"://get plant names
                             reponse = "";
                             foreach (int id in Plant.GetIDs())
                             {
@@ -134,98 +133,108 @@ namespace Gartenhaus
                             }
                             break;
 
-                        case "set plant":
+                        case "set plant"://set plant_[PlantID:int]_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_
+                            //_[MinHumid:float]_[MaxHumid:float]_[MinUV:float]_[MaxUV:float]
                             Plant.Set(Convert.ToInt32(help[1]), help[2], Convert.ToSingle(help[3]), Convert.ToSingle(help[4]),
                                 Convert.ToSingle(help[5]), Convert.ToSingle(help[6]), Convert.ToSingle(help[7]),
                                 Convert.ToSingle(help[8]), Convert.ToSingle(help[9]), Convert.ToSingle(help[10]));
                             reponse = "Success";
                             break;
-                        case "new plant":
+                        case "new plant"://new plant_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_
+                            //_[MinHumid:float]_[MaxHumid:float]_[MinUV:float]_[MaxUV:float]
                             Plant.New(help[1], Convert.ToSingle(help[2]), Convert.ToSingle(help[3]),
                                 Convert.ToSingle(help[4]), Convert.ToSingle(help[5]), Convert.ToSingle(help[6]),
                                 Convert.ToSingle(help[7]), Convert.ToSingle(help[8]), Convert.ToSingle(help[9]));
                             reponse = "Success";
                             break;
-                        case "delete plant":
+                        case "delete plant"://delete plant_[PlantID:int]
                             Plant.Delete(Convert.ToInt32(help[1]));
                             reponse = "Success";
                             break;
 
 
-                        case "get arduino all":
+                        case "get arduino all"://get arduino all_[ArduinoID:int]
                             foreach (string text in Arduino.GetAll(Convert.ToInt32(help[1])))
                                 reponse += text + "_";
                             break;
-                        case "get arduino ids":
+                        case "get arduino ids"://get arduino ids
                             foreach (int text in Arduino.GetIDs())
                                 reponse += text + "_";
+                            Console.WriteLine(reponse);
                             break;
-                        case "set arduino arduinoIP":
+                        case "set arduino arduinoip"://set arduino arduinoip_[Arduinoip:int]_[Arduinoip:string]
                             Arduino.SetArduinoIP(Convert.ToInt32(help[1]), help[2]);
                             reponse = "Success";
                             break;
-                        case "set arduino PlantID":
+                        case "set arduino plantid"://set arduino plantid_[ArduinoID:int]_[PlantID:int]
                             Arduino.SetPlantID(Convert.ToInt32(help[1]), Convert.ToInt32(help[2]));
                             reponse = "Success";
                             break;
-                        case "set arduino":
+                        case "set arduino"://set arduino_[ArduinoID]_[ArduinoIP:string]_[PlantID:int]
                             Arduino.SetArduinoIP(Convert.ToInt32(help[1]), help[2]);
-                            Arduino.SetPlantID(Convert.ToInt32(help[1]), Plant.GetIDs()[Convert.ToInt32(help[3])]);
+                            if (Convert.ToInt32(help[3]) < 1)
+                            {
+                                Arduino.RemovePlantID(Convert.ToInt32(help[1]));
+                            }
+                            else
+                            {
+                                Arduino.SetPlantID(Convert.ToInt32(help[1]), Plant.GetIDs()[Convert.ToInt32(help[3])]);
+                            }
                             reponse = "Success";
                             break;
-                        case "new arduino":
-                            reponse = ""+Arduino.New(help[1]); 
+                        case "new arduino"://new arduino
+                            Console.WriteLine("New_" + handler.RemoteEndPoint.ToString().Split(':')[0]);
+                            reponse = "" + Arduino.New(handler.RemoteEndPoint.ToString().Split(':')[0]);
                             break;
-                        case "reconect arduino":
+                        case "reconect arduino"://reconect arduino_[ArduinoID:string]
                             Arduino.Reconect(Convert.ToInt32(help[1]));
                             reponse = "Success";
                             break;
-                        case "delete arduino":
+                        case "delete arduino"://delete arduino_[ArduinoID:int]
                             Arduino.Delete(Convert.ToInt32(help[1]));
                             reponse = "Success";
                             break;
 
 
-                        case "set arduino data":
+                        case "set arduino data"://set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[UV:float]
                             Arduino.SetData(Convert.ToInt32(help[1]), Convert.ToSingle(help[2]), Convert.ToSingle(help[3]), Convert.ToSingle(help[4]), Convert.ToSingle(help[5]));
                             reponse = "Success";
                             break;
-                        case "get arduino data":
+                        case "get arduino data"://get arduino data
                             reponse = Arduino.GetAllData(Convert.ToInt32(help[1]));
                             break;
                     }
-                    //Antwort senden
+                    //send 
                     if (reponse == "") reponse = "Error";
                     Send(handler, reponse);
                 }
                 else
                 {
-                    // Wenn nicht alle Daten gesendet, weiter suchen
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
                 }
             }
         }
 
-
+        /// <summary>
+        /// Send
+        /// </summary>
         private static void Send(Socket handler, String data)
         {
-            //String mit ASCII verschlüßeln
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
-            //Start des Sendevorgang
             handler.BeginSend(byteData, 0, byteData.Length, 0,
                 new AsyncCallback(SendCallback), handler);
         }
-
+        /// <summary>
+        /// Send Callback
+        /// </summary>
         private static void SendCallback(IAsyncResult ar)
         {
             try
             {
-                // Socket bekommen
                 Socket handler = (Socket)ar.AsyncState;
 
-                // Senden abschließen
                 int bytesSent = handler.EndSend(ar);
                 Console.WriteLine("Sent {0} bytes to client.", bytesSent);
 
