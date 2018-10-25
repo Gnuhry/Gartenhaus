@@ -17,6 +17,10 @@ namespace Gartenhaus
         /// </summary>
         protected static void OpenConnection()
         {
+            if (reader != null)
+            {
+                reader.Close();
+            }
             if (con == null)
             {
                 con = new SqlConnection(connectionString);

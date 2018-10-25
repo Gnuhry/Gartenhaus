@@ -172,7 +172,7 @@ namespace Gartenhaus
                             break;
                         case "set arduino"://set arduino_[ArduinoID]_[ArduinoIP:string]_[PlantID:int]
                             Arduino.SetArduinoIP(Convert.ToInt32(help[1]), help[2]);
-                            if (Convert.ToInt32(help[3]) < 1)
+                            if (Convert.ToInt32(help[3]+1) < 1)
                             {
                                 Arduino.RemovePlantID(Convert.ToInt32(help[1]));
                             }

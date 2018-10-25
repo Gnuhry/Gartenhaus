@@ -29,6 +29,7 @@ namespace Gartenhaus
             try
             {
                 //Set end adress
+                Console.WriteLine(ArduinoID + "");
                 IPAddress ipAddress = IPAddress.Parse(Arduino.GetAll(ArduinoID)[0]);
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, Program.arduinoport);
 

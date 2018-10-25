@@ -126,7 +126,7 @@ void Check(int index) {
 
 
 float GetGroundHumid() {
-  float temp[10];
+  int temp[10];
 
   for (int f = 0; f < 10; f++)
   {
@@ -134,7 +134,8 @@ float GetGroundHumid() {
     temp[f] = analogRead(GroundHumidSensor);
     delay(20);
   }
-  float groundHumid = (temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10;
+  float groundHumid = (temp[0] + temp[1] + temp[2] + temp[3] + temp[4] +
+  temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10.0;
   return groundHumid;
 }
 
@@ -189,8 +190,7 @@ void receiveEvent(int howMany) {
 
 void requestEvent() {//get data
   char buf[50];
-  String help = FloatToString(GetTemp()) + "_" + FloatToString(GetGroundHumid()) +
-                "_" + FloatToString(GetHumid()) + "_" + FloatToString(GetUV());
+  String help = FloatToString(GetTemp()) + "_" + FloatToString(GetGroundHumid()) + "_" + FloatToString(GetHumid()) + "_" + FloatToString(GetUV());
   help.toCharArray(buf, sizeof(help));
   Wire.write(buf);
 }

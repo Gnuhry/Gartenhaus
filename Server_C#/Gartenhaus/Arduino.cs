@@ -48,7 +48,9 @@ namespace Gartenhaus
                     Delete(Convert.ToInt32(reader["Id"]));
                 }
                 reader.Close();
+                OpenConnection();
                 cmd.CommandText = "INSERT INTO Arduino (ArduinoIP) VALUES (@ArduinoIP)";
+                cmd.Parameters.Add("@ArduinoIP", SqlDbType.NVarChar).Value = ArduinoIP;
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
                 return GetIDs().Length - 1;
             }
@@ -203,6 +205,10 @@ namespace Gartenhaus
                 {
                     reader = cmd.ExecuteReader();
                     reader.Read();
+                    if (reader[Search] == null)
+                    {
+                        return "Error";
+                    }
                     return reader[Search].ToString();
                 }
             }
@@ -218,9 +224,8 @@ namespace Gartenhaus
             using (con)
             {
                 OpenConnection();
-                cmd.CommandText = "Update Arduino SET PlantID = @PlantID WHERE ID=@Id";
+                cmd.CommandText = "Update Arduino SET PlantID = '' WHERE ID=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
-                cmd.Parameters.Add("@PlantID", SqlDbType.Int).Value = null;
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
             }
             Client.Arduino_Send(id, "Id_-1");
@@ -236,9 +241,8 @@ namespace Gartenhaus
             using (con)
             {
                 OpenConnection();
-                cmd.CommandText = "Update Arduino SET DataSend = @DataSend WHERE ID=@Id";
+                cmd.CommandText = "Update Arduino SET DataSend = '' WHERE ID=@Id";
                 cmd.Parameters.Add("@Id", SqlDbType.Int).Value = id;
-                cmd.Parameters.Add("@DataSend", SqlDbType.Int).Value = null;
                 Console.WriteLine("Changed: " + cmd.ExecuteNonQuery());
             }
         }

@@ -142,6 +142,12 @@ String SendToServer(String command) { //send to server
 
 //-------------------------local save of the Arduino ID ---------------------------------
 void SaveID(int id) {
+  if (id < 1) {
+    IsActive = false;
+  }
+  else {
+    IsActive = true;
+  }
   EEPROM.write(0, id);
   EEPROM.commit();
   Serial.println("Save");
