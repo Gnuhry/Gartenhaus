@@ -2,7 +2,6 @@
 //NodeMCU
 
 //-------------Einbinden seperater Bibilotheken-------------------------
-#include <Wire.h>
 #include <EEPROM.h>
 #include <ESP8266WiFi.h>
 
@@ -21,7 +20,7 @@ WiFiServer server(5001);
 void setup() {
   IsActive = false;
   Serial.begin(9600); //start Serial Communication
-  Wire.begin(D1, D2); //start Wire Communication
+  Serial1.begin(10000);
   Serial.println("-----------Start--------------");
   ConnectToWifi();
   server.begin();
@@ -48,31 +47,24 @@ void loop() {
   if (IsActive) {
     if (counter++ == 10) {
       counter = 0;
-      String request = GetFromArduino(); //Request Data
+      String request = ToMega2560("request"); //Request Data
       SendToServer("set arduino data_" + request);
     }
   }
-  delay(1000);
 }
 
 //-----------------Master-Slave Communication with AMega2560 -------------------
-void SendToArduino(String message) {
-  char buffer_[sizeof(message)];
-  message.toCharArray(buffer_, sizeof(message));
-  Wire.beginTransmission(8);
-  Wire.write(buffer_);
-  Wire.endTransmission();
-}
-
-String GetFromArduino() {
-  String erg = "";
-  Wire.requestFrom(8, 5);
-  while (Wire.available()) {
-    erg += Wire.read();
+String ToMega2560(String tx) {
+  Serial1.println(tx + "\n");
+  while (true) {
+    if (Serial1.available()) {
+      delay(100);
+      String rcv = Serial1.readStringUntil('\n');
+      Serial.print(rcv);
+      return rcv;
+    }
   }
-  return erg;
 }
-
 
 //--------------------Communication with local C# server ----------
 void ConnectToWifi() {
@@ -101,7 +93,7 @@ void MessageFromCSharpServer() {
     while (client2.connected()) {
       if (client2.available()) {
         char c = client2.read(); //read command from Server
-        if (c == '|') {
+        if (c == '|' ) {
           client2.println("Done<EOF>");
           client2.stop();
         }
@@ -110,19 +102,16 @@ void MessageFromCSharpServer() {
         }
       }
     }
-    int seperator = help.indexOf("_");
-    String temp = help.substring(0, seperator);
-    if (temp == "Id") {//save ID
-      SaveID(help.substring(seperator + 1, sizeof(help)).toInt());
-    }
-    else {
-      SendToArduino(help);
-    }
+    Serial.println(help);
+    int seperator2 = help.indexOf(";");
+    SaveID(help.substring(0, seperator2).toInt());
+    ToMega2560(help.substring(seperator2 + 1, help.length() + 1));
   }
 }
 
 
 String SendToServer(String command) { //send to server
+  Serial.println(command);
   if (!client.connect(host, serverPort)) {
     Serial.print("X");
   }

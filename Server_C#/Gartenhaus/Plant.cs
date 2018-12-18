@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading;
 
 namespace Gartenhaus
 {
@@ -58,6 +59,13 @@ namespace Gartenhaus
                 return GetIDs().Length - 1;
             }
         }
+        static int Sendint;
+        static string Sendstring;
+        private static void Client1()
+        {
+            Client.Arduino_Send(Sendint, Sendstring);
+        }
+
         /// <summary>
         /// Change data of a column in database
         /// </summary>
@@ -105,35 +113,51 @@ namespace Gartenhaus
                 {
                     if (minTemp.Equals(Get(iD, "MinTemp")))
                     {
-                        Client.Arduino_Send(iD, "MinTemp_" + minTemp);
+                        Sendint = iD;
+                        Sendstring = "MinTemp_" + minTemp;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MaxTemp")))
                     {
-                        Client.Arduino_Send(iD, "MaxTemp_" + maxTemp);
+                        Sendint = iD;
+                        Sendstring = "MaxTemp_" + maxTemp;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MinHumid")))
                     {
-                        Client.Arduino_Send(iD, "MinHumid_" + minHumid);
+                        Sendint = iD;
+                        Sendstring = "MinHumid_" + minHumid;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MaxHumid")))
                     {
-                        Client.Arduino_Send(iD, "MaxHumid_" + maxHumid);
+                        Sendint = iD;
+                        Sendstring = "MaxHumid_" + maxHumid;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MinGroundHumid")))
                     {
-                        Client.Arduino_Send(iD, "MinGroundHumid_" + minGroundHumid);
+                        Sendint = iD;
+                        Sendstring = "MinGroundHumid_" + minGroundHumid;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MaxGroundHumid")))
                     {
-                        Client.Arduino_Send(iD, "MaxGroundHumid_" + maxGroundHumid);
+                        Sendint = iD;
+                        Sendstring = "MaxGroundHumid_" + maxGroundHumid;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MinUV")))
                     {
-                        Client.Arduino_Send(iD, "MinUV_" + minUV);
+                        Sendint = iD;
+                        Sendstring = "MinUV_" + minUV;
+                        new Thread(Client1).Start();
                     }
                     if (minTemp.Equals(Get(iD, "MaxUV")))
                     {
-                        Client.Arduino_Send(iD, "MaxUV_" + maxUV);
+                        Sendint = iD;
+                        Sendstring = "MaxUV_" + maxUV;
+                        new Thread(Client1).Start();
                     }
                 }
             }

@@ -13,7 +13,8 @@ namespace Gartenhaus
         public static int loaclPort = 5000, arduinoport=5001;
         static void Main(string[] args)
         {
-            Server.StartListening();
+              Server.StartListening();
+            //new Server2();
         }
     }
     /// <summary>

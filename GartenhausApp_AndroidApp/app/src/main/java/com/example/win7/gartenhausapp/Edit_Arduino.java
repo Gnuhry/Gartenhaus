@@ -58,15 +58,6 @@ public class Edit_Arduino extends AppCompatActivity {
         String[] data = help.toString().split("_");
         ((TextView) findViewById(R.id.txVID)).setText(ID + "");
         ((EditText) findViewById(R.id.edTIP)).setText(data[0]);
-        StringBuilder dataSend = new StringBuilder();
-        for (char help2 : data[2].toCharArray()) {
-            if (help2 == '|') {
-                dataSend.append("\n");
-            } else {
-                dataSend.append(help2);
-            }
-        }
-        ((TextView) findViewById(R.id.txVdataSend)).setText(dataSend.toString());
         ((Spinner) findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(data[1]));
     }
 

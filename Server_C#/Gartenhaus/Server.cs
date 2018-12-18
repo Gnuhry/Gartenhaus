@@ -110,7 +110,7 @@ namespace Gartenhaus
                     string txt = help[0];
                     //Analyze message
                     switch (txt.ToLower())
-                    {
+                    {                       
                         case "get time": //get time
                             reponse = DateTime.Now.ToLongDateString();
                             break;

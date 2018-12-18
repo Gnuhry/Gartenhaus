@@ -32,11 +32,10 @@ namespace Gartenhaus
                 Console.WriteLine(ArduinoID + "");
                 IPAddress ipAddress = IPAddress.Parse(Arduino.GetAll(ArduinoID)[0]);
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, Program.arduinoport);
-
-                Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
+                Socket client;
                 try
                 {
+                    client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                     // Connect
                     client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
                     connectDone.WaitOne();
@@ -52,12 +51,9 @@ namespace Gartenhaus
                 }
                 catch (Exception)
                 {
-                    //Save Data, if arduino not in reach
-                    Arduino.AddDataSend(ArduinoID, message);
                     return;
                 }
                 Console.WriteLine("Response received : {0}", response);
-                Arduino.RemoveDataSend(ArduinoID);
                 //Close
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
@@ -81,6 +77,7 @@ namespace Gartenhaus
         public static void Arduino_Send(int ID, string Message)
         {
             StartClient(ID, Message);
+            
         }
         /// <summary>
         /// Connection
@@ -110,8 +107,10 @@ namespace Gartenhaus
         {
             try
             {
-                StateObject state = new StateObject();
-                state.workSocket = client;
+                StateObject state = new StateObject
+                {
+                    workSocket = client
+                };
 
                 client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);

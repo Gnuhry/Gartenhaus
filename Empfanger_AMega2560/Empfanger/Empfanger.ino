@@ -2,7 +2,6 @@
 //Arduino Mega 2560
 
 //-------------Einbinden seperater Bibilotheken-------------------------
-#include <Wire.h>
 #include <EEPROM.h>
 #include <DHT.h>
 
@@ -43,10 +42,8 @@ lowerPin[] {
 
 //------------------------SetUp-----------------------------
 void setup() {
-  Wire.begin(8);                //start Wire Communication
-  Wire.onReceive(receiveEvent);
-  Wire.onRequest(requestEvent);
   Serial.begin(9600);           //start Serial Communication
+  Serial1.begin(10000);
   dht.begin();
   Serial.println("-----------Start--------------");
 }
@@ -55,12 +52,21 @@ void setup() {
 //-----------------------Loop------------------------------
 void loop() {
   Check(0);
+  CheckSerial();
   Check(1);
+  CheckSerial();
   Check(2);
+  CheckSerial();
   Check(3);
-  delay(1000);
+  CheckSerial();
 }
-
+void CheckSerial() {
+  if (Serial1.available()) {
+    delay(100);
+    String rcv = Serial1.readStringUntil('\n');
+    Serial1.println(Proces(rcv)+"\n");
+  }
+}
 //------------Check the Sensor--------
 float GetTemp() {
   float temp[10];
@@ -68,18 +74,21 @@ float GetTemp() {
   {
     //Read 10 Data in 20 ms distance
     temp[f] = dht.readTemperature();
-    Serial.println(temp[f]);
-    Serial.println(f);
+    // Serial.println(temp[f]);
+    // Serial.println(f);
     delay(20);
   }
   float temperatur = (temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10;
-  Serial.println(FloatToString(temperatur));
+  // Serial.println(FloatToString(temperatur));
   return temperatur;
 }
 
 String FloatToString(float value) {
   char help[15];
   dtostrf(value, 7, 3, help);
+  if (help == "") {
+    return "-1";
+  }
   return help;
 }
 void Check(int index) {
@@ -135,7 +144,7 @@ float GetGroundHumid() {
     delay(20);
   }
   float groundHumid = (temp[0] + temp[1] + temp[2] + temp[3] + temp[4] +
-  temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10.0;
+                       temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10.0;
   return groundHumid;
 }
 
@@ -150,7 +159,7 @@ float GetHumid() {
     delay(20);
   }
   float humid = (temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10;
-  Serial.println("Humid: " + FloatToString(humid));
+  // Serial.println("Humid: " + FloatToString(humid));
   return humid;
 }
 
@@ -165,37 +174,64 @@ float GetUV() {
     delay(20);
   }
   float UV = (temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7] + temp[8] + temp[9]) / 10;
-  Serial.println("UV: " + FloatToString(UV));
+  // Serial.println("UV: " + FloatToString(UV));
   return UV;
 }
 
 
 
 //-----------------Master-Slave Communication with NodeMCU -------------------
-void receiveEvent(int howMany) {
+String Proces(String rcv){
+  
+}
+
+/*void receiveEvent(int howMany) {
   String help = "";
-  while (0 < Wire.available()) {
-    help += Wire.read();
+  int bytes=Wire.available();
+  Serial.println(bytes);
+  for(int f=0;f<bytes;f++) {
+    help += char(Wire.read());
   }
+  Serial.println("Empfangen: " + help);
+
   if (help == "on") {
     //TODO on (live)
   } else
   {
-    int seperator = help.indexOf("_");
-    String temp = help.substring(0, seperator);
-    help = help.substring(seperator + 1, sizeof(help));
-    SaveEEProm(temp, help);
+    String data[8];
+    for(int f=0;f<8;f++){
+      int seperator=help.indexOf(";");
+      data[f]=help.substring(0,seperator);
+      help=help.substring(seperator,help.length());
+    }
+    SaveEEProm("MinTemp",data[0]);
+    SaveEEProm("MaxTemp",data[1]);
+    SaveEEProm("MinGroundHumid",data[2]);
+    SaveEEProm("MaxGroundHumid",data[3]);
+    SaveEEProm("MinHumid",data[4]);
+    SaveEEProm("MaxHumid",data[5]);
+    SaveEEProm("MinUV",data[6]);
+    SaveEEProm("MaxUV",data[7]);
   }
-}
+  }
 
-void requestEvent() {//get data
-  char buf[50];
-  String help = FloatToString(GetTemp()) + "_" + FloatToString(GetGroundHumid()) + "_" + FloatToString(GetHumid()) + "_" + FloatToString(GetUV());
-  help.toCharArray(buf, sizeof(help));
-  Wire.write(buf);
-}
+  void requestEvent() {//get data
+  char buf[23];
+  // String help = FloatToString(GetTemp()) + "_" + FloatToString(GetGroundHumid()) + "_" + FloatToString(GetHumid()) + "_" + FloatToString(GetUV());
+  // Serial.println(help);
+  String help="12345678901234567890123";
+  Serial.println("Request");
+  Serial.println(help);
+  while(help.length()<23){
+    help+="-";
+  }
+    Serial.println(help);
+  help.toCharArray(buf, 23);
+  Wire.write(buf,23);
+  Wire.write("TEST");
+  }
 
-
+*/
 
 //-------------------------save value local ---------------------------------
 void SaveEEProm(String type, String value) {
