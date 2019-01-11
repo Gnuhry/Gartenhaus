@@ -21,12 +21,12 @@ const int leng = 20;
 const char* ssid     = "VTHHH";
 const char* password = "v19t25h16h06h11";
 const char* host = "192.168.178.26";
-const int serverPort = 5000, localserverport = 5001;
-WiFiClient client;
-WiFiServer server(localserverport);
-bool IsActive = false;
+const int serverPort = 5000;
+WiFiClient client, c1;
+WiFiServer server(serverPort);
+bool IsActive = false, live = false;
 int sendcounter = 0, tempI = 0, humidI = 0, groundHumidI = 0, lightI = 0;
-float temp[leng],humid[leng],groundHumid[leng],light[leng];
+float temp[leng], humid[leng], groundHumid[leng], light[leng];
 //DHTesp dht;
 DHT dht(TempHumidSensor, DHTTYPE);
 Preferences preferences;
@@ -35,16 +35,20 @@ int higherPin[] {
 },
 lowerPin[] {
   cooler, 0, 0, shutters
+}, high[] {
+  0, 0, 0, 0
+}, low[] {
+  0, 0, 0, 0
 };
 
 void setup() {
 
   Serial.begin(9600);
-  for(int f=0;f<leng;f++){
-    temp[f]=-100;
-    humid[f]=-100;
-    groundHumid[f]=-100;
-    light[f]=-100;
+  for (int f = 0; f < leng; f++) {
+    temp[f] = -100;
+    humid[f] = -100;
+    groundHumid[f] = -100;
+    light[f] = -100;
   }
   //SetToSave("0§-100$-100%-100&-100/-100(-100)-100");
   pinMode(LightSensor, INPUT);
@@ -62,6 +66,12 @@ void setup() {
   digitalWrite(higherPin[3], LOW);
   digitalWrite(lowerPin[0], LOW);
   digitalWrite(lowerPin[3], LOW);
+  high[0] = 0;
+  high[1] = 0;
+  high[2] = 0;
+  high[3] = 0;
+  low[0] = 0;
+  low[3] = 0;
 
 
 
@@ -75,7 +85,7 @@ void setup() {
   Serial.println("\n\nStarting Server");
   server.begin();
   Serial.print("Server gestartet unter Port ");
-  Serial.println(localserverport);
+  Serial.println(serverPort);
 
   Serial.println("\n\nCheck ID");
   preferences.begin("storage", false);
@@ -105,8 +115,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if (live) {
+    LiveLoop();
+
+  }
+  else {
+    NonLiveLoop();
+
+  }
   if (IsActive) {
-    Check();
     //TempAndHumidity lastValues = dht.getTempAndHumidity();
     if (tempI++ > leng) {
       tempI = 0;
@@ -136,8 +153,15 @@ void loop() {
     }
   }
   // Serial.println("Message?");
+}
+void NonLiveLoop() {
+  if (IsActive) {
+    Check();
+  }
   GetMessage();
 }
+
+
 
 float GetAverage(float array_[leng]) {
   float help = 0;
@@ -178,15 +202,19 @@ void Check() {
     Serial.println(data[f]);
     if (data[f] < Min[f]) { //Unter Min
       digitalWrite(higherPin[f], HIGH);
+      high[f] = 1;
     }
     else if (data[f] > Max[f] && f != 2 && f != 1) { //Über Max
       digitalWrite(lowerPin[f], HIGH);
+      low[f] = 1;
     }
     else if (data[f] > middle) {
       digitalWrite(higherPin[f], LOW);
+      high[f] = 0;
     }
     else if (data[f] < middle) {
       digitalWrite(lowerPin[f], LOW);
+      low[f] = 0;
     }
   }
   //TODO light Check
@@ -207,15 +235,19 @@ void Check() {
   Serial.println(counter);
   if (counter == preferences.getUInt("Light", -100)) {
     digitalWrite(lowerPin[3], HIGH);
+    low[3] = 1;
   }
   else if (counter == 0 ) {
     digitalWrite(higherPin[3], HIGH);
+    high[3] = 1;
   }
   else if ( counter < 3) {
     digitalWrite(lowerPin[3], LOW);
+    low[3] = 0;
   }
   else if ( counter > 1) {
     digitalWrite(higherPin[3], LOW);
+    high[3] = 0;
   }
   preferences.end();
 }
@@ -235,7 +267,7 @@ void Connecting() {
   Serial.println(WiFi.localIP());
 }
 
-String GetMessage() {
+void GetMessage() {
   String message = "";
   WiFiClient client_ = server.available();
   if (client_) {
@@ -244,12 +276,26 @@ String GetMessage() {
       if (client_.available()) {
         char c = client_.read(); //read command from Server
         if (c == '|' ) {
+          if (message.indexOf("_") == 0) {
+            live = true;
+            byte ip[4];
+            ip[0] = message.substring(0, message.indexOf(".")).toInt();
+            String ip_help = message.substring(message.indexOf(".") + 1, message.length() + 1);
+            ip[1] = ip_help.substring(0, message.indexOf(".")).toInt();
+            ip_help = ip_help.substring(message.indexOf(".") + 1, message.length() + 1);
+            ip[2] = ip_help.substring(0, message.indexOf(".")).toInt();
+            ip[3] = ip_help.substring(message.indexOf(".") + 1, message.length() + 1).toInt();
+            c1.connect(ip, 5000);
+          }
+          else {
+            SetToSave(message);
+          }
           client_.println("Done<EOF>");
+          client_.flush();
           client_.stop();
           Serial.print("Message from Socket: ");
           Serial.println(message);
-          SetToSave(message);
-          return message;
+          return;
         }
         else {
           message += c;
@@ -296,6 +342,12 @@ void SetToSave(String save) {
     digitalWrite(higherPin[3], LOW);
     digitalWrite(lowerPin[0], LOW);
     digitalWrite(lowerPin[3], LOW);
+    high[0] = 0;
+    high[1] = 0;
+    high[2] = 0;
+    high[3] = 0;
+    low[0] = 0;
+    low[3] = 0;
   }
   else {
     IsActive = true;
@@ -339,4 +391,57 @@ void SetToSave(String save) {
     EEPROM.writeBlock<char>(1, save, save.length());
     EEPROM.write(0,save.length());
     EEPROM.commit();*/
+}
+
+void LiveLoop() {
+  String onoff = "" + high[0] + high[1] + high[2] + high[3] + low[0] + low[3];
+  c1.println(String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light)) + "_" + onoff + "|");
+  String message = "";
+  while (c1.connected()) {
+    if (c1.available()) {
+      char c = c1.read(); //read command from Server
+      if (c == '|' ) {
+        if (message == "live off") {
+          live = false;
+          c1.println("Done<EOF>");
+          c1.flush();
+          c1.stop();
+          return;
+        }
+        Serial.print("Message from Socket: ");
+        Serial.println(message);
+        char datas[6];
+        message.toCharArray(datas, 6);
+        for (int f = 0; f < 4; f++) {
+          if (datas[f] == 1) {
+            digitalWrite(higherPin[f], HIGH);
+            high[f] = 1;
+          }
+          else {
+            digitalWrite(higherPin[f], LOW);
+            high[f] = 0;
+          }
+        }
+        if (datas[4] == 1) {
+          digitalWrite(lowerPin[0], HIGH);
+          low[0] = 1;
+        }
+        else {
+          digitalWrite(lowerPin[0], LOW);
+          low[0] = 0;
+        }
+        if (datas[5] == 1) {
+          digitalWrite(lowerPin[3], HIGH);
+          low[3] = 1;
+        }
+        else {
+          digitalWrite(lowerPin[3], LOW);
+          low[3] = 0;
+        }
+      }
+      else {
+        message += c;
+      }
+    }
+  }
 }

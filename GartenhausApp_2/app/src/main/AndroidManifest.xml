@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.win7.gartenhausapp_2">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -23,10 +24,13 @@
         <activity
             android:name=".Edit_Plant"
             android:screenOrientation="portrait" />
-        <activity android:name=".Main3Activity"
+        <activity
+            android:name=".Main3Activity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Edit_Arduino"
+        <activity
+            android:name=".Edit_Arduino"
             android:screenOrientation="portrait" />
+        <activity android:name=".Live"></activity>
     </application>
 
 </manifest>
