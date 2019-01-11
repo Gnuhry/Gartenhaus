@@ -13,7 +13,7 @@ namespace Gartenhaus_2
         {
             foreach(string ip in GetAllIPs(plantId))
             {
-                new Client().StartClient(ip.Split('_')[1], ip.Split('_')[0] + "§" + data[0] + "," + data[1] + ":" + data[2] + ":" + data[3] + "%" + data[4] + ";" + data[5] + "_" + data[6] + "+" + data[7]);
+                new Client().StartClient(ip.Split('_')[1], ip.Split('_')[0] + "a" + data[0] + "b" + data[1] + "c" + data[2] + "d" + data[3] + "e" + data[4] + "f" + data[5] + "g" + data[6]);
             }
         }
         public static void SendToClient(int plantId, int arduinoId)
@@ -21,13 +21,12 @@ namespace Gartenhaus_2
             if (plantId > 0)
             {
                 object[]plant=Plant.Get(plantId);
-                new Client().StartClient(Get(arduinoId)[1].ToString(), plant[0] + "§" + plant[2] + "," + plant[3] + ":" + plant[4] + "%" + plant[5] + ";" + plant[6] + "_" + plant[7] + "+" + plant[8]);
+                new Client().StartClient(Get(arduinoId)[1].ToString(), arduinoId + "a" + plant[2] + "b" + plant[3] + "c" + plant[4] + "d" + plant[5] + "e" + plant[6] + "f" + plant[7] + "g" + plant[8]);
             }
             else
             {
-                new Client().StartClient(Get(arduinoId)[1].ToString(), "0§-100,-100:-100%-100;-100_-100+-100");
+                new Client().StartClient(Get(arduinoId)[1].ToString(), arduinoId+"a-100b-100c-100d-100e-100f-100g-100");
             }
-            //TODO find all Arduino with plant and send new data
         }
         public static void New(string ArduinoIP)
         {
@@ -36,6 +35,8 @@ namespace Gartenhaus_2
             database.OpenConnection();
             Console.WriteLine("Changed: " + database.Write("INSERT INTO Arduino (ArduinoIP) VALUES (@ArduinoIP)", new string[] { "@ArduinoIP" }, new object[] { ArduinoIP }, new System.Data.SqlDbType[] {System.Data.SqlDbType.NVarChar }));
             database.CloseConnection();
+            object[]IDS=Get("ID");
+            SendToClient(0, Convert.ToInt32(IDS[IDS.Length - 1]));
 
         }
         public static void Reconect(int ArduinoId, string ArduinoIP)
@@ -58,7 +59,7 @@ namespace Gartenhaus_2
             {
                 return;
             }
-            if (!Plant.IsRealID(PlantId))
+            if (!Plant.IsRealID(PlantId)&&PlantId!=0)
             {
                 return;
             }
@@ -79,7 +80,7 @@ namespace Gartenhaus_2
             {
                 return;
             }
-            if (!Plant.IsRealID(PlantId))
+            if (!Plant.IsRealID(PlantId)&&PlantId!=0)
             {
                 return;
             }
@@ -223,7 +224,7 @@ namespace Gartenhaus_2
             for (int f = 0; f < help.Length; f++)
             {
                 object[] help2 = help[f].ToString().Split('_');
-                if (help2[2].ToString().Trim()!= null&&help2[2].ToString().Trim()!="")
+                if (help2[2].ToString().Trim()!= null&&help2[2].ToString().Trim()!="" && help2[2].ToString().Trim() != "0")
                 {
                     help2[2] = Plant.Get(Convert.ToInt32(help[f].ToString().Split('_')[2]), "Name");
                 }

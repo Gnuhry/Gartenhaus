@@ -52,29 +52,35 @@ namespace Gartenhaus_2
 
         private void ReadCallback(IAsyncResult ar)
         {
-            string message;
-            HelpObject help = ((HelpObject)ar.AsyncState);
-            Socket client = help.socket;
-            int length = client.EndReceive(ar);
-            if (length > 1)
+            try
             {
-                help.sb.Append(Encoding.ASCII.GetString(help.buffer, 0, length));
-                message = help.sb.ToString();
+                string message;
+                HelpObject help = ((HelpObject)ar.AsyncState);
+                Socket client = help.socket;
+                int length = client.EndReceive(ar);
+                if (length > 1)
+                {
+                    help.sb.Append(Encoding.ASCII.GetString(help.buffer, 0, length));
+                    message = help.sb.ToString();
 
-                if (message.IndexOf("<EOF>") < 0)
-                {
-                    client.BeginReceive(help.buffer, 0, HelpObject.BufferSize, SocketFlags.None, new AsyncCallback(ReadCallback), help);
-                }
-                else
-                {
-                    ArduinoIP = client.RemoteEndPoint.ToString().Split(':')[0];
-                    string reponse = Processing(message.Substring(0, message.IndexOf("<EOF>")));
-                    Send(client, reponse);
+                    if (message.IndexOf("<EOF>") < 0)
+                    {
+                        client.BeginReceive(help.buffer, 0, HelpObject.BufferSize, SocketFlags.None, new AsyncCallback(ReadCallback), help);
+                    }
+                    else
+                    {
+                        ArduinoIP = client.RemoteEndPoint.ToString().Split(':')[0];
+                        string reponse = Processing(message.Substring(0, message.IndexOf("<EOF>")));
+                        Console.WriteLine("Answer: " + reponse);
+                        Send(client, reponse);
+                    }
                 }
             }
+            catch (Exception) { }
         }
         private string Processing(string message)
         {
+            Console.WriteLine("Message from client: " + message);
             switch (message.ToLower().Split('_')[0].Split(' ')[0])
             {
                 case "get": return GetProcessing(message);
@@ -95,7 +101,7 @@ namespace Gartenhaus_2
                 case "new arduino": Arduino.New(ArduinoIP); break;//new arduino
                 case "reconect arduino": Arduino.Reconect(Convert.ToInt32(tile[1]), ArduinoIP); break;//reconect arduino_[ArduinoID:int]
                 case "delete arduino": Arduino.Delete(Convert.ToInt32(tile[1])); break;//delete arduino_[ArduinoID:int]
-                case "set arduino data": Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2]), Convert.ToSingle(tile[3]), Convert.ToSingle(tile[4]), Convert.ToInt32(tile[5])); break;//set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
+                case "set arduino data": try { Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2]), Convert.ToSingle(tile[3]), Convert.ToSingle(tile[4]), Convert.ToInt32(tile[5])); } catch (FormatException) { } break;//set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
             }
         }
 

@@ -10,8 +10,10 @@ namespace Gartenhaus_2
 {
     public class Client
     {
+        private string IP,me;
         public void StartClient(string IPAddress_, string message)
         {
+            IP = IPAddress_; me = message;
             IPAddress address = IPAddress.Parse(IPAddress_);
             IPEndPoint endPoint = new IPEndPoint(address, HelpObject.arduinoport);
             Socket client;
@@ -37,7 +39,6 @@ namespace Gartenhaus_2
             }
             catch (Exception) { }
         }
-
         private void Send(Socket client, string message)
         {
             message += "|";
@@ -90,7 +91,7 @@ namespace Gartenhaus_2
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception) { new Client().StartClient(IP, me); }
         }
     }
 }

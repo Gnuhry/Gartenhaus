@@ -144,7 +144,11 @@ namespace Gartenhaus_2
             Database database = new Database();
             database.OpenConnection();
             SqlDataReader sqlDataReader = database.Read("SELECT * FROM Plant WHERE Id=@Id", new string[] { "@Id" }, new object[] { plantId }, new System.Data.SqlDbType[] { System.Data.SqlDbType.Int });
-            object erg = sqlDataReader[Search]; 
+            object erg = "Fehler";
+            if (sqlDataReader.Read())
+            {
+                erg = sqlDataReader[Search];
+            }
             database.CloseConnection();
             return erg;
         }

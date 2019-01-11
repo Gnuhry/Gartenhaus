@@ -63,7 +63,7 @@ public class Edit_Arduino extends AppCompatActivity {
         String[] data = help.toString().split("_");
         ((TextView) findViewById(R.id.txVID)).setText(ID + "");
         ((EditText) findViewById(R.id.edTIP)).setText(data[1]);
-        ((Spinner) findViewById(R.id.spinner)).setSelection(spinnerlist.indexOf(data[2]));
+        ((Spinner) findViewById(R.id.spinner)).setSelection(Integer.parseInt(data[2]));
     }
 
     /**
@@ -104,7 +104,7 @@ public class Edit_Arduino extends AppCompatActivity {
         client.Send("set arduino_" + ID + "_" + ((EditText) findViewById(R.id.edTIP)).getText().toString() +
                 "_" + (((Spinner) findViewById(R.id.spinner)).getSelectedItemPosition()));
         try {
-            Thread.sleep(500);
+            Thread.sleep(1900);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
