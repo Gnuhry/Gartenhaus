@@ -84,7 +84,7 @@ namespace Gartenhaus_2
             switch (message.ToLower().Split('_')[0].Split(' ')[0])
             {
                 case "get": return GetProcessing(message);
-                case "set": case "new": case "delete": case "reconect": threadhelp = message; new Thread(Process).Start(); return "Succes";
+                case "set": case "new": case "delete": case "reconect": case "live": threadhelp = message; new Thread(Process).Start(); return "Succes";
                 default: return "Error";
             }
         }
@@ -102,6 +102,7 @@ namespace Gartenhaus_2
                 case "reconect arduino": Arduino.Reconect(Convert.ToInt32(tile[1]), ArduinoIP); break;//reconect arduino_[ArduinoID:int]
                 case "delete arduino": Arduino.Delete(Convert.ToInt32(tile[1])); break;//delete arduino_[ArduinoID:int]
                 case "set arduino data": try { Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2]), Convert.ToSingle(tile[3]), Convert.ToSingle(tile[4]), Convert.ToInt32(tile[5])); } catch (FormatException) { } break;//set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
+                case "live": Arduino.Live(ArduinoIP, Convert.ToInt32(tile[1])); break;
             }
         }
 

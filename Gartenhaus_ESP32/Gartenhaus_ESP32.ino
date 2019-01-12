@@ -279,7 +279,7 @@ void GetMessage() {
           if (message.indexOf("_") == 0) {
             live = true;
             byte ip[4];
-            ip[0] = message.substring(0, message.indexOf(".")).toInt();
+            ip[0] = message.substring(1, message.indexOf(".")).toInt();
             String ip_help = message.substring(message.indexOf(".") + 1, message.length() + 1);
             ip[1] = ip_help.substring(0, message.indexOf(".")).toInt();
             ip_help = ip_help.substring(message.indexOf(".") + 1, message.length() + 1);
