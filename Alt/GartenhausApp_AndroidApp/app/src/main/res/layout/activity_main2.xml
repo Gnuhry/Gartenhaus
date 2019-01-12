@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main2Activity">
+
+    <ScrollView
+        android:layout_marginTop="15dp"
+    android:layout_centerHorizontal="true"
+    android:layout_width="300dp"
+    android:layout_height="400dp">
+        <TableLayout
+            android:id="@+id/tablePlant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tablePlantHeader"
+                tools:ignore="UselessParent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/table_Plant_ID"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginEnd="24dp"
+                        style="@style/table_Plant_Header_Style" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/table_Plant_Name"
+                        android:layout_marginRight="150dp"
+                        android:layout_marginEnd="150dp"
+                        style="@style/table_Plant_Header_Style"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/table_Plant_edit"
+                        style="@style/table_Plant_Header_Style"/>
+            </TableRow>
+
+        </TableLayout>
+</ScrollView>
+
+    <ImageView
+        android:id="@+id/imVaddPlant"
+        android:layout_width="53dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="22dp"
+        android:contentDescription="@string/new_plant"
+        app:srcCompat="@drawable/baseline_add_circle_outline_black_18dp" />
+
+</RelativeLayout>

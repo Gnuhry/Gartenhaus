@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Graphen">
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
+        android:layout_width="match_parent"
+        android:layout_height="409dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" />
+
+    <Spinner
+        android:id="@+id/spinnerGraph"
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/btnTemp"
+        android:layout_alignParentLeft="true" />
+
+    <Spinner
+        android:id="@+id/spinnerGraph2"
+        android:layout_width="104dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:textColor="@color/Temperatur"
+        android:id="@+id/btnTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="43dp"
+        android:layout_marginStart="128dp"
+        android:onClick="btnClick_RTemp"
+        android:text="@string/table_Plant_Temp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="128dp" />
+
+    <CheckBox
+        android:textColor="@color/Feucht"
+        android:id="@+id/btnFeucht"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnTemp"
+        android:layout_marginTop="-45dp"
+        android:layout_toStartOf="@+id/btnUV"
+        android:text="@string/table_Plant_GroundHumid"
+        android:onClick="btnClick_RFeucht"
+        android:layout_toLeftOf="@+id/btnUV" />
+
+    <CheckBox
+        android:textColor="@color/Humid"
+        android:id="@+id/btnHumid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/graph"
+        android:layout_alignTop="@+id/btnTemp"
+        android:text="@string/table_Plant_Humid"
+        android:layout_alignRight="@+id/graph"
+        android:onClick="btnClick_RHumid"/>
+
+    <CheckBox
+        android:textColor="@color/UV"
+        android:id="@+id/btnUV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/graph"
+        android:layout_below="@+id/btnTemp"
+        android:layout_marginTop="-45dp"
+        android:text="@string/table_Plant_UV"
+        android:layout_alignRight="@+id/graph"
+        android:onClick="btnClick_RUV" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnTemp"
+        android:layout_marginTop="-45dp"
+        android:text="@string/compare"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/spinnerGraph"
+        android:layout_toRightOf="@+id/spinnerGraph"
+        android:text="@string/dashed"
+        android:visibility="gone" />
+
+</RelativeLayout>

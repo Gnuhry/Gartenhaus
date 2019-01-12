@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LiveAction">
+
+    <LinearLayout
+        android:layout_width="307dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp"
+        android:orientation="vertical">
+
+        <Switch
+            android:id="@+id/swPumpe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pump" />
+
+        <Switch
+            android:id="@+id/swLicht"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/light" />
+        <Switch
+            android:id="@+id/swRolladen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/shutters" />
+
+        <Switch
+            android:id="@+id/swSpruher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/spray" />
+
+        <Switch
+            android:id="@+id/swHeizung"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/heater" />
+
+        <Switch
+            android:id="@+id/swKuhlung"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/cooler" />
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="306dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="140dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txVTemp"
+                android:layout_width="151dp"
+                android:layout_height="wrap_content"
+                android:text="@string/table_Plant_Temp" />
+
+            <TextView
+                android:id="@+id/txVHumid"
+                android:layout_width="156dp"
+                android:layout_height="wrap_content"
+                android:text="@string/table_Plant_Humid" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="100dp">
+
+            <TextView />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txVFeucht"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/table_Plant_GroundHumid" />
+
+            <TextView
+                android:id="@+id/txVUV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/table_Plant_UV" />
+        </TableRow>
+    </TableLayout>
+
+    <ImageView
+        android:id="@+id/imVClose"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/baseline_close_black_24dp"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:onClick="btnClick_Close"
+        android:focusable="true"
+        android:contentDescription="@string/close_Edit" />
+
+</RelativeLayout>
