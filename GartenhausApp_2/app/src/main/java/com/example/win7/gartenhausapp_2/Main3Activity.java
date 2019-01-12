@@ -80,8 +80,8 @@ public class Main3Activity extends AppCompatActivity {
      * Click Listener for Graph Button
      */
     public void btn_Graph(View view) {
-        Toast.makeText(this,"In Arbeit",Toast.LENGTH_SHORT).show();
-        //startActivity(new Intent(getApplicationContext(), Graphen.class));
+        //Toast.makeText(this,"In Arbeit",Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(), Graph.class));
     }
 
     /**

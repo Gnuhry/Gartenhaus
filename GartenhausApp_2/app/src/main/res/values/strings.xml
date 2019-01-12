@@ -22,11 +22,19 @@
     <string name="minGmaxTemp">Min Temperatur ist größer als Max Temperatur</string>
     <string name="minGmaxHumid">Min Humid ist größer als Max Humid</string>
     <string name="minGmaxGroundHumid">Min Feucht ist größer als Max Feucht</string>
-    <string name="tempValue">Temperatur nur zwischen 0°C und 50°C</string>
+    <string name="tempValue">Temperatur nur zwischen -20°C und 50°C</string>
     <string name="humidValue">Humid nur zwischen 0g/m³ und 100g/m³</string>
     <string name="edit_all">Bitte alles ausfüllen!</string>
     <string name="plant">Pflanze</string>
     <string name="no">Keine</string>
     <string name="arduino_id">Arduino ID</string>
     <string name="live">Live</string>
+    <string name="heater">Heizung</string>
+    <string name="sprayer">Luftbefeuchter</string>
+    <string name="pump">Pumpe</string>
+    <string name="cooler">Kühler</string>
+    <string name="shutters">Rollläden</string>
+    <string name="none">nan</string>
+    <string name="start">Start</string>
+    <string name="back">Zurück</string>
 </resources>
