@@ -29,4 +29,5 @@
     <string name="no">Keine</string>
     <string name="arduino_id">Arduino ID</string>
     <string name="live">Live</string>
+    <string name="back">Zurück</string>
 </resources>

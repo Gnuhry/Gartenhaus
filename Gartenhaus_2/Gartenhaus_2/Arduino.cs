@@ -268,15 +268,15 @@ namespace Gartenhaus_2
                 new System.Data.SqlDbType[] { System.Data.SqlDbType.DateTime, System.Data.SqlDbType.Int, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Int });
             database.CloseConnection();
         }
-        public static object[] GetDataAll(int arduinoId)
+        public static object[] GetDataAll()
         {
             List<object> erg = new List<object>();
             Database database = new Database();
             database.OpenConnection();
-            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Data WHERE ArduinoId=@Id", new string[] {"@Id" }, new object[] {arduinoId }, new System.Data.SqlDbType[] { System.Data.SqlDbType.Int});
+            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Data,Arduino,Plant WHERE Data.ArduinoId=Arduino.Id AND Plant.Id=Arduino.PlantID", new string[] { }, new object[] {}, new System.Data.SqlDbType[] {});
             while (sqlDataReader.Read())
             {
-                erg.Add(sqlDataReader[0] + "_" + sqlDataReader[1] + "_" + sqlDataReader[2] + "_" + sqlDataReader[3] + "_" + sqlDataReader[4] + "_" + sqlDataReader[5] + "_" + sqlDataReader[6]);
+                erg.Add(sqlDataReader["ArduinoId"] + "_" + sqlDataReader["ArduinoIP"] + "_" + sqlDataReader["time"] + "_" + sqlDataReader["Temperatur"] + "_" + sqlDataReader["Humid"] + "_" + sqlDataReader["GroundHumid"] + "_" + sqlDataReader["Light"]+"_"+sqlDataReader["MinTemp"] + "_"  + sqlDataReader["MinHumid"] + "_"  + sqlDataReader["MinGroundHumid"] + "_" + sqlDataReader["MaxTemp"] + "_" + sqlDataReader["MaxHumid"] + "_" + sqlDataReader["MaxGroundHumid"] + "_1000");
             }
             database.CloseConnection();
             return erg.ToArray();

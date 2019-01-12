@@ -119,7 +119,7 @@ namespace Gartenhaus_2
                 case "get plant display": foreach (object o in Plant.GetDisplay()) { erg.Append(o + ";"); } return erg.ToString();//get plant display
                 case "get arduino all": foreach (object o in Arduino.Get(Convert.ToInt32(tile[1]))) { erg.Append(o + "_"); } return erg.ToString(); //get arduino all_[ArduinoId:int]
                 case "get arduino ids": foreach (object o in Arduino.Get("Id")) { erg.Append(o + "_"); } return erg.ToString();//get arduino ids
-                case "get arduino data": foreach (object o in Arduino.GetDataAll(Convert.ToInt32(tile[1]))) { erg.Append(o + ";"); } return erg.ToString(); //get arduino data_[ArduinoId:int]
+                case "get arduino data": foreach (object o in Arduino.GetDataAll()) { erg.Append(o + ";"); } return erg.ToString(); //get arduino data_[ArduinoId:int]
                 case "get arduino display": foreach (object o in Arduino.GetDisplay()) { erg.Append(o + ";"); } return erg.ToString();//get arduino display
                 default: return "Error";
             }
