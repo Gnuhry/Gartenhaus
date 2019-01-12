@@ -81,6 +81,7 @@ public class Graph extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
+        if(data[0].equals("Error"))return;
         Spinnerinitalisieren();
         seekBar= findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

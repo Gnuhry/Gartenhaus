@@ -108,8 +108,8 @@ public class Edit_Plant extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.edit_all), Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (Float.parseFloat(MinTemp) > 50 || Float.parseFloat(MinTemp) < 0 || Float.parseFloat(MaxTemp) > 50 || Float.parseFloat(MinTemp) < 0) {
-                    Toast.makeText(getApplicationContext(), R.string.tempValue, Toast.LENGTH_LONG).show();
+                if (Float.parseFloat(MinTemp) > 50 || Float.parseFloat(MinTemp) < -20 || Float.parseFloat(MaxTemp) > 50 || Float.parseFloat(MinTemp) < 0) {
+                    Toast.makeText(getApplicationContext(),R.string.tempValue, Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (Float.parseFloat(MinHumid) > 100 || Float.parseFloat(MinHumid) < 0 || Float.parseFloat(MaxHumid) > 100 || Float.parseFloat(MaxHumid) < 0) {
