@@ -30,6 +30,7 @@
         <activity
             android:name=".Edit_Arduino"
             android:screenOrientation="portrait" />
+        <activity android:name=".Live"></activity>
         <activity android:name=".Graph"></activity>
     </application>
 

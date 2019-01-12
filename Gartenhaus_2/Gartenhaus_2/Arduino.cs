@@ -181,7 +181,11 @@ namespace Gartenhaus_2
             Database database = new Database();
             database.OpenConnection();
             SqlDataReader sqlDataReader = database.Read("SELECT * FROM Arduino WHERE Id=@Id", new string[] { "@Id" }, new object[] { ArduinoId }, new System.Data.SqlDbType[] { System.Data.SqlDbType.Int });
-            object erg = sqlDataReader[Search];
+            object erg = "";
+            if (sqlDataReader.Read())
+            {
+                 erg= sqlDataReader[Search];
+            }
             database.CloseConnection();
             return erg;
         }
@@ -245,6 +249,14 @@ namespace Gartenhaus_2
             }
             database.CloseConnection();*/
             return help;
+        }
+        public static void Live(string IP, int Id)
+        {
+            if (!IsRealID(Id))
+            {
+                return;
+            }
+            new Client().StartClient(Get(Id, "ArduinoIP").ToString(), "_" + IP);
         }
         private static bool IsRealID(int ArduinoId)
         {
