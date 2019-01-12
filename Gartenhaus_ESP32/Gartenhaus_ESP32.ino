@@ -117,7 +117,6 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (live) {
     LiveLoop();
-
   }
   else {
     NonLiveLoop();
@@ -149,7 +148,9 @@ void loop() {
       preferences.begin("storage", false);
       int id = preferences.getUInt("id", 0);
       preferences.end();
-      SendMessage("" + String(id) + "_" + String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light)), true);
+      String messag = "" + String(id) + "_" + String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light));
+      messag.replace("nan", "-100") ;
+      SendMessage(messag, true);
     }
   }
   // Serial.println("Message?");
@@ -285,7 +286,11 @@ void GetMessage() {
             ip_help = ip_help.substring(message.indexOf(".") + 1, message.length() + 1);
             ip[2] = ip_help.substring(0, message.indexOf(".")).toInt();
             ip[3] = ip_help.substring(message.indexOf(".") + 1, message.length() + 1).toInt();
-            c1.connect(ip, 5000);
+            do {
+              c1.connect(ip, 5000);
+              Serial.print("Connect ");
+              Serial.println("ip");
+            } while (!c1.connected());
           }
           else {
             SetToSave(message);

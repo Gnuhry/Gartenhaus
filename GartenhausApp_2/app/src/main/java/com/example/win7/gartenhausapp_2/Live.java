@@ -118,7 +118,7 @@ public class Live extends AppCompatActivity {
             sw=sw_;
         }
 
-        public void StopServer() {
+        void StopServer() {
             aa = false;
         }
 
