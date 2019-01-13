@@ -5,42 +5,52 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Live extends AppCompatActivity {
 
-    String ip;
-    ClientTask clientTask;
+    ServerSocket serverSocket;
+    //String ip;
+    // ClientTask clientTask;
+    Server server;
     Boolean startstop;
     int ID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
         ID = getIntent().getIntExtra("ID", -1); //read ID
-        ip = MainActivity.client.Send("get arduino all_" + ID).split("_")[1];
+        /*ip = MainActivity.client.Send("get arduino all_" + ID).split("_")[1];
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
-        Log.e("live2",ip);
-        startstop=true;
+        Log.e("live2", ip);*/
+        startstop = true;
+        server=new Server(new TextView[]{findViewById(R.id.txVtemp),findViewById(R.id.txVhumid),findViewById(R.id.txVgroundHumid),findViewById(R.id.txVlight)},
+                new Switch[]{findViewById(R.id.swheater),findViewById(R.id.swsprayer),findViewById(R.id.swpump),findViewById(R.id.swlight),findViewById(R.id.swcooler),findViewById(R.id.swshutters)},this);
     }
 
     public void btnStartStop(View view) {
-        if(startstop){
-            startstop=false;
+        if (startstop) {
+            startstop = false;
             findViewById(R.id.swheater).setEnabled(true);
             findViewById(R.id.swsprayer).setEnabled(true);
             findViewById(R.id.swpump).setEnabled(true);
@@ -53,6 +63,8 @@ public class Live extends AppCompatActivity {
             } catch (InterruptedException e) {
                 Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
             }
+            server.Restart();
+            ((Button)view).setText(R.string.stop);
 //             boolean aa=true;
 //            do{
 //            try {
@@ -68,19 +80,21 @@ public class Live extends AppCompatActivity {
 //                e.printStackTrace();
 //            }
 //            }while(aa);
-            clientTask=new ClientTask(new TextView[]{findViewById(R.id.txVtemp),findViewById(R.id.txVhumid),findViewById(R.id.txVgroundHumid),findViewById(R.id.txVlight)},
+         /*   clientTask=new ClientTask(new TextView[]{findViewById(R.id.txVtemp),findViewById(R.id.txVhumid),findViewById(R.id.txVgroundHumid),findViewById(R.id.txVlight)},
                 new Switch[]{findViewById(R.id.swheater),findViewById(R.id.swsprayer),findViewById(R.id.swpump),findViewById(R.id.swlight),findViewById(R.id.swcooler),findViewById(R.id.swshutters)});
-        clientTask.execute();
-        }
-        else{
-            startstop=true;
+        clientTask.execute();*/
+
+        } else if(((Button)view).getText()==getString(R.string.stop)) {
+            startstop = true;
             findViewById(R.id.swheater).setEnabled(false);
             findViewById(R.id.swsprayer).setEnabled(false);
             findViewById(R.id.swpump).setEnabled(false);
             findViewById(R.id.swlight).setEnabled(false);
             findViewById(R.id.swcooler).setEnabled(false);
             findViewById(R.id.swshutters).setEnabled(false);
-            clientTask.StopServer();
+            server.Stop();
+            ((Button)view).setText(R.string.start);
+            //clientTask.StopServer();
             /*boolean b = false;
             while(!b){
                 Log.e("live2","try");
@@ -99,18 +113,19 @@ public class Live extends AppCompatActivity {
                 }
             }*/
         }
+        else{
+            Toast.makeText(this, R.string.please_wait,Toast.LENGTH_LONG).show();
+        }
     }
 
-    private static class ClientTask extends AsyncTask<Void, Void, Void> {
+    /*    private static class ClientTask extends AsyncTask<Void, Void, Void> {
 
-        /**
-         * Constructor
-         */
-        Boolean aa, first;
+            /**
+             * Constructor
+             */
+        /*Boolean aa, first;
         PrintWriter writer;
         BufferedReader bufferedReader;
-        TextView[] txV;
-        Switch[] sw;
 
         private ClientTask(TextView[]txV_,Switch[]sw_) {
             aa = first = true;
@@ -118,14 +133,14 @@ public class Live extends AppCompatActivity {
             sw=sw_;
         }
 
-        public void StopServer() {
+        void StopServer() {
             aa = false;
         }
 
         /**
          * Sending in background
          */
-        @Override
+     /*   @Override
         protected Void doInBackground(Void... voids) {
             try {
                 ServerSocket serverSocket = new ServerSocket(5000);
@@ -134,16 +149,13 @@ public class Live extends AppCompatActivity {
                     Log.e("live2",socket.getRemoteSocketAddress().toString());
                     bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     writer = new PrintWriter(socket.getOutputStream());
-                    Boolean b = false;
-                    String message = "";
+                    String message = null;
                     while (aa) {
                         try {
-                            b = false;
                             Log.e("live2","wait");
-                            while (!b) {
+                            do {
                                 message = bufferedReader.readLine();
-                                if (message != null) b = true;
-                            }
+                            }while(message == null);
                             Log.e("live2",message);
                             String[] split = message.split("_");
                             txV[0].setText(split[0] + "°C");
@@ -170,11 +182,10 @@ public class Live extends AppCompatActivity {
                         } catch (Exception ignored) {
                         }
                     }
-                    while (!b) {
+                    do{
                         writer.println("live off");
                         message = bufferedReader.readLine();
-                        if (message != null) b = true;
-                    }
+                    }while(message==null);
                     bufferedReader.close();
                     writer.close();
                     socket.close();
@@ -185,5 +196,5 @@ public class Live extends AppCompatActivity {
             }
             return null;
         }
-    }
+    }*/
 }

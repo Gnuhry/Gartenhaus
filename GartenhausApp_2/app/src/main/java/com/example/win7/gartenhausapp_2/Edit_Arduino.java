@@ -132,7 +132,7 @@ public class Edit_Arduino extends AppCompatActivity {
      * Click Methode of Live Button
      */
     public void btnClick_btnLive(View view) {
-    //    startActivity(new Intent(getApplicationContext(), Live.class).putExtra("ID", ID));
-    Toast.makeText(this,"In Arbeit",Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(), Live.class).putExtra("ID", ID));
+    //Toast.makeText(this,"In Arbeit",Toast.LENGTH_SHORT).show();
     }
 }
