@@ -137,11 +137,11 @@ public class Edit_Plant extends AppCompatActivity {
                             "_" + MaxTemp.replace('.', ',') + "_" + MinGroundHumid.replace('.', ',') + "_" + MaxGroundHumid.replace('.', ',') +
                             "_" + MinHumid.replace('.', ',') + "_" + MaxHumid.replace('.', ',') +
                             "_"+((Spinner) findViewById(R.id.spinnerLight)).getSelectedItemPosition()));
-                    try {
+                    /*try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         Toast.makeText(getApplicationContext(), "Nope", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                 } else {
                     Log.e("Add", client.Send("new plant_" + name + "_" + MinTemp.replace('.', ',') + "_" + MaxTemp.replace('.', ',') + "_" + MinGroundHumid.replace('.', ',') +
                             "_" + MaxGroundHumid.replace('.', ',') + "_" + MinHumid.replace('.', ',') + "_" + MaxHumid.replace('.', ',') +
@@ -176,7 +176,6 @@ public class Edit_Plant extends AppCompatActivity {
      * Close the form
      */
     private void Close() {
-        client.Stop();
         Intent intent = new Intent(this, Main2Activity.class);
         startActivity(intent);
     }

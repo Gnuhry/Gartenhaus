@@ -58,11 +58,11 @@ public class Live extends AppCompatActivity {
             findViewById(R.id.swcooler).setEnabled(true);
             findViewById(R.id.swshutters).setEnabled(true);
             MainActivity.client.Send("live_" + ID);
-            try {
+           /* try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-            }
+            }*/
             server.Restart();
             ((Button)view).setText(R.string.stop);
 //             boolean aa=true;

@@ -73,11 +73,11 @@ public class Graph extends AppCompatActivity {
         graph.getViewport().setScalable(true);
         graph.getViewport().setScalableY(true);
         data = MainActivity.client.Send("get arduino data").split(";");
-        try {
+        /*try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         if (data[0].equals("Error")) return;
         Spinnerinitalisieren();
         seekBar = findViewById(R.id.seekBar);

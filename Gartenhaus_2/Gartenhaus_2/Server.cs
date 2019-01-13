@@ -128,6 +128,7 @@ namespace Gartenhaus_2
 
         private void Send(Socket client, string data)
         {
+            data += "<EOF>";
             if (data.Trim().Equals("") || data.Trim().Equals(null))
             {
                 data = "Error";

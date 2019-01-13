@@ -23,7 +23,6 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         client = MainActivity.client;
         FillTable();
-        client.Stop();
         findViewById(R.id.imVaddPlant).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,11 +55,11 @@ public class Main2Activity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void FillTable() {
         String help = client.Send("get plant display");
-        try {
+        /*try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         if (help.equals("Error")) return;
         String[] row_ = help.split(";");
         if (row_.length < 1) return;

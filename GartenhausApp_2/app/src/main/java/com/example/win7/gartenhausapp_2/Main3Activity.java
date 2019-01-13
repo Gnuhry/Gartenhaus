@@ -22,7 +22,7 @@ public class Main3Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main3);
         client = MainActivity.client;
         FillTable();
-        client.Stop();
+        //client.Stop();
     }
 
     /**
@@ -49,11 +49,7 @@ public class Main3Activity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void FillTable() {
         String data = client.Send("get arduino display");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
+
         if(data.equals("Error"))return;
         String[]row_=data.split(";");
         if(row_.length<1)return;

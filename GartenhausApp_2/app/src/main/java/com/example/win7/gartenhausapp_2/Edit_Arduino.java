@@ -51,11 +51,11 @@ public class Edit_Arduino extends AppCompatActivity {
         if (ID < 1) return;
         //get arduino data
         StringBuilder help = new StringBuilder(client.Send("get arduino all_" + ID));
-        try {
+        /*try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         //Log.e("hung",help.toString());
         if(help.toString().equals("Error")){
             return;
@@ -74,11 +74,11 @@ public class Edit_Arduino extends AppCompatActivity {
         spinnerlist = new ArrayList<>();
         spinnerlist.add(getString(R.string.no));
         String name = client.Send("get plant names");
-        try {
+        /*try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
+        }*/
         if(!name.equals("Error")){
             String[] names = name.split("_");
             Collections.addAll(spinnerlist, names);
@@ -123,7 +123,7 @@ public class Edit_Arduino extends AppCompatActivity {
      * Start the Parent activity
      */
     private void Close() {
-        client.Stop();
+        //client.Stop();
         Intent intent = new Intent(this, Main3Activity.class);
         startActivity(intent);
     }
