@@ -16,20 +16,15 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences.Editor editor;
     public static String IP = "192.168.178.78";
+    public static final int Port = 5000;
     public static Client client;
 
-    /**
-     * Create the menue house item in the right top corner
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Click Listener for menue item
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -44,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("Speicher", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         IP = sharedPreferences.getString("IP", IP);
-        client = new Client(IP);
+        client = new Client(IP, Port);
         ((TextView) findViewById(R.id.edTIP)).setText(IP);
         ((TextView) findViewById(R.id.edTIP)).addTextChangedListener(new TextWatcher() {
             @Override
@@ -57,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            /**
-             * When Text changed, store the new IP-Adresse
-             */
             @Override
             public void afterTextChanged(Editable editable) {
                 char[] test = editable.toString().toCharArray();
@@ -71,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 if (count == 3 && test.length < 16)  //check for ip4 format
                 {
                     IP = editable.toString();
-                    client = new Client(IP);
+                    client = new Client(IP, Port);
                     Toast.makeText(getApplicationContext(), "Neue IP: " + IP, Toast.LENGTH_SHORT).show();
                     editor.putString("IP", IP).apply();
 
@@ -81,22 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Click Listener for Plant Button
-     *
-     * @param view
-     */
     public void btnClick2(View view) {
         Intent intent = new Intent(this, Main2Activity.class);
         startActivity(intent);
 
     }
 
-    /**
-     * Click Listener for Arduino Button
-     *
-     * @param view
-     */
     public void btnClick3(View view) {
         Intent intent = new Intent(this, Main3Activity.class);
         startActivity(intent);

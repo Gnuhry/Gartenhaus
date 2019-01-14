@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,6 +14,7 @@
         android:layout_marginTop="204dp"
         android:onClick="btnClick2"
         android:text="@string/edit_plant" />
+
     <Button
         android:id="@+id/btnarduino"
         android:layout_width="wrap_content"
@@ -26,15 +26,15 @@
         android:text="@string/edit_arduinos" />
 
     <EditText
-        android:hint="@string/ip_adresse"
         android:id="@+id/edTIP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
-        android:ems="10"
         android:digits="0123456789."
+        android:ems="10"
+        android:hint="@string/ip_adresse"
         android:inputType="textNoSuggestions" />
 
 </RelativeLayout>

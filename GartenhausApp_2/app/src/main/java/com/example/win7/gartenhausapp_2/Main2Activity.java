@@ -1,9 +1,8 @@
 package com.example.win7.gartenhausapp_2;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -31,38 +29,31 @@ public class Main2Activity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Create the menue house item in the right top corner
-     */
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Click Listener for menue item
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Method to Fill the Table
-     */
-    @SuppressLint("SetTextI18n")
     private void FillTable() {
         String help = client.Send("get plant display");
-        /*try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }*/
-        if (help.equals("Error")) return;
+        if (help.equals(getString(R.string.error))) {
+            TableRow row = new TableRow(this);
+            TextView txV = new TextView(this);
+            txV.setText(getString(R.string.error));
+            row.addView(txV);
+            ((TableLayout) findViewById(R.id.tablePlant)).addView(row);
+            return;
+        }
         String[] row_ = help.split(";");
-        if (row_.length < 1) return;
+        if (row_.length < 1) {
+            return;
+        }
 
         TableLayout tableLayout = findViewById(R.id.tablePlant);
         for (String aRow_ : row_) {
@@ -82,9 +73,6 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Click Listener for Edit Button
-     */
     public class Edit implements View.OnClickListener {
 
         @Override

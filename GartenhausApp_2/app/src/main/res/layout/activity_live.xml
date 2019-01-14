@@ -9,11 +9,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="47dp"
-        android:orientation="vertical"
-        android:layout_alignParentLeft="true">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,9 +24,9 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:paddingEnd="0dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="0dp"
-                android:paddingEnd="0dp"
                 android:paddingStart="5dp"
                 android:paddingTop="10dp"
                 android:text="@string/temp"
@@ -51,9 +51,9 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:paddingEnd="0dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="0dp"
-                android:paddingEnd="0dp"
                 android:paddingStart="5dp"
                 android:paddingTop="10dp"
                 android:text="@string/humid"
@@ -78,9 +78,9 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:paddingEnd="0dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="0dp"
-                android:paddingEnd="0dp"
                 android:paddingStart="5dp"
                 android:paddingTop="0dp"
                 android:text="@string/groundhumid"
@@ -105,9 +105,9 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:paddingEnd="0dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="0dp"
-                android:paddingEnd="0dp"
                 android:paddingStart="5dp"
                 android:paddingTop="10dp"
                 android:text="@string/light"
@@ -128,10 +128,10 @@
         android:layout_width="match_parent"
         android:layout_height="149dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="89dp"
-        android:orientation="horizontal"
-        android:layout_alignParentLeft="true">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="181dp"
@@ -139,10 +139,10 @@
             android:orientation="vertical">
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/swheater"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="@string/heater"
                 android:textSize="20sp" />
 
@@ -151,10 +151,10 @@
                 android:layout_height="10dp" />
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/swsprayer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="@string/sprayer"
                 android:textSize="20sp" />
 
@@ -163,10 +163,10 @@
                 android:layout_height="10dp" />
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/swpump"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="@string/pump"
                 android:textSize="20sp" />
 
@@ -175,10 +175,10 @@
                 android:layout_height="10dp" />
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/swlight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="@string/light"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -189,10 +189,10 @@
             android:orientation="vertical">
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/swcooler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="@string/cooler"
                 android:textSize="20sp" />
 
@@ -201,44 +201,58 @@
                 android:layout_height="10dp" />
 
             <Switch
-                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:textSize="20sp"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
             <Switch
-                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:textSize="20sp"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/swshutters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:text="@string/shutters"
                 android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnStartStop"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="28dp"
-        android:text="@string/start"
-        android:onClick="btnStartStop"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnStartStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnStartStop"
+            android:text="@string/start" />
+
+        <Button
+            android:id="@+id/btnExit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnClick_btnExit"
+            android:text="@string/exit" />
+    </LinearLayout>
 </RelativeLayout>

@@ -5,40 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Main2Activity">
+
     <ScrollView
-        android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true"
         android:layout_width="300dp"
-        android:layout_height="400dp">
+        android:layout_height="400dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp">
+
         <TableLayout
             android:id="@+id/tablePlant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TableRow
+                android:id="@+id/tablePlantHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tablePlantHeader"
                 tools:ignore="UselessParent">
 
                 <TextView
+                    style="@style/table_Plant_Header_Style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/plant_id"
-                    android:layout_marginRight="24dp"
                     android:layout_marginEnd="24dp"
-                    style="@style/table_Plant_Header_Style" />
+                    android:layout_marginRight="24dp"
+                    android:text="@string/plant_id" />
+
                 <TextView
+                    style="@style/table_Plant_Header_Style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/plant_name"
-                    android:layout_marginRight="60dp"
                     android:layout_marginEnd="60dp"
-                    style="@style/table_Plant_Header_Style"/>
+                    android:layout_marginRight="60dp"
+                    android:text="@string/plant_name" />
+
                 <TextView
+                    style="@style/table_Plant_Header_Style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/edit"
-                    style="@style/table_Plant_Header_Style"/>
+                    android:text="@string/edit" />
             </TableRow>
 
         </TableLayout>

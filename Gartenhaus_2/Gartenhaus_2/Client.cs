@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Gartenhaus_2
 {
     public class Client
     {
-        private string IP,me;
+        private string IP, me;
         public void StartClient(string IPAddress_, string message)
         {
             IP = IPAddress_; me = message;
@@ -43,6 +40,7 @@ namespace Gartenhaus_2
         {
             message += "|";
             byte[] byteData = Encoding.ASCII.GetBytes(message);
+            Console.WriteLine("Send: " + message);
             client.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(SendCallback), client);
         }
 
@@ -85,7 +83,7 @@ namespace Gartenhaus_2
                     }
                     else
                     {
-                        Console.WriteLine("Reponse: " + message);
+                        Console.WriteLine("Reponse: " + message+"\n");
                         client.Shutdown(SocketShutdown.Both);
                         client.Close();
                     }

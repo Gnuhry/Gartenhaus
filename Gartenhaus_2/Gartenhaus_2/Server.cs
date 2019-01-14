@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Gartenhaus_2
 {
@@ -27,7 +24,7 @@ namespace Gartenhaus_2
                 while (true)
                 {
                     manuelresetevent.Reset();
-                    Console.WriteLine("Waiting for a connection...");
+                    Console.WriteLine("Waiting for a connection...\n");
                     server.BeginAccept(
                         new AsyncCallback(AcceptCallback),
                         server);
@@ -143,7 +140,7 @@ namespace Gartenhaus_2
             {
                 Socket client = (Socket)ar.AsyncState;
                 int lentgh = client.EndSend(ar);
-                Console.WriteLine("Sent " + lentgh + " bytes to client");
+                Console.WriteLine("Sent " + lentgh + " bytes to client\n");
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
             }
