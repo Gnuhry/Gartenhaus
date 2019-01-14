@@ -2,6 +2,8 @@
 #include <DHT.h>
 #include <WiFi.h>
 #include <Preferences.h>
+
+//--------------------Deffinition der Pins------------------------------
 #define LightSensor 34
 #define GroundHumidSensor 36
 #define TempHumidSensor 17
@@ -15,7 +17,6 @@
 
 
 //--------------------------initalisieren-------------------
-const int leng = 20;
 const char* ssid     = "VTHHH";
 const char* password = "v19t25h16h06h11";
 const char* host = "192.168.178.26";
@@ -24,8 +25,8 @@ WiFiClient client, c1;
 WiFiServer server(serverPort);
 bool IsActive = false, live = false;
 int sendcounter = 0, tempI = 0, humidI = 0, groundHumidI = 0, lightI = 0;
+const int leng = 20;
 float temp[leng], humid[leng], groundHumid[leng], light[leng];
-//DHTesp dht;
 DHT dht(TempHumidSensor, DHTTYPE);
 Preferences preferences;
 int higherPin[] {
@@ -39,15 +40,8 @@ lowerPin[] {
   0, 0, 0, 0
 };
 
+//---------------------------------------setup------------------------------------------
 void setup() {
-
-  Serial.begin(9600);
-  for (int f = 0; f < leng; f++) {
-    temp[f] = -100;
-    humid[f] = -100;
-    groundHumid[f] = -100;
-    light[f] = -100;
-  }
   pinMode(LightSensor, INPUT);
   pinMode(GroundHumidSensor, INPUT);
   pinMode(TempHumidSensor, INPUT);
@@ -69,10 +63,18 @@ void setup() {
   high[3] = 0;
   low[0] = 0;
   low[3] = 0;
-  dht.begin();
-  Serial.println("----------Start-------------");
-  Connecting();
 
+  Serial.begin(9600);
+  Serial.println("----------Start-------------");
+  dht.begin();
+  for (int f = 0; f < leng; f++) {
+    temp[f] = -100;
+    humid[f] = -100;
+    groundHumid[f] = -100;
+    light[f] = -100;
+  }
+
+  Connecting();
   Serial.println("\n\nStarting Server");
   server.begin();
   Serial.print("Server gestartet unter Port ");
@@ -82,7 +84,7 @@ void setup() {
   preferences.begin("storage", false);
   int id = preferences.getUInt("id", 0);
   preferences.end();
-  Serial.println("Checking");
+  Serial.println("ID: ");
   Serial.println(id);
 
   if (id < 1) {
@@ -95,13 +97,13 @@ void setup() {
   }
 }
 
+//------------------------------------------loop----------------------------
 void loop() {
   if (live) {
     LiveLoop();
   }
   else {
     NonLiveLoop();
-
   }
   if (tempI++ > leng) {
     tempI = 0;
@@ -115,8 +117,8 @@ void loop() {
   if (lightI++ > leng) {
     lightI = 0;
   }
-  temp[tempI] = dht.readTemperature();//lastValues.temperature;
-  humid[humidI] = dht.readHumidity();//lastValues.humidity;
+  temp[tempI] = dht.readTemperature();
+  humid[humidI] = dht.readHumidity();
   groundHumid[groundHumidI] = analogRead(GroundHumidSensor);
   light[lightI] = analogRead(LightSensor);
   if (IsActive) {
@@ -133,6 +135,7 @@ void loop() {
     }
   }
 }
+
 void NonLiveLoop() {
   if (IsActive) {
     Check();
