@@ -73,6 +73,10 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
+    public void Reload(View view) {
+        startActivity(getIntent());
+    }
+
     public class Edit implements View.OnClickListener {
 
         @Override

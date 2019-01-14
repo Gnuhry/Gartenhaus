@@ -72,6 +72,10 @@ public class Main3Activity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), Graph.class));
     }
 
+    public void Reload(View view) {
+        startActivity(getIntent());
+    }
+
     public class Edit implements View.OnClickListener {
         @Override
         public void onClick(View view) {

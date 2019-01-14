@@ -36,6 +36,7 @@ public class Graph extends AppCompatActivity {
     ArrayList<String> spinnerlist = new ArrayList<>();
     SeekBar seekBar;
     Spinner spinner;
+    Graph grap;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,10 +206,8 @@ public class Graph extends AppCompatActivity {
         graph.addSeries(series);
     }
 
-    Graph grap;
-
-    public void back_Click(View view) {
-        Intent intent = new Intent(this, Main3Activity.class);
-        startActivity(intent);
+    public void Reload(View view) {
+        startActivity(getIntent());
     }
+
 }

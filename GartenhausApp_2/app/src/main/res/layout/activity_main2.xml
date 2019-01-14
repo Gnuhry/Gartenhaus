@@ -57,6 +57,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="22dp"
         android:contentDescription="@string/new_plant"
-        app:srcCompat="@drawable/baseline_add_circle_outline_black_18dp" />
+        app:srcCompat="@drawable/baseline_add_circle_outline_black_48dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/imVaddPlant"
+        android:layout_marginStart="38dp"
+        app:srcCompat="@drawable/baseline_replay_black_48dp"
+        android:layout_alignParentLeft="true"
+        android:clickable="true"
+        android:onClick="Reload"
+        android:contentDescription="@string/reload"
+        android:layout_marginLeft="38dp"
+        android:focusable="true" />
 
 </RelativeLayout>
