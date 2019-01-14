@@ -11,24 +11,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    ServerSocket serverSocket;
-    TextView[] txV;
-    Switch[] sw;
-    boolean first, end;
+    private ServerSocket serverSocket;
+    private Switch[] sw;
+    private boolean first, end;
     Live live;
 
-    public Server(TextView[] txV, Switch[] sw, Live live) {
+    Server(Switch[] sw, Live live) {
         this.live = live;
         this.sw = sw;
-        this.txV = txV;
         first = true;
-        new Thread(new ServerThread()).start();
     }
 
     public void Stop() {
@@ -36,12 +32,6 @@ public class Server {
     }
 
     public void Restart() {
-        first = true;
-        if (serverSocket != null) {
-            if (serverSocket.isBound()) {
-                return;
-            }
-        }
         new Thread(new ServerThread()).start();
     }
 
@@ -52,15 +42,13 @@ public class Server {
             end = false;
             try {
                 serverSocket = new ServerSocket(5000);
-                while (true) {
+                do {
                     Socket client = serverSocket.accept();
                     new SocketAnswer(client, end).start();
-                }
-            } catch (IOException ex) {
+                } while (!end);
+            } catch (IOException ignored) {
             }
         }
-
-
     }
 
     private class SocketAnswer extends Thread {
@@ -81,7 +69,6 @@ public class Server {
                 outputStream = socket.getOutputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream));
-                PrintStream printStream = new PrintStream(outputStream);
                 StringBuilder sb = new StringBuilder();
                 while (!end) {
                     do {
@@ -96,7 +83,7 @@ public class Server {
                         Toast.makeText(live, "Nope", Toast.LENGTH_SHORT).show();
                     }
                     printWriter.print(x.GetString() + "|");
-                    printStream.print(x.GetString() + "|");
+                    printWriter.flush();
                     Log.e("Server2", "Send: " + x.GetString() + "|");
                     sb.delete(0, sb.length() + 1);
                 }
@@ -110,16 +97,17 @@ public class Server {
         StringBuilder erg = new StringBuilder();
         String split[];
 
-        public Run(String split[]) {
+        Run(String split[]) {
             this.split = split;
         }
 
         @Override
         public void run() {
-            ((TextView) live.findViewById(R.id.txVtemp)).setText(split[0] + "°C");//txV[0].setText(split[0] + "°C");
-            ((TextView) live.findViewById(R.id.txVhumid)).setText(split[1]);//txV[1].setText(split[1] );
-            ((TextView) live.findViewById(R.id.txVgroundHumid)).setText(split[2]);//txV[2].setText(split[2] );
-            ((TextView) live.findViewById(R.id.txVlight)).setText(split[3]);//txV[3].setText(split[3] );
+            split[0] += "°C";
+            ((TextView) live.findViewById(R.id.txVtemp)).setText(split[0]);
+            ((TextView) live.findViewById(R.id.txVhumid)).setText(split[1]);
+            ((TextView) live.findViewById(R.id.txVgroundHumid)).setText(split[2]);
+            ((TextView) live.findViewById(R.id.txVlight)).setText(split[3]);
             Log.e("Server2", split[4]);
             if (first) {
                 char[] characters = split[4].toCharArray();

@@ -39,4 +39,5 @@
     <string name="back">Zurück</string>
     <string name="please_wait">Bitte warten</string>
     <string name="stop">Stop</string>
+    <string name="error">Error</string>
 </resources>

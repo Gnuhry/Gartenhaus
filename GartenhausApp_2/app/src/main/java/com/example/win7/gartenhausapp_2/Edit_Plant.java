@@ -1,14 +1,12 @@
 package com.example.win7.gartenhausapp_2;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,7 +20,6 @@ public class Edit_Plant extends AppCompatActivity {
 
     private Client client;
     private int ID;
-    private List<String> spinnerlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +29,7 @@ public class Edit_Plant extends AppCompatActivity {
         ID = getIntent().getIntExtra("ID", -1); //read ID
         InitClickListner();
         SpinnerInitalisieren();
-        if (ID <1)
+        if (ID < 1)
             return;
         findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
         String[] help = client.Send("get plant all_" + ID).split("_");
@@ -41,7 +38,17 @@ public class Edit_Plant extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
-        if(help[0].equals("Error")){
+        if (help[0].equals(getString(R.string.error))) {
+            findViewById(R.id.edTName).setEnabled(false);
+            findViewById(R.id.edTminHumid).setEnabled(false);
+            findViewById(R.id.edTmaxGroundHumid).setEnabled(false);
+            findViewById(R.id.edTmaxHumid).setEnabled(false);
+            findViewById(R.id.edTminGroundHumid).setEnabled(false);
+            findViewById(R.id.edTmaxTemp).setEnabled(false);
+            findViewById(R.id.edTminTemp).setEnabled(false);
+            findViewById(R.id.spinnerLight).setEnabled(false);
+            ((EditText) findViewById(R.id.edTName)).setText(getString(R.string.error));
+            findViewById(R.id.imVSavePlaint).setVisibility(View.GONE);
             return;
         }
         if (help.length < 2) return;
@@ -57,7 +64,7 @@ public class Edit_Plant extends AppCompatActivity {
 
     private void SpinnerInitalisieren() {
         Spinner spinner = findViewById(R.id.spinnerLight);
-        spinnerlist = new ArrayList<>();
+        List<String> spinnerlist = new ArrayList<>();
         spinnerlist.add("sehr empfindlich");
         spinnerlist.add("empfindlich");
         spinnerlist.add("grob empfindlich");
@@ -67,27 +74,18 @@ public class Edit_Plant extends AppCompatActivity {
         spinner.setSelection(1);
     }
 
-    /**
-     * Create the menue house item in the right top corner
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Click Listener for menue item
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Create the ClickListner
-     */
     private void InitClickListner() {
         findViewById(R.id.imVSavePlaint).setOnClickListener(new View.OnClickListener() {
             /**
@@ -109,7 +107,7 @@ public class Edit_Plant extends AppCompatActivity {
                     return;
                 }
                 if (Float.parseFloat(MinTemp) > 50 || Float.parseFloat(MinTemp) < -20 || Float.parseFloat(MaxTemp) > 50 || Float.parseFloat(MinTemp) < 0) {
-                    Toast.makeText(getApplicationContext(),R.string.tempValue, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.tempValue, Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (Float.parseFloat(MinHumid) > 100 || Float.parseFloat(MinHumid) < 0 || Float.parseFloat(MaxHumid) > 100 || Float.parseFloat(MaxHumid) < 0) {
@@ -136,26 +134,12 @@ public class Edit_Plant extends AppCompatActivity {
                     Log.e("Change", client.Send("set plant_" + ID + "_" + name + "_" + MinTemp.replace('.', ',') +
                             "_" + MaxTemp.replace('.', ',') + "_" + MinGroundHumid.replace('.', ',') + "_" + MaxGroundHumid.replace('.', ',') +
                             "_" + MinHumid.replace('.', ',') + "_" + MaxHumid.replace('.', ',') +
-                            "_"+((Spinner) findViewById(R.id.spinnerLight)).getSelectedItemPosition()));
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        Toast.makeText(getApplicationContext(), "Nope", Toast.LENGTH_SHORT).show();
-                    }
+                            "_" + ((Spinner) findViewById(R.id.spinnerLight)).getSelectedItemPosition()));
                 } else {
                     Log.e("Add", client.Send("new plant_" + name + "_" + MinTemp.replace('.', ',') + "_" + MaxTemp.replace('.', ',') + "_" + MinGroundHumid.replace('.', ',') +
                             "_" + MaxGroundHumid.replace('.', ',') + "_" + MinHumid.replace('.', ',') + "_" + MaxHumid.replace('.', ',') +
-                            "_" + ((Spinner) findViewById(R.id.spinnerLight)).getSelectedItemPosition()  ));
+                            "_" + ((Spinner) findViewById(R.id.spinnerLight)).getSelectedItemPosition()));
                 }
-                Close();
-            }
-        });
-        findViewById(R.id.imVClosePlaint).setOnClickListener(new View.OnClickListener() {
-            /**
-             * Click Listener for Close Button
-             */
-            @Override
-            public void onClick(View view) {
                 Close();
             }
         });
@@ -172,27 +156,8 @@ public class Edit_Plant extends AppCompatActivity {
             });
     }
 
-    /**
-     * Close the form
-     */
     private void Close() {
-        client.Stop();
         Intent intent = new Intent(this, Main2Activity.class);
         startActivity(intent);
-    }
-
-    /**
-     * Click Listener for Clicking the Form to close the keyboard
-     */
-    public void btnClick_Tastatur(View view) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        try {
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
     }
 }

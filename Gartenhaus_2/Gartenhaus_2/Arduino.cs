@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gartenhaus_2
 {
@@ -16,6 +13,7 @@ namespace Gartenhaus_2
                 new Client().StartClient(ip.Split('_')[1], ip.Split('_')[0] + "a" + data[0] + "b" + data[1] + "c" + data[2] + "d" + data[3] + "e" + data[4] + "f" + data[5] + "g" + data[6]);
             }
         }
+
         public static void SendToClient(int plantId, int arduinoId)
         {
             if (plantId > 0)
@@ -28,6 +26,7 @@ namespace Gartenhaus_2
                 new Client().StartClient(Get(arduinoId)[1].ToString(), arduinoId + "a-100b-100c-100d-100e-100f-100g-100");
             }
         }
+
         public static void New(string ArduinoIP)
         {
             DeleteAll(ArduinoIP);
@@ -37,8 +36,8 @@ namespace Gartenhaus_2
             database.CloseConnection();
             object[] IDS = Get("ID");
             SendToClient(0, Convert.ToInt32(IDS[IDS.Length - 1]));
-
         }
+
         public static void Reconect(int ArduinoId, string ArduinoIP)
         {
             if (!IsRealID(ArduinoId))
@@ -53,6 +52,7 @@ namespace Gartenhaus_2
             }
             SendToClient(Convert.ToInt32(help[2]), ArduinoId);
         }
+
         public static void Update(int ArduinoId, int PlantId)
         {
             if (!IsRealID(ArduinoId))
@@ -74,6 +74,7 @@ namespace Gartenhaus_2
 
             SendToClient(PlantId, ArduinoId);
         }
+
         public static void Update(int ArduinoId, int PlantId, string ArduinoIP)
         {
             if (!IsRealID(ArduinoId))
@@ -94,6 +95,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             SendToClient(PlantId, ArduinoId);
         }
+
         public static void Delete(int ArduinoId)
         {
             if (!IsRealID(ArduinoId))
@@ -109,6 +111,7 @@ namespace Gartenhaus_2
             );
             database.CloseConnection();
         }
+
         public static void DeleteAll(int PlantId)
         {
             if (!Plant.IsRealID(PlantId))
@@ -124,6 +127,7 @@ namespace Gartenhaus_2
             );
             database.CloseConnection();
         }
+
         public static void DeleteAll(string ArduinoIP)
         {
             Database database = new Database();
@@ -135,6 +139,7 @@ namespace Gartenhaus_2
             );
             database.CloseConnection();
         }
+
         public static object[] Get()
         {
             List<object> erg = new List<object>();
@@ -148,6 +153,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             return erg.ToArray();
         }
+
         public static object[] Get(int ArduinoId)
         {
             if (!IsRealID(ArduinoId))
@@ -172,6 +178,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             return erg;
         }
+
         public static object Get(int ArduinoId, string Search)
         {
             if (!IsRealID(ArduinoId))
@@ -189,6 +196,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             return erg;
         }
+
         public static object[] Get(string Search)
         {
             List<object> erg = new List<object>();
@@ -202,6 +210,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             return erg.ToArray();
         }
+
         public static object[] GetAllIPs(int PlantId)
         {
             if (!Plant.IsRealID(PlantId))
@@ -222,6 +231,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             return erg.ToArray();
         }
+
         public static object[] GetDisplay()
         {
             object[] help = Get();
@@ -239,17 +249,9 @@ namespace Gartenhaus_2
                 object help3 = help2[0] + "_" + help2[2] + "_" + help2[1];
                 help[f] = help3;
             }
-            /*List<object> erg = new List<object>();
-            Database database = new Database();
-            database.OpenConnection();
-            SqlDataReader sqlDataReader = database.Read("SELECT Arduino.Id,Plant.Name,Arduino.ArduinoIP FROM Arduino,Plant  WHERE Plant.Id=Arduino.PlantId", new string[] { }, new object[] { }, new System.Data.SqlDbType[] { });
-            while (sqlDataReader.Read())
-            {
-                erg.Add(sqlDataReader[0] + "_" + sqlDataReader[1] + "_" + sqlDataReader[2]);
-            }
-            database.CloseConnection();*/
             return help;
         }
+
         public static void Live(string IP, int Id)
         {
             if (!IsRealID(Id))
@@ -258,6 +260,7 @@ namespace Gartenhaus_2
             }
             new Client().StartClient(Get(Id, "ArduinoIP").ToString(), "_" + IP);
         }
+
         private static bool IsRealID(int ArduinoId)
         {
             bool realID = false;
@@ -270,6 +273,7 @@ namespace Gartenhaus_2
             }
             return realID;
         }
+
         public static void SetData(int arduinoID, float temperatur, float humid, float groundhumid, int light)
         {
             Database database = new Database();
@@ -280,6 +284,7 @@ namespace Gartenhaus_2
                 new System.Data.SqlDbType[] { System.Data.SqlDbType.DateTime, System.Data.SqlDbType.Int, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Int });
             database.CloseConnection();
         }
+
         public static object[] GetDataAll()
         {
             List<object> erg = new List<object>();
@@ -287,7 +292,7 @@ namespace Gartenhaus_2
             List<int> Plantids = new List<int>();
             Database database = new Database();
             database.OpenConnection();
-            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Data,Arduino WHERE Data.ArduinoId=Arduino.Id"/* AND Plant.Id=Arduino.PlantID*/, new string[] { }, new object[] { }, new System.Data.SqlDbType[] { });
+            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Data,Arduino WHERE Data.ArduinoId=Arduino.Id", new string[] { }, new object[] { }, new System.Data.SqlDbType[] { });
             while (sqlDataReader.Read())
             {
                 erg.Add(sqlDataReader["ArduinoId"] + "_" + sqlDataReader["ArduinoIP"] + "_" + sqlDataReader["time"] + "_" + sqlDataReader["Temperatur"] + "_" + sqlDataReader["Humid"] + "_" + sqlDataReader["GroundHumid"] + "_" + sqlDataReader["Light"]);
@@ -301,70 +306,29 @@ namespace Gartenhaus_2
                 }
             }
             database.CloseConnection();
-
-            for(int f = 0; f < erg.Count; f++)
+            for (int f = 0; f < erg.Count; f++)
             {
                 string he = ":" + erg[f].ToString().Split('_')[0] + "-" + erg[f].ToString().Split('_')[1];
                 bool ac = false;
                 for (int g = 0; g < erg2.Count && !ac; g++)
                 {
                     ac = erg2[g].ToString().Split('-')[0].Substring(1) == he.Split('-')[0].Substring(1);
-                   // Console.WriteLine(erg2[f].ToString().Split('-')[0].Substring(1) + "==" + he.Split('-')[0].Substring(1));
                 }
                 if (!ac)
                 {
                     try
                     {
-                        // SqlDataReader sqlDataReader2 = database.Read("SELECT * FROM Plant WHERE Id=@Id", new string[] { "@Id" }, new object[] { Convert.ToInt32(sqlDataReader["PlantId"]) }, new System.Data.SqlDbType[] { System.Data.SqlDbType.Int });
                         object[] plant = Plant.Get(Plantids[f]);
-                        //erg2.Add(he + "_" + sqlDataReader2["MinTemp"] + "_" + sqlDataReader2["MinHumid"] + "_" + sqlDataReader2["MinGroundHumid"] + "_" + sqlDataReader2["MaxTemp"] + "_" + sqlDataReader2["MaxHumid"] + "_" + sqlDataReader2["MaxGroundHumid"] + "_1000");
                         erg2.Add(he + "_" + plant[2] + "_" + plant[3] + "_" + plant[4] + "_" + plant[5] + "_" + plant[6] + "_" + plant[7] + "_1000");
                     }
                     catch (Exception es)
                     {
-                        Console.WriteLine(es.ToString());
                         erg2.Add(he);
                     }
                 }
             }
             erg2.AddRange(erg);
             return erg2.ToArray();
-
-
-/*
-
-            if (Plant.IsRealID(Convert.ToInt32(sqlDataReader["ArduinoId"])))
-            {
-                int plantid = Convert.ToInt32(sqlDataReader["PlantId"]);
-                database.CloseConnection();
-               
-                if (!ac)
-                {
-                    try
-                    {
-                        Console.WriteLine("yeah");
-                        // SqlDataReader sqlDataReader2 = database.Read("SELECT * FROM Plant WHERE Id=@Id", new string[] { "@Id" }, new object[] { Convert.ToInt32(sqlDataReader["PlantId"]) }, new System.Data.SqlDbType[] { System.Data.SqlDbType.Int });
-                        object[] plant = Plant.Get(plantid);
-                        Console.WriteLine("yeah2");
-                        //erg2.Add(he + "_" + sqlDataReader2["MinTemp"] + "_" + sqlDataReader2["MinHumid"] + "_" + sqlDataReader2["MinGroundHumid"] + "_" + sqlDataReader2["MaxTemp"] + "_" + sqlDataReader2["MaxHumid"] + "_" + sqlDataReader2["MaxGroundHumid"] + "_1000");
-                        erg2.Add(he + "_" + plant[2] + "_" + plant[3] + "_" + plant[4] + "_" + plant[5] + "_" + plant[6] + "_" + plant[7] + "_" + plant[8]);
-                        Console.WriteLine("yeah3");
-                    }
-                    catch (Exception es)
-                    {
-                        Console.WriteLine(es.ToString());
-                        erg2.Add(he);
-                    }
-                }
-            }
-            else
-            {
-                erg2.Add(":" + sqlDataReader["ArduinoId"] + "-" + sqlDataReader["ArduinoIP"]);
-                database.CloseConnection();
-            }
-
-            erg2.AddRange(erg);
-            return erg2.ToArray();*/
         }
     }
 }

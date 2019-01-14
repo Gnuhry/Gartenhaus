@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Gartenhaus_2
+﻿namespace Gartenhaus_2
 {
     class Program
     {

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gartenhaus_2
 {
@@ -56,11 +53,11 @@ namespace Gartenhaus_2
             }
             object[] data = Get(plantId);
             object[] data2 = new object[] { minTemp, maxTemp, minGroundHumid, maxGroundHumid, minHumid, maxHumid, light };
-            for(int f = 0; f < 7; f++)
+            for (int f = 0; f < 7; f++)
             {
                 if (!data[f + 2].Equals(data2[f]))
                 {
-                    Arduino.SendToClient(plantId,data2);
+                    Arduino.SendToClient(plantId, data2);
                     break;
                 }
             }
@@ -68,9 +65,9 @@ namespace Gartenhaus_2
             database.OpenConnection();
             Console.WriteLine("Changed: " + database.Write("UPDATE Plant SET Name = @Name, MinTemp = @MinTemp, MaxTemp = @MaxTemp, MinGroundHumid = @MinGroundHumid, " +
                     "MaxGroundHumid=@MaxGroundHumid,MinHumid=@MinHumid,MaxHumid=@MaxHumid,Light=@Light WHERE Id=@Id",
-                new string[] { "@Name", "@MinTemp", "@MaxTemp", "@MinGroundHumid", "@MaxGroundHumid", "@MinHumid", "@MaxHumid", "@Light","@Id" },
-                new object[] { name, minTemp, maxTemp, minGroundHumid, maxGroundHumid, minHumid, maxHumid, light,plantId },
-                new System.Data.SqlDbType[] { System.Data.SqlDbType.NVarChar, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.TinyInt,System.Data.SqlDbType.Int })
+                new string[] { "@Name", "@MinTemp", "@MaxTemp", "@MinGroundHumid", "@MaxGroundHumid", "@MinHumid", "@MaxHumid", "@Light", "@Id" },
+                new object[] { name, minTemp, maxTemp, minGroundHumid, maxGroundHumid, minHumid, maxHumid, light, plantId },
+                new System.Data.SqlDbType[] { System.Data.SqlDbType.NVarChar, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.Float, System.Data.SqlDbType.TinyInt, System.Data.SqlDbType.Int })
             );
             database.CloseConnection();
         }
@@ -91,10 +88,10 @@ namespace Gartenhaus_2
         }
         public static object[] Get()
         {
-            List<object> erg=new List<object>();
+            List<object> erg = new List<object>();
             Database database = new Database();
             database.OpenConnection();
-            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Plant", new string[] {  }, new object[] { }, new System.Data.SqlDbType[] { });
+            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Plant", new string[] { }, new object[] { }, new System.Data.SqlDbType[] { });
             while (sqlDataReader.Read())
             {
                 erg.Add(sqlDataReader[0] + "_" + sqlDataReader[1] + "_" + sqlDataReader[2] + "_" + sqlDataReader[3] + "_" + sqlDataReader[4] + "_" + sqlDataReader[5] + "_" + sqlDataReader[6] + "_" + sqlDataReader[7] + "_" + sqlDataReader[8]);
@@ -127,7 +124,7 @@ namespace Gartenhaus_2
             List<object> erg = new List<object>();
             Database database = new Database();
             database.OpenConnection();
-            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Plant", new string[] {  }, new object[] {  }, new System.Data.SqlDbType[] { });
+            SqlDataReader sqlDataReader = database.Read("SELECT * FROM Plant", new string[] { }, new object[] { }, new System.Data.SqlDbType[] { });
             while (sqlDataReader.Read())
             {
                 erg.Add(sqlDataReader[Search]);
@@ -135,7 +132,7 @@ namespace Gartenhaus_2
             database.CloseConnection();
             return erg.ToArray();
         }
-        public static object Get(int plantId,string Search)
+        public static object Get(int plantId, string Search)
         {
             if (!IsRealID(plantId))
             {

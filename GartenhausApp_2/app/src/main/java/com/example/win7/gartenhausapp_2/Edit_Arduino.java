@@ -1,9 +1,8 @@
 package com.example.win7.gartenhausapp_2;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,20 +20,13 @@ public class Edit_Arduino extends AppCompatActivity {
 
     private Client client;
     private int ID;
-    private List<String> spinnerlist;
 
-    /**
-     * Create the menue house item in the right top corner
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Click Listener for menue item
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -47,41 +39,33 @@ public class Edit_Arduino extends AppCompatActivity {
         setContentView(R.layout.activity_edit__arduino);
         client = MainActivity.client;
         ID = getIntent().getIntExtra("ID", -1); //read ID
-        SpinnerInitalisieren();
         if (ID < 1) return;
-        //get arduino data
         StringBuilder help = new StringBuilder(client.Send("get arduino all_" + ID));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
-        //Log.e("hung",help.toString());
-        if(help.toString().equals("Error")){
+        if (help.toString().equals(getString(R.string.error))) {
+            ((TextView) findViewById(R.id.txVID)).setText(R.string.error);
+            findViewById(R.id.edTIP).setEnabled(false);
+            findViewById(R.id.spinner).setEnabled(false);
+            findViewById(R.id.imVSaveArduino).setVisibility(View.GONE);
             return;
         }
+        SpinnerInitalisieren();
         String[] data = help.toString().split("_");
-        ((TextView) findViewById(R.id.txVID)).setText(ID + "");
+        ((TextView) findViewById(R.id.txVID)).setText(String.valueOf(ID));
         ((EditText) findViewById(R.id.edTIP)).setText(data[1]);
         ((Spinner) findViewById(R.id.spinner)).setSelection(Integer.parseInt(data[2]));
     }
 
-    /**
-     * Create the data of the spinner
-     */
     private void SpinnerInitalisieren() {
         Spinner spinner = findViewById(R.id.spinner);
-        spinnerlist = new ArrayList<>();
+        List<String> spinnerlist = new ArrayList<>();
         spinnerlist.add(getString(R.string.no));
         String name = client.Send("get plant names");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
-        }
-        if(!name.equals("Error")){
+        if (!name.equals(getString(R.string.error))) {
             String[] names = name.split("_");
             Collections.addAll(spinnerlist, names);
+        } else {
+            spinnerlist.add(getString(R.string.error));
+            spinner.setEnabled(false);
         }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerlist);
@@ -89,17 +73,11 @@ public class Edit_Arduino extends AppCompatActivity {
         spinner.setAdapter(arrayAdapter);
     }
 
-    /**
-     * Click Methode of Delete Button
-     */
     public void btnClick_DeleteArduino(View view) {
         client.Send("delete arduino_" + ID);
         Close();
     }
 
-    /**
-     * Click Method of Save Button
-     */
     public void btnClick_SaveArduino(View view) {
         client.Send("set arduino_" + ID + "_" + ((EditText) findViewById(R.id.edTIP)).getText().toString() +
                 "_" + (((Spinner) findViewById(R.id.spinner)).getSelectedItemPosition()));
@@ -111,28 +89,12 @@ public class Edit_Arduino extends AppCompatActivity {
         Close();
     }
 
-    /**
-     * Click Methode of Close Button
-     */
-    public void btnClick_CloseArduino(View view) {
-        Close();
-    }
-
-    /**
-     * Close the form
-     * Start the Parent activity
-     */
     private void Close() {
-        client.Stop();
         Intent intent = new Intent(this, Main3Activity.class);
         startActivity(intent);
     }
 
-    /**
-     * Click Methode of Live Button
-     */
     public void btnClick_btnLive(View view) {
         startActivity(new Intent(getApplicationContext(), Live.class).putExtra("ID", ID));
-    //Toast.makeText(this,"In Arbeit",Toast.LENGTH_SHORT).show();
     }
 }
