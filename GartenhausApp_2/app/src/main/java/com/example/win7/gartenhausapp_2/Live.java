@@ -46,8 +46,12 @@ public class Live extends AppCompatActivity {
                     return;
                 }
                 temp = false;
-                ((Switch) findViewById(R.id.swcooler)).setChecked(false);
-                ((Switch) findViewById(R.id.swheater)).setChecked(true);
+                if (!((Switch) findViewById(R.id.swheater)).isChecked()) {
+                    ((Switch) findViewById(R.id.swheater)).setChecked(false);
+                } else {
+                    ((Switch) findViewById(R.id.swcooler)).setChecked(false);
+                    ((Switch) findViewById(R.id.swheater)).setChecked(true);
+                }
                 temp = true;
             }
         });
@@ -58,8 +62,13 @@ public class Live extends AppCompatActivity {
                     return;
                 }
                 temp = false;
-                ((Switch) findViewById(R.id.swcooler)).setChecked(true);
-                ((Switch) findViewById(R.id.swheater)).setChecked(false);
+                if (!((Switch) findViewById(R.id.swcooler)).isChecked()) {
+                    ((Switch) findViewById(R.id.swcooler)).setChecked(false);
+
+                } else {
+                    ((Switch) findViewById(R.id.swcooler)).setChecked(true);
+                    ((Switch) findViewById(R.id.swheater)).setChecked(false);
+                }
                 temp = true;
             }
         });
@@ -70,8 +79,12 @@ public class Live extends AppCompatActivity {
                     return;
                 }
                 temp = false;
-                ((Switch) findViewById(R.id.swshutters)).setChecked(false);
-                ((Switch) findViewById(R.id.swlight)).setChecked(true);
+                if (!((Switch) findViewById(R.id.swlight)).isChecked()) {
+                    ((Switch) findViewById(R.id.swlight)).setChecked(false);
+                } else {
+                    ((Switch) findViewById(R.id.swshutters)).setChecked(false);
+                    ((Switch) findViewById(R.id.swlight)).setChecked(true);
+                }
                 temp = true;
             }
         });
@@ -82,8 +95,12 @@ public class Live extends AppCompatActivity {
                     return;
                 }
                 temp = false;
-                ((Switch) findViewById(R.id.swshutters)).setChecked(true);
-                ((Switch) findViewById(R.id.swlight)).setChecked(false);
+                if (!((Switch) findViewById(R.id.swshutters)).isChecked()) {
+                    ((Switch) findViewById(R.id.swshutters)).setChecked(false);
+                } else {
+                    ((Switch) findViewById(R.id.swshutters)).setChecked(true);
+                    ((Switch) findViewById(R.id.swlight)).setChecked(false);
+                }
                 temp = true;
             }
         });

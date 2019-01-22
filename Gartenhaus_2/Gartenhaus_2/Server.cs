@@ -98,7 +98,7 @@ namespace Gartenhaus_2
                 case "new arduino": Arduino.New(ArduinoIP); break;//new arduino
                 case "reconect arduino": Arduino.Reconect(Convert.ToInt32(tile[1]), ArduinoIP); break;//reconect arduino_[ArduinoID:int]
                 case "delete arduino": Arduino.Delete(Convert.ToInt32(tile[1])); break;//delete arduino_[ArduinoID:int]
-                case "set arduino data": try { Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2]), Convert.ToSingle(tile[3]), Convert.ToSingle(tile[4]), Convert.ToInt32(tile[5])); } catch (FormatException) { } break;//set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
+                case "set arduino data": try { Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2].Replace('.',',')), Convert.ToSingle(tile[3].Replace('.', ',')), Convert.ToSingle(tile[4].Replace('.', ',')), Convert.ToInt32(tile[5])); } catch (FormatException) { } break;//set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
                 case "live": Arduino.Live(ArduinoIP, Convert.ToInt32(tile[1])); break;
             }
         }

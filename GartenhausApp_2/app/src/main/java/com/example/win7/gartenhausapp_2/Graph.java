@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -142,23 +143,26 @@ public class Graph extends AppCompatActivity {
         for (String aData : data) {
             if (!(aData.toCharArray()[0] == ':')) {
                 counter++;
-                SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.GERMAN);
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.GERMAN);
                 try {
-                    Date date = format.parse(aData.split("_")[2]);
+                    Date date = format.parse(aData.split("_")[2].substring(11));
+                    Log.e("Graph", date.toString());
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
-                    calendar.add(Calendar.DAY_OF_YEAR, 1);
-                    calendar.add(Calendar.MONTH, 6);
-                    calendar.add(Calendar.YEAR, 2001);
+                    calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(aData.split("_")[2].substring(0, 2)) - 1);//split(".")[0]));
+                    calendar.add(Calendar.MONTH, Integer.parseInt(aData.split("_")[2].substring(3, 5)) - 1);
+                    calendar.add(Calendar.YEAR, Integer.parseInt(aData.split("_")[2].substring(6, 10)) - 1970);
                     date = calendar.getTime();
                     if (data[splitter].split("-")[0].substring(1).equals(aData.split("_")[0])) {
                         if (data[splitter].split("_").length > 1) {
-                            max.appendData(new DataPoint(date, Float.parseFloat(data[splitter].split("_")[mode + 4])), false, counter);
+                            max.appendData(new DataPoint(date, Float.parseFloat(data[splitter].split("_")[mode + 4].replace(",", "."))), false, counter);
                             if (mode != 3) {
-                                min.appendData(new DataPoint(date, Float.parseFloat(data[splitter].split("_")[mode + 1])), false, counter);
+                                min.appendData(new DataPoint(date, Float.parseFloat(data[splitter].split("_")[mode + 1].replace(",", "."))), false, counter);
                             }
                         }
-                        series.appendData(new DataPoint(date, Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))), false, counter);
+                        if (Float.parseFloat(aData.split("_")[mode + 3].replace(",", ".")) != -100) {
+                            series.appendData(new DataPoint(date, Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))), false, counter);
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -200,7 +204,7 @@ public class Graph extends AppCompatActivity {
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(grap, new SimpleDateFormat("hh:mm.ss dd.MM.yyyy", Locale.GERMAN).format(new Date((long) dataPoint.getX())) + "/" + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(grap, new SimpleDateFormat("kk:mm.ss dd.MM.yyyy", Locale.GERMAN).format(new Date((long) dataPoint.getX())) + "/" + String.format("%.2f", dataPoint.getY()), Toast.LENGTH_SHORT).show();
             }
         });
         graph.addSeries(series);
