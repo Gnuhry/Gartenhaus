@@ -90,15 +90,15 @@ namespace Gartenhaus_2
             string[] tile = threadhelp.Split('_');
             switch (tile[0].ToLower())
             {
-                case "set plant": Plant.Update(Convert.ToInt32(tile[1]), tile[2], Convert.ToSingle(tile[3]), Convert.ToSingle(tile[4]), Convert.ToSingle(tile[5]), Convert.ToSingle(tile[6]), Convert.ToSingle(tile[7]), Convert.ToSingle(tile[8]), Convert.ToInt32(tile[9])); break;//set plant_[PlantID:int]_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_[MinHumid:float]_[MaxHumid:float]_[Light:float]
-                case "new plant": Plant.New(tile[1], Convert.ToSingle(tile[2]), Convert.ToSingle(tile[3]), Convert.ToSingle(tile[4]), Convert.ToSingle(tile[5]), Convert.ToSingle(tile[6]), Convert.ToSingle(tile[7]), Convert.ToInt32(tile[8])); break;//new plant_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_[MinHumid:float]_[MaxHumid:float]_[Light:float]
+                case "set plant": Plant.Update(Convert.ToInt32(tile[1]), tile[2], Convert.ToSingle(tile[3].Replace('.',',')), Convert.ToSingle(tile[4].Replace('.',',')), Convert.ToSingle(tile[5].Replace('.',',')), Convert.ToSingle(tile[6].Replace('.',',')), Convert.ToSingle(tile[7]), Convert.ToSingle(tile[8]), Convert.ToInt32(tile[9])); break; //set plant_[PlantID:int]_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_[MinHumid:float]_[MaxHumid:float]_[Light:int]
+                case "new plant": Plant.New(tile[1], Convert.ToSingle(tile[2].Replace('.',',')), Convert.ToSingle(tile[3].Replace('.',',')), Convert.ToSingle(tile[4].Replace('.',',')), Convert.ToSingle(tile[5].Replace('.',',')), Convert.ToSingle(tile[6].Replace('.',',')), Convert.ToSingle(tile[7].Replace('.',',')), Convert.ToInt32(tile[8].Replace('.',','))); break;//new plant_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_[MinHumid:float]_[MaxHumid:float]_[Light:int]
                 case "delete plant": Plant.Delete(Convert.ToInt32(tile[1])); break;//delete plant_[PlantID:int]
                 case "set arduino plantid": Arduino.Update(Convert.ToInt32(tile[1]), Convert.ToInt32(tile[2])); break;//set arduino plantid_[ArduinoID:int]_[PlantID:int]
                 case "set arduino": Arduino.Update(Convert.ToInt32(tile[1]), Convert.ToInt32(tile[3]), tile[2]); break;//set arduino_[ArduinoID:int]_[ArduinoIP:string]_[PlantID:int]
                 case "new arduino": Arduino.New(ArduinoIP); break;//new arduino
                 case "reconect arduino": Arduino.Reconect(Convert.ToInt32(tile[1]), ArduinoIP); break;//reconect arduino_[ArduinoID:int]
                 case "delete arduino": Arduino.Delete(Convert.ToInt32(tile[1])); break;//delete arduino_[ArduinoID:int]
-                case "set arduino data": try { Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2].Replace('.',',')), Convert.ToSingle(tile[3].Replace('.', ',')), Convert.ToSingle(tile[4].Replace('.', ',')), Convert.ToInt32(tile[5])); } catch (FormatException) { } break;//set arduino data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
+                case "set data": try { Arduino.SetData(Convert.ToInt32(tile[1]), Convert.ToSingle(tile[2].Replace('.',',')), Convert.ToSingle(tile[3].Replace('.', ',')), Convert.ToSingle(tile[4].Replace('.', ',')), Convert.ToInt32(tile[5])); } catch (FormatException) { } break;//set data_[ArduinoID:int]_[Temperatur:float]_[Humid:float]_[GroundHumid:float]_[Light:int]
                 case "live": Arduino.Live(ArduinoIP, Convert.ToInt32(tile[1])); break;
             }
         }
@@ -110,14 +110,14 @@ namespace Gartenhaus_2
             switch (tile[0].ToLower())
             {
                 case "get time": return DateTime.Now.ToLongDateString(); //get time
-                case "get plant name": return Plant.Get(Convert.ToInt32(tile[1]), "Name").ToString(); //get plant name_[Name:string]
+                case "get plant name": return Plant.Get(Convert.ToInt32(tile[1]), "Name").ToString(); //get plant name_[PlantID:int]
                 case "get plant all": foreach (object o in Plant.Get(Convert.ToInt32(tile[1]))) { erg.Append(o + "_"); } return erg.ToString(); //get plant all_[PlantID:int]
                 case "get plant ids": foreach (object o in Plant.Get("Id")) { erg.Append(o + "_"); } return erg.ToString();//get plant ids
                 case "get plant names": foreach (object o in Plant.Get("Name")) { erg.Append(o + "_"); } return erg.ToString();//get plant names
                 case "get plant display": foreach (object o in Plant.GetDisplay()) { erg.Append(o + ";"); } return erg.ToString();//get plant display
                 case "get arduino all": foreach (object o in Arduino.Get(Convert.ToInt32(tile[1]))) { erg.Append(o + "_"); } return erg.ToString(); //get arduino all_[ArduinoId:int]
                 case "get arduino ids": foreach (object o in Arduino.Get("Id")) { erg.Append(o + "_"); } return erg.ToString();//get arduino ids
-                case "get arduino data": foreach (object o in Arduino.GetDataAll()) { erg.Append(o + ";"); } return erg.ToString(); //get arduino data
+                case "get data": foreach (object o in Arduino.GetDataAll()) { erg.Append(o + ";"); } return erg.ToString(); //get data
                 case "get arduino display": foreach (object o in Arduino.GetDisplay()) { erg.Append(o + ";"); } return erg.ToString();//get arduino display
                 default: return "Error";
             }

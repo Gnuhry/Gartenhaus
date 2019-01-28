@@ -60,7 +60,7 @@ public class Graph extends AppCompatActivity {
         graph.getGridLabelRenderer().setHumanRounding(false);
         graph.getViewport().setScalable(true);
         graph.getViewport().setScalableY(true);
-        data = MainActivity.client.Send("get arduino data").split(";");
+        data = MainActivity.client.Send("get data").split(";");
         if (data[0].equals(getString(R.string.error))) {
             graph.setEnabled(false);
             findViewById(R.id.seekBar).setEnabled(false);

@@ -3,7 +3,7 @@
 #include <WiFi.h>
 #include <Preferences.h>
 #define LightSensor 34
-#define GroundHumidSensor 36
+#define GroundHumidSensor 35
 #define TempHumidSensor 17
 #define pump 32
 #define heater 33
@@ -96,6 +96,7 @@ void setup() {
 }
 
 void loop() {
+  //Serial.println(analogRead(LightSensor));
   if (live) {
     LiveLoop();
   }
@@ -300,7 +301,7 @@ void GetMessage() {
 
 String SendMessage(String message, bool data_) {
   if (data_) {
-    message = "set arduino data_" + message;
+    message = "set data_" + message;
   }
   host = "192.168.178.26";
   Serial.print("Connecting to ");
