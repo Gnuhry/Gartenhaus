@@ -10,35 +10,36 @@
         android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="40dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" />
 
     <SeekBar
         android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="303dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/imVback"
-        android:layout_marginStart="48dp"
-        android:layout_alignParentLeft="true"
         android:layout_marginLeft="48dp"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_marginStart="48dp"
         android:max="3"
-        android:progress="0"/>
+        android:progress="0" />
 
     <ImageView
         android:id="@+id/imVback"
         android:layout_width="37dp"
         android:layout_height="34dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        app:srcCompat="?attr/actionModeCloseDrawable"
         android:layout_alignParentLeft="true"
-        android:contentDescription="@string/back"
+        android:layout_alignParentStart="true"
         android:clickable="true"
-        android:onClick="back_Click"/>
+        android:contentDescription="@string/reload"
+        android:focusable="true"
+        android:onClick="Reload"
+        app:srcCompat="@drawable/baseline_replay_black_48dp" />
 
     <TextView
         android:id="@+id/textView"
@@ -47,56 +48,56 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="3dp"
         android:layout_toEndOf="@+id/imVback"
+        android:layout_toRightOf="@+id/imVback"
         android:text="@string/temp"
-        android:textSize="10sp"
-        android:layout_toRightOf="@+id/imVback" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="325dp"
-        android:layout_marginBottom="3dp"
-        android:text="@string/light"
-        android:textSize="10sp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="325dp"  />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="325dp"
+        android:layout_marginStart="325dp"
+        android:text="@string/light"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="203dp"
-        android:layout_marginBottom="3dp"
-        android:text="@string/groundhumid"
-        android:textSize="10sp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="203dp" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="195dp"
+        android:layout_marginStart="195dp"
+        android:text="@string/groundhumid"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="3dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="129dp"
-        android:text="@string/humid"
-        android:textSize="10sp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="129dp" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="122dp"
+        android:layout_marginStart="122dp"
+        android:text="@string/humid"
+        android:textSize="12sp" />
 
     <Spinner
         android:id="@+id/spinnergraph"
         android:layout_width="211dp"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/graph"
-        android:layout_marginBottom="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/graph" />
+        android:layout_alignRight="@+id/graph"
+        android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

@@ -1,9 +1,8 @@
 package com.example.win7.gartenhausapp_2;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Main3Activity extends AppCompatActivity {
     Client client;
@@ -22,41 +20,35 @@ public class Main3Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main3);
         client = MainActivity.client;
         FillTable();
-        client.Stop();
     }
 
-    /**
-     * Create the menue house item in the right top corner
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Click Listener for menue item
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Methode to fill the table
-     */
-    @SuppressLint("SetTextI18n")
     private void FillTable() {
         String data = client.Send("get arduino display");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
+
+        if (data.equals(getString(R.string.error))) {
+            TableRow row = new TableRow(this);
+            TextView txV = new TextView(this);
+            txV.setText(getString(R.string.error));
+            row.addView(txV);
+            ((TableLayout) findViewById(R.id.tableArduino)).addView(row);
+            return;
         }
-        if(data.equals("Error"))return;
-        String[]row_=data.split(";");
-        if(row_.length<1)return;
+        String[] row_ = data.split(";");
+        if (row_.length < 1) {
+            return;
+        }
 
         TableLayout tableLayout = findViewById(R.id.tableArduino);
         for (String aRow_ : row_) {
@@ -76,17 +68,14 @@ public class Main3Activity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Click Listener for Graph Button
-     */
     public void btn_Graph(View view) {
-        //Toast.makeText(this,"In Arbeit",Toast.LENGTH_SHORT).show();
         startActivity(new Intent(getApplicationContext(), Graph.class));
     }
 
-    /**
-     * Click Listener for Edit Button
-     */
+    public void Reload(View view) {
+        startActivity(getIntent());
+    }
+
     public class Edit implements View.OnClickListener {
         @Override
         public void onClick(View view) {

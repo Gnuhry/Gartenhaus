@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-            android:icon="@drawable/baseline_home_white_36dp"
-            android:id="@+id/menu"
-            app:showAsAction="always"
-            android:title="@string/menue"
-            />
+        android:id="@+id/menu"
+        android:icon="@drawable/baseline_home_white_36dp"
+        android:title="@string/menue"
+        app:showAsAction="always" />
 
 </menu>

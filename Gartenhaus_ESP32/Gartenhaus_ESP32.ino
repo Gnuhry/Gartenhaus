@@ -1,14 +1,12 @@
 //-------------Einbinden seperater Bibilotheken-------------------------
-//#include <DHTesp.h>
 #include <DHT.h>
-//#include <EEPROM.h>
 #include <WiFi.h>
 #include <Preferences.h>
 #define LightSensor 34
-#define GroundHumidSensor 36
+#define GroundHumidSensor 35
 #define TempHumidSensor 17
-#define pump 32 //TODO - Ausprobieren
-#define heater 33 //TODO -Zu wenig RELAYS!!!!
+#define pump 32
+#define heater 33
 #define cooler 25
 #define sprayer 26
 #define uvLight 27
@@ -50,7 +48,6 @@ void setup() {
     groundHumid[f] = -100;
     light[f] = -100;
   }
-  //SetToSave("0§-100$-100%-100&-100/-100(-100)-100");
   pinMode(LightSensor, INPUT);
   pinMode(GroundHumidSensor, INPUT);
   pinMode(TempHumidSensor, INPUT);
@@ -72,12 +69,6 @@ void setup() {
   high[3] = 0;
   low[0] = 0;
   low[3] = 0;
-
-
-
-
-  // put your setup code here, to run once:
-  //dht.setup(TempHumidSensor, DHTesp::DHT11);
   dht.begin();
   Serial.println("----------Start-------------");
   Connecting();
@@ -102,46 +93,34 @@ void setup() {
     Serial.println("reconect");
     SendMessage("reconect arduino_" + String(id), false);
   }
-  /* if (erg != "Success") {
-     if (erg.substring(0, 1) == "_") {
-       SetToSave(erg + ". , : - ; _ + *");
-     }
-     else {
-       SetToSave(erg);
-       IsActive = true;
-     }
-    }*/
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  //Serial.println(analogRead(LightSensor));
   if (live) {
     LiveLoop();
-
   }
   else {
     NonLiveLoop();
 
   }
+  if (tempI++ > leng) {
+    tempI = 0;
+  }
+  if (humidI++ > leng) {
+    humidI = 0;
+  }
+  if (groundHumidI++ > leng) {
+    groundHumidI = 0;
+  }
+  if (lightI++ > leng) {
+    lightI = 0;
+  }
+  temp[tempI] = dht.readTemperature();//lastValues.temperature;
+  humid[humidI] = dht.readHumidity();//lastValues.humidity;
+  groundHumid[groundHumidI] = analogRead(GroundHumidSensor);
+  light[lightI] = analogRead(LightSensor);
   if (IsActive) {
-    //TempAndHumidity lastValues = dht.getTempAndHumidity();
-    if (tempI++ > leng) {
-      tempI = 0;
-    }
-    if (humidI++ > leng) {
-      humidI = 0;
-    }
-    if (groundHumidI++ > leng) {
-      groundHumidI = 0;
-    }
-    if (lightI++ > leng) {
-      lightI = 0;
-    }
-    temp[tempI] = dht.readTemperature();//lastValues.temperature;
-    humid[humidI] = dht.readHumidity();//lastValues.humidity;
-    groundHumid[groundHumidI] = analogRead(GroundHumidSensor);
-    light[lightI] = analogRead(LightSensor);
-    //Serial.println(analogRead(LightSensor));
     Serial.print("-------------------------------------------------------------");
     Serial.println(sendcounter);
     if (sendcounter++ > 500) {
@@ -149,10 +128,11 @@ void loop() {
       preferences.begin("storage", false);
       int id = preferences.getUInt("id", 0);
       preferences.end();
-      SendMessage("" + String(id) + "_" + String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light)), true);
+      String messag = "" + String(id) + "_" + String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light));
+      messag.replace("nan", "-100") ;
+      SendMessage(messag, true);
     }
   }
-  // Serial.println("Message?");
 }
 void NonLiveLoop() {
   if (IsActive) {
@@ -217,7 +197,6 @@ void Check() {
       low[f] = 0;
     }
   }
-  //TODO light Check
   preferences.begin("storage", false);
   int x = preferences.getUInt("Light", -100), counter = 0;
   Serial.print("Vergleich Licht");
@@ -277,24 +256,39 @@ void GetMessage() {
         char c = client_.read(); //read command from Server
         if (c == '|' ) {
           if (message.indexOf("_") == 0) {
+            Serial.print("Message from Socket: ");
+            Serial.println(message);
             live = true;
             byte ip[4];
             ip[0] = message.substring(1, message.indexOf(".")).toInt();
             String ip_help = message.substring(message.indexOf(".") + 1, message.length() + 1);
+            Serial.println(ip_help);
             ip[1] = ip_help.substring(0, message.indexOf(".")).toInt();
-            ip_help = ip_help.substring(message.indexOf(".") + 1, message.length() + 1);
+            ip_help = ip_help.substring(ip_help.indexOf(".") + 1, ip_help.length() + 1);
+            Serial.println(ip_help);
             ip[2] = ip_help.substring(0, message.indexOf(".")).toInt();
-            ip[3] = ip_help.substring(message.indexOf(".") + 1, message.length() + 1).toInt();
-            c1.connect(ip, 5000);
+            ip[3] = ip_help.substring(ip_help.indexOf(".") + 1, ip_help.length() + 1).toInt();
+            do {
+              c1.connect(ip, 5000);
+              Serial.print("Connecting to ");
+              Serial.print(ip[0]);
+              Serial.print(".");
+              Serial.print(ip[1]);
+              Serial.print(".");
+              Serial.print(ip[2]);
+              Serial.print(".");
+              Serial.println(ip[3]);
+            } while (!c1.connected());
           }
           else {
+            Serial.print("Message from Socket: ");
+            Serial.println(message);
             SetToSave(message);
           }
           client_.println("Done<EOF>");
           client_.flush();
           client_.stop();
-          Serial.print("Message from Socket: ");
-          Serial.println(message);
+
           return;
         }
         else {
@@ -307,7 +301,7 @@ void GetMessage() {
 
 String SendMessage(String message, bool data_) {
   if (data_) {
-    message = "set arduino data_" + message;
+    message = "set data_" + message;
   }
   host = "192.168.178.26";
   Serial.print("Connecting to ");
@@ -366,35 +360,12 @@ void SetToSave(String save) {
     case 1:   preferences.putUInt("Light", 4);  break;
     case 2:   preferences.putUInt("Light", 2);  break;
   }
-  /* String test = "-100";
-    Serial.println(test.toFloat(), 3);
-    Serial.println(save.substring(save.indexOf("a"), save.indexOf("b")));
-    Serial.println(save.substring(save.indexOf("a"), save.indexOf("b")).toFloat(), 3);
-    Serial.println(String(preferences.getFloat("MinTemp", -100)));*/
   preferences.end();
-  /*
-    Serial.println(save.substring(save.indexOf("a"),save.indexOf("b")));
-    int length=save.length()+1;
-    char help2[length];
-    save.toCharArray(help2, length);
-    preferences.putUInt("length",length);
-    //EEPROM.write(0,length);
-    Serial.print("\n\nLänge: ");
-    Serial.println(length);
-    Serial.print("Write: _");
-    for(int f=0;f<length;f++){
-      EEPROM.write(f+1,help2[f]);
-      preferences.putUChar("data"+f,help2[f]);
-      Serial.print(help2[f]);
-    }
-    Serial.println("_");
-    EEPROM.writeBlock<char>(1, save, save.length());
-    EEPROM.write(0,save.length());
-    EEPROM.commit();*/
 }
 
 void LiveLoop() {
-  String onoff = "" + high[0] + high[1] + high[2] + high[3] + low[0] + low[3];
+  String onoff = "" + String(high[0]) + String(high[1]) + String(high[2]) + String(high[3]) + String(low[0]) + String(low[3]);
+  Serial.println(String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light)) + "_" + onoff + "|");
   c1.println(String(GetAverage(temp)) + "_" + GetAverage(humid) + "_" + GetAverage(groundHumid) + "_" + ((int)GetAverage(light)) + "_" + onoff + "|");
   String message = "";
   while (c1.connected()) {
@@ -406,14 +377,27 @@ void LiveLoop() {
           c1.println("Done<EOF>");
           c1.flush();
           c1.stop();
+          digitalWrite(higherPin[0], LOW);
+          digitalWrite(higherPin[1], LOW);
+          digitalWrite(higherPin[2], LOW);
+          digitalWrite(higherPin[3], LOW);
+          digitalWrite(lowerPin[0], LOW);
+          digitalWrite(lowerPin[3], LOW);
+          high[0] = 0;
+          high[1] = 0;
+          high[2] = 0;
+          high[3] = 0;
+          low[0] = 0;
+          low[3] = 0;
           return;
         }
         Serial.print("Message from Socket: ");
         Serial.println(message);
         char datas[6];
-        message.toCharArray(datas, 6);
+        message.toCharArray(datas, 7);
         for (int f = 0; f < 4; f++) {
-          if (datas[f] == 1) {
+          Serial.print(datas[f]);
+          if (datas[f] == '1') {
             digitalWrite(higherPin[f], HIGH);
             high[f] = 1;
           }
@@ -422,7 +406,8 @@ void LiveLoop() {
             high[f] = 0;
           }
         }
-        if (datas[4] == 1) {
+        Serial.print(datas[4]);
+        if (datas[4] == '1') {
           digitalWrite(lowerPin[0], HIGH);
           low[0] = 1;
         }
@@ -430,7 +415,8 @@ void LiveLoop() {
           digitalWrite(lowerPin[0], LOW);
           low[0] = 0;
         }
-        if (datas[5] == 1) {
+        Serial.println(datas[5]);
+        if (datas[5] == '1') {
           digitalWrite(lowerPin[3], HIGH);
           low[3] = 1;
         }
@@ -438,6 +424,7 @@ void LiveLoop() {
           digitalWrite(lowerPin[3], LOW);
           low[3] = 0;
         }
+        return;
       }
       else {
         message += c;
