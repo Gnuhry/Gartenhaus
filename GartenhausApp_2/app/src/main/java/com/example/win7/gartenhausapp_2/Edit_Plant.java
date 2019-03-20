@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -17,7 +15,6 @@ import java.util.List;
 
 public class Edit_Plant extends AppCompatActivity {
 
-
     private Client client;
     private int ID;
 
@@ -25,20 +22,21 @@ public class Edit_Plant extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__plant);
+        SetDownMenu();
         client = MainActivity.client;
-        ID = getIntent().getIntExtra("ID", -1); //read ID
+        ID = getIntent().getIntExtra("ID", -1); //ID auslesen
         InitClickListner();
         SpinnerInitalisieren();
         if (ID < 1)
             return;
         findViewById(R.id.imVDeletePlaint).setVisibility(View.VISIBLE);
-        String[] help = client.Send("get plant all_" + ID).split("_");
+        String[] help = client.Send("get plant all_" + ID).split("_"); //Pflanzeninformationen vom Server holen
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             Toast.makeText(this, "Nope", Toast.LENGTH_SHORT).show();
         }
-        if (help[0].equals(getString(R.string.error))) {
+        if (help[0].equals(getString(R.string.error))) { //Kommunikationsfehler abfangen
             findViewById(R.id.edTName).setEnabled(false);
             findViewById(R.id.edTminHumid).setEnabled(false);
             findViewById(R.id.edTmaxGroundHumid).setEnabled(false);
@@ -73,17 +71,26 @@ public class Edit_Plant extends AppCompatActivity {
         spinner.setAdapter(arrayAdapter);
         spinner.setSelection(1);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        return super.onOptionsItemSelected(item);
+    private void SetDownMenu(){
+        findViewById(R.id.downbar).setBackgroundResource(R.drawable.pflanze);
+        findViewById(R.id.imVPlant).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+            }
+        });
+        findViewById(R.id.imVHome).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+        findViewById(R.id.imVRegler).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Main3Activity.class));
+            }
+        });
     }
 
     private void InitClickListner() {

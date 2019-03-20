@@ -2,12 +2,10 @@ package com.example.win7.gartenhausapp_2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,23 +17,12 @@ public class MainActivity extends AppCompatActivity {
     public static final int Port = 5000;
     public static Client client;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        return super.onOptionsItemSelected(item);
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SetDownMenu();
         SharedPreferences sharedPreferences = getSharedPreferences("Speicher", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         IP = sharedPreferences.getString("IP", IP);
@@ -72,15 +59,29 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    public void btnClick2(View view) {
-        Intent intent = new Intent(this, Main2Activity.class);
-        startActivity(intent);
-
+    private void SetDownMenu(){
+        findViewById(R.id.downbar).setBackgroundResource(R.drawable.home);
+        findViewById(R.id.imVPlant).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+            }
+        });
+        findViewById(R.id.imVHome).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+        findViewById(R.id.imVRegler).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Main3Activity.class));
+            }
+        });
     }
 
-    public void btnClick3(View view) {
-        Intent intent = new Intent(this, Main3Activity.class);
-        startActivity(intent);
+    public void imV_information(View view) {
+        startActivity(new Intent(getApplication(),Credits.class));
     }
 }

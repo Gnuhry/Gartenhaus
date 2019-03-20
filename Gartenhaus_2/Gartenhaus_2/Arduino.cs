@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 namespace Gartenhaus_2
 {
+    //Klassen zum Bearbeiten der Datenbank-Tabelle Arduino
     public class Arduino
     {
         public static void SendToClient(int plantId, object[] data)

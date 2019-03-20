@@ -20,6 +20,7 @@ public class Client {
         this.Port = Port;
     }
 
+//Thread zum Senden und Empfangen von Nachrichten
     private class ClientThread extends Thread {
         String message, erg;
 
@@ -39,7 +40,7 @@ public class Client {
                 InputStream inputStream = socket.getInputStream();
                 OutputStream outputStream = socket.getOutputStream();
                 PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream));
-                printWriter.write(message);
+                printWriter.write(message);//Nachricht senden
                 printWriter.flush();//direktes lesen
                 Log.e("Client2", "Get: " + message);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -65,6 +66,8 @@ public class Client {
         }
     }
 
+//Nachricht Senden und Empfangen
+//Falls Empfangen länger dauert als 500 ms wird das Warten abgebrochen
     public String Send(String command) {
         String erg;
         ClientThread ct = new ClientThread(command);

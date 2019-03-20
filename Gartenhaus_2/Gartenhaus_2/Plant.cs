@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 namespace Gartenhaus_2
 {
+    //Klasse zum Bearbeiten der Datenbank-Tabelle Plant
     public class Plant
     {
 

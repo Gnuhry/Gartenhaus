@@ -43,7 +43,7 @@ public class Server {
             try {
                 serverSocket = new ServerSocket(5000);
                 do {
-                    Socket client = serverSocket.accept();
+                    Socket client = serverSocket.accept(); //Verbindung starten
                     new SocketAnswer(client, end).start();
                 } while (!end);
             } catch (IOException ignored) {
@@ -74,7 +74,7 @@ public class Server {
                     do {
                         sb.append(bufferedReader.readLine());
                     } while (sb.indexOf("|") < 0);
-                    Run x = new Run(sb.toString().split("_"));
+                    Run x = new Run(sb.toString().split("_")); //Live Funktion Button Status holen
                     Log.e("Server2", "Get: " + sb.toString());
                     live.runOnUiThread(x);
                     try {
@@ -103,6 +103,7 @@ public class Server {
 
         @Override
         public void run() {
+          //Einlesen von Live Funktion Button Status
             split[0] += "°C";
             ((TextView) live.findViewById(R.id.txVtemp)).setText(split[0]);
             ((TextView) live.findViewById(R.id.txVhumid)).setText(split[1]);

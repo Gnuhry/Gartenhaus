@@ -6,8 +6,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,21 +38,10 @@ public class Graph extends AppCompatActivity {
     Graph grap;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        //graph erstellen
         graph = findViewById(R.id.graph);
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         graph.getGridLabelRenderer().setHumanRounding(false);
@@ -74,7 +61,7 @@ public class Graph extends AppCompatActivity {
         }
         Spinnerinitalisieren();
         seekBar = findViewById(R.id.seekBar);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { //Listener für SuchBar, falls Änderung der Parameter
             int position;
 
             @Override
@@ -137,9 +124,10 @@ public class Graph extends AppCompatActivity {
 
     private void SetGraph(int mode, int splitter) {
         int counter = 0;
-        series = new LineGraphSeries<>();
+        series = new LineGraphSeries<>(); //drei Graphen erstellen
         min = new LineGraphSeries<>();
         max = new LineGraphSeries<>();
+        //Daten eingeben
         for (String aData : data) {
             if (!(aData.toCharArray()[0] == ':')) {
                 counter++;
@@ -161,7 +149,13 @@ public class Graph extends AppCompatActivity {
                             }
                         }
                         if (Float.parseFloat(aData.split("_")[mode + 3].replace(",", ".")) != -100) {
+                           if(mode==3){
+                               double d=Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))/1000.0;
+                               series.appendData(new DataPoint(date, Float.parseFloat(String.format("%.2d", d))), false, counter);
+                           }
+                           else{
                             series.appendData(new DataPoint(date, Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))), false, counter);
+                        }
                         }
                     }
                 } catch (ParseException e) {
@@ -169,6 +163,7 @@ public class Graph extends AppCompatActivity {
                 }
             }
         }
+        //Farben einstellen
         if (data[splitter].split("_").length > 1) {
             Paint paint = new Paint();
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -214,4 +209,7 @@ public class Graph extends AppCompatActivity {
         startActivity(getIntent());
     }
 
+    public void Close(View view) {
+        startActivity(new Intent(getApplicationContext(),Main3Activity.class));
+    }
 }
