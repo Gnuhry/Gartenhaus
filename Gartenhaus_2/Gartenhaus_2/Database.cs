@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 
 namespace Gartenhaus_2
 {
+    //Klasse zum Bearbeiten der Datenbank
     public class Database
     {
         private SqlConnection sqlConnection;

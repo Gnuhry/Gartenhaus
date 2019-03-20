@@ -1,9 +1,12 @@
-﻿using System.Net.Sockets;
+﻿/*
+ * https://docs.microsoft.com/en-us/dotnet/framework/network-programming/asynchronous-client-socket-example
+ */
+using System.Net.Sockets;
 using System.Text;
 
 namespace Gartenhaus_2
 {
-    public class HelpObject
+    public class HelpObject //Object, welches beim Zwischenspeichern hilft.
     {
         public Socket socket = null;
         public const int BufferSize = 1024, localport = 5000, arduinoport = 5000;

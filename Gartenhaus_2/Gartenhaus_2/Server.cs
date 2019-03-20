@@ -1,4 +1,7 @@
-﻿using System;
+﻿/*
+ * https://docs.microsoft.com/de-de/dotnet/framework/network-programming/asynchronous-server-socket-example
+ */
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -13,7 +16,7 @@ namespace Gartenhaus_2
         private string threadhelp;
         private string ArduinoIP;
 
-        public void StartServer()
+        public void StartServer() //Server starten
         {
             IPAddress ipAddress = IPAddress.Parse(GetLocalIPAddress());
             server = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -28,7 +31,7 @@ namespace Gartenhaus_2
                     server.BeginAccept(
                         new AsyncCallback(AcceptCallback),
                         server);
-                    manuelresetevent.WaitOne();
+                    manuelresetevent.WaitOne(); //Warten bis Socket erstellt eurde und dann wieder auf Emfang warten
                 }
             }
             catch (Exception)
@@ -41,10 +44,10 @@ namespace Gartenhaus_2
 
         private void AcceptCallback(IAsyncResult ar)
         {
-            manuelresetevent.Set();
+            manuelresetevent.Set(); //server wieder freistellen
             Socket client = ((Socket)ar.AsyncState).EndAccept(ar);
-            HelpObject help = new HelpObject { socket = client };
-            client.BeginReceive(help.buffer, 0, HelpObject.BufferSize, SocketFlags.None, new AsyncCallback(ReadCallback), help);
+            HelpObject help = new HelpObject { socket = client }; // Socket für die Übergabe speichern
+            client.BeginReceive(help.buffer, 0, HelpObject.BufferSize, SocketFlags.None, new AsyncCallback(ReadCallback), help); //Empfang der Daten beginnen
         }
 
         private void ReadCallback(IAsyncResult ar)
@@ -57,15 +60,17 @@ namespace Gartenhaus_2
                 int length = client.EndReceive(ar);
                 if (length > 1)
                 {
-                    help.sb.Append(Encoding.ASCII.GetString(help.buffer, 0, length));
+                    help.sb.Append(Encoding.ASCII.GetString(help.buffer, 0, length)); //einlesen
                     message = help.sb.ToString();
 
                     if (message.IndexOf("<EOF>") < 0)
                     {
+                        //wenn noch nicht alles eingelesen wurde, vorgang wiederholen
                         client.BeginReceive(help.buffer, 0, HelpObject.BufferSize, SocketFlags.None, new AsyncCallback(ReadCallback), help);
                     }
                     else
                     {
+                        //Antwort senden
                         ArduinoIP = client.RemoteEndPoint.ToString().Split(':')[0];
                         string reponse = Processing(message.Substring(0, message.IndexOf("<EOF>")));
                         Console.WriteLine("Answer: " + reponse);
@@ -75,16 +80,17 @@ namespace Gartenhaus_2
             }
             catch (Exception) { }
         }
-        private string Processing(string message)
+        private string Processing(string message) //Befehl verarbeiten
         {
             Console.WriteLine("Message from client: " + message);
             switch (message.ToLower().Split('_')[0].Split(' ')[0])
             {
-                case "get": return GetProcessing(message);
-                case "set": case "new": case "delete": case "reconect": case "live": threadhelp = message; new Thread(Process).Start(); return "Succes";
+                case "get": return GetProcessing(message); //GetBefehl direkt verarbeiten
+                case "set": case "new": case "delete": case "reconect": case "live": threadhelp = message; new Thread(Process).Start(); return "Succes"; //andere Befehle in nem Thread bearbeiten
                 default: return "Error";
             }
         }
+        //andere Befehle in nem Thread verarbeiten
         private void Process()
         {
             string[] tile = threadhelp.Split('_');
@@ -94,7 +100,7 @@ namespace Gartenhaus_2
                 case "new plant": Plant.New(tile[1], Convert.ToSingle(tile[2].Replace('.',',')), Convert.ToSingle(tile[3].Replace('.',',')), Convert.ToSingle(tile[4].Replace('.',',')), Convert.ToSingle(tile[5].Replace('.',',')), Convert.ToSingle(tile[6].Replace('.',',')), Convert.ToSingle(tile[7].Replace('.',',')), Convert.ToInt32(tile[8].Replace('.',','))); break;//new plant_[Name:string]_[MinTemp:float]_[MaxTemp:float]_[MinGroundHumid:float]_[MaxGroundHumid:float]_[MinHumid:float]_[MaxHumid:float]_[Light:int]
                 case "delete plant": Plant.Delete(Convert.ToInt32(tile[1])); break;//delete plant_[PlantID:int]
                 case "set arduino plantid": Arduino.Update(Convert.ToInt32(tile[1]), Convert.ToInt32(tile[2])); break;//set arduino plantid_[ArduinoID:int]_[PlantID:int]
-                case "set arduino": Arduino.Update(Convert.ToInt32(tile[1]), Convert.ToInt32(tile[3]), tile[2]); break;//set arduino_[ArduinoID:int]_[ArduinoIP:string]_[PlantID:int]
+                case "set arduino": Arduino.Update(Convert.ToInt32(tile[1]), Convert.ToInt32(tile[3]), Convert.ToString(tile[2])); break;//set arduino_[ArduinoID:int]_[Arduino_IP:string]_[PlantID:int]
                 case "new arduino": Arduino.New(ArduinoIP); break;//new arduino
                 case "reconect arduino": Arduino.Reconect(Convert.ToInt32(tile[1]), ArduinoIP); break;//reconect arduino_[ArduinoID:int]
                 case "delete arduino": Arduino.Delete(Convert.ToInt32(tile[1])); break;//delete arduino_[ArduinoID:int]
@@ -102,7 +108,7 @@ namespace Gartenhaus_2
                 case "live": Arduino.Live(ArduinoIP, Convert.ToInt32(tile[1])); break;
             }
         }
-
+        //Getter Befehle verarbeiten
         private string GetProcessing(string message)
         {
             StringBuilder erg = new StringBuilder();
@@ -122,7 +128,7 @@ namespace Gartenhaus_2
                 default: return "Error";
             }
         }
-
+        //Daten senden
         private void Send(Socket client, string data)
         {
             data += "<EOF>";
@@ -138,15 +144,16 @@ namespace Gartenhaus_2
         {
             try
             {
-                Socket client = (Socket)ar.AsyncState;
+                Socket client = (Socket)ar.AsyncState; //Senden beenden
                 int lentgh = client.EndSend(ar);
                 Console.WriteLine("Sent " + lentgh + " bytes to client\n");
                 client.Shutdown(SocketShutdown.Both);
-                client.Close();
+                client.Close(); //Sockets schließen
             }
             catch (Exception) { }
         }
 
+        //Locale IP Addresse herausfinden
         public static string GetLocalIPAddress()
         {
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());

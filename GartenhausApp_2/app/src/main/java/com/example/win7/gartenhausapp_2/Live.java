@@ -3,11 +3,10 @@ package com.example.win7.gartenhausapp_2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -16,25 +15,20 @@ public class Live extends AppCompatActivity {
     Server server;
     Boolean startstop;
     int ID;
+    boolean temp;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onBackPressed() { //Zurück Taste Abfangen, um Server zu stoppen
+        if(server!=null){
+        server.Stop();}
+        super.onBackPressed();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        return super.onOptionsItemSelected(item);
-    }
-
-    boolean temp, light;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
+        SetDownMenu();
         ID = getIntent().getIntExtra("ID", -1); //read ID
         startstop = true;
         temp = true;
@@ -107,6 +101,28 @@ public class Live extends AppCompatActivity {
 
     }
 
+    private void SetDownMenu(){
+        findViewById(R.id.downbar).setBackgroundResource(R.drawable.controller);
+        findViewById(R.id.imVPlant).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+            }
+        });
+        findViewById(R.id.imVHome).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+        findViewById(R.id.imVRegler).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Main3Activity.class));
+            }
+        });
+    }
+
     public void btnStartStop(View view) {
         if (startstop) {
             startstop = false;
@@ -118,10 +134,11 @@ public class Live extends AppCompatActivity {
             findViewById(R.id.swshutters).setEnabled(true);
             server.Restart();
             MainActivity.client.Send("live_" + ID);
-            ((Button) view).setText(R.string.stop);
-            findViewById(R.id.btnExit).setVisibility(View.GONE);
-        } else if (((Button) view).getText() == getString(R.string.stop)) {
+            ((ImageView) view).setImageResource(R.drawable.power_button_green);
+            view.setTag("Stop");
+        } else if (view.getTag() == "Stop") {
             startstop = true;
+            ((ImageView) view).setImageResource(R.drawable.power_button_red);
             findViewById(R.id.swheater).setEnabled(false);
             findViewById(R.id.swsprayer).setEnabled(false);
             findViewById(R.id.swpump).setEnabled(false);
@@ -129,7 +146,6 @@ public class Live extends AppCompatActivity {
             findViewById(R.id.swcooler).setEnabled(false);
             findViewById(R.id.swshutters).setEnabled(false);
             server.Stop();
-            ((Button) view).setText(R.string.start);
             Intent intent = new Intent(this, Main3Activity.class);
             startActivity(intent);
         } else {
