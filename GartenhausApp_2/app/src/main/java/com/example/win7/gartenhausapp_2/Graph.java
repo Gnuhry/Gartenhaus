@@ -21,6 +21,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -150,8 +151,17 @@ public class Graph extends AppCompatActivity {
                         }
                         if (Float.parseFloat(aData.split("_")[mode + 3].replace(",", ".")) != -100) {
                            if(mode==3){
-                               double d=Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))/1000.0;
-                               series.appendData(new DataPoint(date, Float.parseFloat(String.format("%.2d", d))), false, counter);
+                               String help=(Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))/100.0)+"";
+                               Log.e("help",help);
+                               char[] help2=help.toCharArray();
+                               int index=0;
+                               for(int f=0;f<help2.length;f++){
+                                   if(help2[f]=='.'){
+                                       index=f;
+                                   }
+                               }
+                               String d=help.substring(0,index+2);
+                               series.appendData(new DataPoint(date, Float.valueOf(d)), false, counter);
                            }
                            else{
                             series.appendData(new DataPoint(date, Float.parseFloat(aData.split("_")[mode + 3].replace(",", "."))), false, counter);
@@ -199,7 +209,12 @@ public class Graph extends AppCompatActivity {
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(grap, new SimpleDateFormat("kk:mm.ss dd.MM.yyyy", Locale.GERMAN).format(new Date((long) dataPoint.getX())) + "/" + String.format("%.2f", dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                if(seekBar.getProgress()!=3) {
+                    Toast.makeText(grap, new SimpleDateFormat("kk:mm.ss dd.MM.yyyy", Locale.GERMAN).format(new Date((long) dataPoint.getX())) + "/" + String.format("%.2f", dataPoint.getY()), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(grap, new SimpleDateFormat("kk:mm.ss dd.MM.yyyy", Locale.GERMAN).format(new Date((long) dataPoint.getX())) + "/" + String.format("%.2f", dataPoint.getY()*100), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         graph.addSeries(series);
