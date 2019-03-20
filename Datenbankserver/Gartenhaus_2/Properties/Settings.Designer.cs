@@ -38,10 +38,22 @@ namespace Gartenhaus_2.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Win7\\source\\repos\\Ga" +
-            "rtenhaus_2\\Gartenhaus_2.mdf;Integrated Security=True;Connect Timeout=30")]
+            "rtenhaus\\Gartenhaus_2\\Gartenhaus_2.mdf;Integrated Security=True;Connect Timeout=" +
+            "30")]
         public string Gartenhaus_2ConnectionString {
             get {
                 return ((string)(this["Gartenhaus_2ConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Win7\\source\\repos\\Ga" +
+            "rtenhaus\\Gartenhaus.mdf;Integrated Security=True;Connect Timeout=30")]
+        public string GartenhausConnectionString1 {
+            get {
+                return ((string)(this["GartenhausConnectionString1"]));
             }
         }
     }
