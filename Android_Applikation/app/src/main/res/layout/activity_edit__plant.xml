@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Edit_Plant"
+    android:background="@drawable/background_white">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/plant_name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="@string/plant_name" />
+
+
+            <EditText
+                android:id="@+id/edTName"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/plant_name"
+                android:inputType="text"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:id="@+id/llTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_weight="1"
+                android:text="@string/temp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="@string/temp" />
+
+            <EditText
+                android:id="@+id/edTminTemp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/min"
+                android:inputType="numberSigned|numberDecimal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minus"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edTmaxTemp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/max"
+                android:inputType="numberSigned|numberDecimal" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:text="@string/groundhumid"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="@string/groundhumid" />
+
+            <EditText
+                android:id="@+id/edTminGroundHumid"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/min"
+                android:inputType="numberSigned|numberDecimal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minus"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edTmaxGroundHumid"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/max"
+                android:inputType="numberSigned|numberDecimal" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="37dp"
+                android:layout_marginRight="37dp"
+                android:layout_weight="1"
+                android:text="@string/humid"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="@string/humid" />
+
+            <EditText
+                android:id="@+id/edTminHumid"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/min"
+                android:inputType="numberSigned|numberDecimal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minus"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edTmaxHumid"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/max"
+                android:inputType="numberSigned|numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/light"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="@string/light" />
+
+            <Spinner
+                android:id="@+id/spinnerLight"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="120dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imVDeletePlaint"
+            android:layout_width="69dp"
+            android:layout_height="53dp"
+            android:clickable="true"
+            android:contentDescription="@string/delete"
+            android:focusable="true"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/dustbin" />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:layout_marginRight="30dp"
+            android:id="@+id/imVSavePlaint"
+            android:layout_width="69dp"
+            android:layout_height="53dp"
+            android:contentDescription="@string/save"
+            android:visibility="visible"
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@drawable/save"
+            android:layout_marginEnd="30dp" />
+    </LinearLayout>
+    <include
+        layout="@layout/downbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
